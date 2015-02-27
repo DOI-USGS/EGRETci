@@ -1,0 +1,34 @@
+Package: EGRETci
+Type: Package
+Title: Exploration and Graphics for RivEr Trends (EGRET) Confidence Intervals
+Version: 0.0.0
+Authors@R: c( person("Robert", "Hirsch", role = c("aut"),
+    email = "rhirsch@usgs.gov"),
+    person("Laura", "DeCicco", role = c("aut","cre"),
+    email = "ldecicco@usgs.gov"))
+Description: Confidence interval calculations for Weighted
+    Regressions on Time, Discharge, and Season (WRTDS).
+License: CC0
+Depends:
+    R (>= 3.0)
+Imports:
+    EGRET (>= 2.1.2),
+    survival,
+    binom
+Suggests:
+    xtable,
+    knitr,
+    testthat,
+    foreach,
+    doParallel,
+    iterators
+LazyLoad: yes
+LazyData: yes
+VignetteBuilder: knitr
+BuildVignettes: true
+URL: http://pubs.usgs.gov/tm/04/a10/, https://github.com/USGS-R/EGRET/wiki
+Copyright: This software is in the public domain because it contains materials
+    that originally came from the United States Geological Survey, an agency of
+    the United States Department of Interior. For more information, see the
+    official USGS copyright policy at
+    http://www.usgs.gov/visual-id/credit_usgs.html#copyright

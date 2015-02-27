@@ -1,8 +1,11 @@
+#     version of 2015-02-26
 # this file is called cBScript.R  (which stands for "Confidence Band script")
 # this scripts assumes that you have loaded a workspace 
 # that workspace must contain an object called eList (which contains INFO, Daily, and Sample)
 #  it doesn't matter if there is a surfaces object inside of eList
 #   you will need to have installed EGRET 2.1.1 or higher
+#   you will also need to change the line in the script that specifies the location of the wBTCode.R file on your computer
+#   Don't move that line up higher in the script - it needs to go in that place in the workflow
 #   if this is the first time you have done this you may need to install these other packages:
 #      foreach, doParallel, iterators 
 # it is best to run this in the terminal, If you run it from the console
@@ -14,7 +17,7 @@
 #  go up to something like 120 if you really want to nail things down very well
 # 
 # After it has run, then you can execute the two graphical functions
-# and have them produce pdfs of the confidence regions and you can save the bootstrap output 
+# and have them produce pdfs of the confidence bands and you can save the bootstrap output 
 #  you might want to save it if you are thinking you might want to redo the graphics later on
 #
 #        ##############  Workflow  ######################
@@ -51,10 +54,10 @@
 #             arguments you want 
 #         It will overwrite the older versions of the graphic
 #
-#  If you have saved the output and want to work on the figures later, you can do this:
-#   copy the two functions shown near the end of this document, plotConcHistBoot, and plotFluxHistBoot into your console
-#   do a <carriage return> and then load the workspace that you created (the one with .CB. in it)
-#   then just give the commands plotConcHistBoot(eList) and plotFluxHistBoot(eList) to create your plots
+#       Of course, if you have saved the file workspace as *****.CB.RData then you can
+#       do what you want in the console, just load that RData file.  It will contain the plotConcHistBoot 
+#       and plotFluxHistBoot and you can just call them with with the argument eList, or you can add other arguments as well
+#
 #
 #
 library(foreach)
@@ -67,7 +70,7 @@ rm(list=ls()[!(ls() %in% c("eList"))])
 #   corresponds to the bootstrap estimates that are about to run
 #
 #   for this next line you will need to change the full pathname for your file structure
-source("~/Dropbox/WBT/wBTCode.R")
+source("wBTCode.R")
 #     
 eList <- modelEstimation(eList)
 surfaces <- eList$surfaces
@@ -149,119 +152,3 @@ for(iYear in 1:numYears) {
 }
 #
 #
-plotConcHistBoot <- function (eList, yearStart = NA, yearEnd = NA, 
-    concMax = NA, printTitle = TRUE, tinyPlot = FALSE, plotFlowNorm = TRUE, 
-    cex = 0.8, cex.axis = 1.1, cex.main = 1.1, lwd = 2, col = "black", 
-    col.pred = "green", customPar = FALSE, ...) 
-{
-    localDaily <- eList$Daily
-    localINFO <- eList$INFO
-    if (sum(c("paStart", "paLong") %in% names(localINFO)) == 
-        2) {
-        paLong <- localINFO$paLong
-        paStart <- localINFO$paStart
-    }
-    else {
-        paLong <- 12
-        paStart <- 10
-    }
-    localAnnualResults <- setupYears(paStart = paStart, paLong = paLong, 
-        localDaily = localDaily)
-    periodName <- setSeasonLabel(localAnnualResults = localAnnualResults)
-    title3 <- paste(widthCI,"% CI on FN Concentration, Replicates =",nBoot,"Block=",blockLength,"days")
-    title <- if (printTitle) 
-        paste(localINFO$shortName, " ", localINFO$paramShortName, 
-            "\n", periodName, "\n",title3)
-    else ""
-    xInfo <- generalAxis(x = localAnnualResults$DecYear, minVal = yearStart, 
-        maxVal = yearEnd, padPercent = 0, tinyPlot = tinyPlot)
-    combinedY <- c(localAnnualResults$Conc, localAnnualResults$FNConc[localAnnualResults$DecYear > 
-        xInfo$bottom & localAnnualResults$DecYear < xInfo$top])
-    yInfo <- generalAxis(x = combinedY, minVal = 0, maxVal = concMax, 
-        padPercent = 5, tinyPlot = tinyPlot)
-    genericEGRETDotPlot(x = localAnnualResults$DecYear, y = localAnnualResults$Conc, 
-        xTicks = xInfo$ticks, yTicks = yInfo$ticks, xDate = TRUE, 
-        xlim = c(xInfo$bottom, xInfo$top), ylim = c(yInfo$bottom, 
-            yInfo$top), ylab = "Concentration in mg/L", col = col, 
-        cex = cex, plotTitle = title, cex.axis = cex.axis, cex.main = cex.main, 
-        tinyPlot = tinyPlot, customPar = customPar, ...)
-    if (plotFlowNorm) 
-        with(localAnnualResults, lines(DecYear[DecYear > xInfo$bottom & 
-            DecYear < xInfo$top], FNConc[DecYear > xInfo$bottom & 
-            DecYear < xInfo$top], col = col.pred, lwd = lwd))
-            lines(CIAnnualResults$Year, CIAnnualResults$FNConcLow,lty=2,col="green")
-            lines(CIAnnualResults$Year, CIAnnualResults$FNConcHigh, lty=2,col="green")
-
-}
-
-#
-#
-plotFluxHistBoot <- function (eList, yearStart = NA, yearEnd = NA, fluxUnit = 9, fluxMax = NA, printTitle = TRUE, plotFlowNorm = TRUE, 
-    tinyPlot = FALSE, col = "black", col.pred = "green", cex = 0.8, 
-    cex.axis = 1.1, cex.main = 1.1, lwd = 2, customPar = FALSE, 
-    ...) 
-{
-    localDaily <- eList$Daily
-    localINFO <- eList$INFO
-    if (sum(c("paStart", "paLong") %in% names(localINFO)) == 
-        2) {
-        paLong <- localINFO$paLong
-        paStart <- localINFO$paStart
-    }
-    else {
-        paLong <- 12
-        paStart <- 10
-    }
-    localAnnualResults <- setupYears(paStart = paStart, paLong = paLong, 
-        localDaily = localDaily)
-    if (is.numeric(fluxUnit)) {
-        fluxUnit <- fluxConst[shortCode = fluxUnit][[1]]
-    }
-    else if (is.character(fluxUnit)) {
-        fluxUnit <- fluxConst[fluxUnit][[1]]
-    }
-    unitFactorReturn <- fluxUnit@unitFactor
-    ylabel <- paste("Flux in ", fluxUnit@unitName, sep = "")
-    numYears <- length(localAnnualResults$DecYear)
-    yearStart <- if (is.na(yearStart)) 
-        trunc(localAnnualResults$DecYear[1])
-    else yearStart
-    yearEnd <- if (is.na(yearEnd)) 
-        trunc(localAnnualResults$DecYear[numYears]) + 1
-    else yearEnd
-    subAnnualResults <- subset(localAnnualResults, DecYear >= 
-        yearStart)
-    subAnnualResults <- subset(subAnnualResults, DecYear <= yearEnd)
-    annFlux <- unitFactorReturn * subAnnualResults$Flux
-    fnFlux <- unitFactorReturn * subAnnualResults$FNFlux
-    periodName <- setSeasonLabel(localAnnualResults = localAnnualResults)
-    title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
-    title <- if (printTitle) 
-        paste(localINFO$shortName, " ", localINFO$paramShortName, 
-            "\n", periodName, "\n",title3)
-    else ""
-    xInfo <- generalAxis(x = subAnnualResults$DecYear, minVal = yearStart, 
-        maxVal = yearEnd, padPercent = 0, tinyPlot = tinyPlot)
-    combinedY <- c(annFlux, fnFlux)
-    yInfo <- generalAxis(x = combinedY, minVal = 0, maxVal = fluxMax, 
-        padPercent = 5, tinyPlot = tinyPlot)
-    genericEGRETDotPlot(x = subAnnualResults$DecYear, y = annFlux, 
-        xTicks = xInfo$ticks, yTicks = yInfo$ticks, xDate = TRUE, 
-        xlim = c(xInfo$bottom, xInfo$top), ylim = c(0, yInfo$top), 
-        col = col, ylab = ylabel, plotTitle = title, customPar = customPar, 
-        cex = cex, cex.axis = cex.axis, cex.main = cex.main, 
-        tinyPlot = tinyPlot, ...)
-    if (plotFlowNorm) 
-        lines(subAnnualResults$DecYear, fnFlux, col = col.pred, 
-            lwd = lwd)
-            lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow * unitFactorReturn,lty=2,col="green")
-            lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh * unitFactorReturn, lty=2,col="green")
-}
-#
-#
-saveCB<-function(eList)
-{ 
-	INFO <-getInfo(eList)
-	saveName <- paste(INFO$staAbbrev,".",INFO$constitAbbrev,".CB.RData",sep = "")
-	save.image(file = saveName)
-	}

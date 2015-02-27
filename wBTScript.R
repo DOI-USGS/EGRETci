@@ -1,4 +1,4 @@
-# this code is written to be interactive
+# this code is written to be interactive  (version of 2015-02-26)
 # it assumes that the user has supplied an object called eList
 # eList is an egret object and it contains (in this order) INFO, Daily, and Sample 
 #    surfaces is not needed, but it is ok if it exists in eList
@@ -43,7 +43,7 @@
 library(EGRET)
 library(binom)
 library(survival)
-source("~/Dropbox/WBT/wBTCode.R")
+source("wBTCode.R")
 prob<-c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
 numSamples <- length(eList$Sample$Date)
 cat("\n Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
@@ -82,10 +82,10 @@ countFACReject <- 0
 caseSetUp <- data.frame(year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop)
 
 		
-		eList <- setPA(eList)
-		eList <- setForBoot(eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE)
+eList <- setPA(eList)
+eList <- setForBoot(eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE)
 #
-		eBoot <- wBT(eList,caseSetUp)
+eBoot <- wBT(eList,caseSetUp)
 #	
 localINFO <- eList$INFO
 bootOut <- eBoot$bootOut

@@ -1,50 +1,116 @@
-# This code carries out the WRTDS bootstrap test (WBT) (2015-02-26)
-#   as described in the draft manuscript on that subject by Hirsch, Archfield, and De Cicco
-#   dated February 12, 2015 with one update on the words used to describe likelihoods 
-#     Note that this version will only do tests on the Water Year
-#     Later on, when fully packaged it will do any Period of Analysis
-#
-#     the arguments are two ojects (eList and caseSetUp):
-#   eList (which is just a standard EGRET eList, it must contain
-#     at least the INFO, Daily and Sample data frames,  it doesn't need surfaces)
-#   caseSetUp which define the details of how the WBT will be run
-#       these are the values in caseSetUp
-#         year1 = the water year that is the start of the trend period (an integer)
-#         yearData1 = the water year that is the start of the data set (an integer)
-#         year2 = the water year that is the end of the trend period (an integer)
-#         yearData2 = the water year that is the end of the data set (an integer)
-#         numSamples = number of samples in eList$Sample 
-#         nBoot = maximum number of replicates that will be done (called Mmax in paper)
-#         bootBreak = the minimum number of replicates to be done (called Mmin in paper)
-#         blockLength = length of blocks for bootstrap (called B in the paper)
-#         confStop = 1 - alphap, the width of the confidence interval used in adaptive
-#              stopping rule (paper suggests alphap of 0.3 so confStop would be 0.7)
-#  
-#   What is returned is a list (called eBoot) of four objects, they are
-#   bootOut (which is a whole bunch of results from the finished bootstrap estimation)
-#       the names of these variables is prety self-explanatory except perhaps for the last three
-#       baseConc = the FN Concentration in the first water year of the trend period (mg/L) 
-#           these are needed to do percentage changes in FN Concentration
-#       baseFlux = the FN Flux in the first water year of the trend period (10^6 kg/yr)
-#           these are needed to do percentage changes in FN Flux
-#       iBoot = the number of bootstrap replicates actually run
-#   wordsOut (which is a vector of 4 phrases describing the likelihood of up or down trends) 
-#	xConc  (the bootstrap replicates for change in concentration) a vector of length iBoot
-#       the units are mg/L
-#   xFlux  (the bootstrap replicates for change in flux) a vector of length iBoot
-#       the units are 10^6 kg/yr
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.")
+}
+
+#' Interactive setup for EGRETci
+#'
+#' Walks user through the set-up for a trend analysis
+#'
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param \dots 
+#' @keywords WRTDS flow
+#' @return condition logical if TRUE, 
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' caseSetUp <- trendSetUp(eList)
+trendSetUp <- function(eList,...){
+  numSamples <- length(eList$Sample$Date)
+  cat("\n Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
+  message("\nEnter first water year of trend period\n")
+  year1 <- as.numeric(readline())
+  message("Enter last water year of trend period\n")
+  year2 <- as.numeric(readline())
+  yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
+  yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
+  nBoot <- 100  # if you want to make this flexible you can uncomment the next two lines
+  # message("Enter nBoot the largest number of boot replicates allowed, typically 100\n")
+  # nBoot <- as.numeric(readline())
+  cat("\nnBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+  message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs\n")
+  bootBreak <- as.numeric(readline())
+  bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
+  message("Enter blockLength, in days, typically 200 is a good choice\n")
+  blockLength <- as.numeric(readline())
+  confStop <- 0.7  # testing suggests that confStop = 0.7 is good
+  # it is the confidence level required when checking to see if we can be confident that
+  #  p is really below 0.1 or really above 0.1
+  # message("Enter confidence interval for stopping, confStop, try 0.7\n")
+  # confStop <- as.numeric(readline())
 
 
+  calStart <- yearData1 - 1
+  countConcReject <- 0
+  countFluxReject <- 0
+  countFACReject <- 0
+  caseSetUp <- data.frame(year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop)
+  
+  return(caseSetUp)
+  
+}
 
+#' Save EGRETci workspace
+#'
+#' Saves critical information in a EGRETci workflow
+#'
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eBoot
+#' @param \dots 
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' caseSetUp <- trendSetUp(eList)
+#' eList <- setPA(eList)
+#' eList <- setForBoot(eList)
+#' \dontrun{
+#' eBoot <- wBT(eList,caseSetUp)
+#' saveEGRETci(eList, eBoot)
+#' }
+saveEGRETci <- function(eList, eBoot, ...){
+  localINFO <- eList$INFO
+  bootOut <- eBoot$bootOut
+  wordsOut <- eBoot$wordsOut
+  xConc <- eBoot$xConc
+  xFlux <- eBoot$xFlux
+  
+  message("Enter a filename for output (it will go in the working directory)\n")
+  fileName<-readline()
+  fullName<-paste0(fileName,".RData")
+  save(caseSetUp,bootOut,wordsOut,xConc,xFlux,localINFO,file=fullName)
+  message("Saved to: ",getwd(),"/",fullName)
+}
 
-
-
-
-wBT<-function(eList,caseSetUp, ){
+#' Run EGRETci bootstrap
+#'
+#' Run EGRETci bootstrap
+#'
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param caseSetUp data frame
+#' @param prob vector of probabilities
+#' @param saveOutput logical
+#' @param fileName character
+#' @return eBoot
+#' @importFrom binom binom.bayes
+#' @param \dots 
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' caseSetUp <- trendSetUp(eList)
+#' eList <- setPA(eList)
+#' eList <- setForBoot(eList)
+#' \dontrun{
+#' eBoot <- wBT(eList,caseSetUp)
+#' }
+wBT<-function(eList,caseSetUp, 
+              prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975),
+              saveOutput=TRUE, fileName="temp.txt"){
 	localINFO <- eList$INFO
 	localDaily <- eList$Daily
 	localSample <- eList$Sample
-	prob<-c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
+	
 	bootOut <- as.data.frame(matrix(ncol=25,nrow=1))
   colnames(bootOut) <- c("rejectC","pValC","estC","lowC","upC",
                          "lowC50","upC50","lowC95","upC95","likeCUp",
@@ -79,7 +145,14 @@ wBT<-function(eList,caseSetUp, ){
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 4, width = 8)
-	cat("\n\n WRTDS estimated concentration change is",fcc," mg/L" )
+	if(saveOutput) sink(fileName)
+	cat("\n\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
+	cat("\n\n  Bootstrap process, for change from Water Year",year1,"to Water Year",year2 )
+	cat("\n                   data set runs from WaterYear",yearData1, "to Water Year", yearData2)
+	cat("\n  Bootstrap block length in days", blockLength)
+	cat("\n  bootBreak is",bootBreak," confStop is",confStop)
+  
+  cat("\n\n WRTDS estimated concentration change is",fcc," mg/L" )
 	cat("\n WRTDS estimated flux change is        ",ffc," 10^6 kg/yr")
 	cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
 	cat("\n nPos is cumulative number of positive trends")
@@ -100,12 +173,12 @@ wBT<-function(eList,caseSetUp, ){
 		xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - res[3])*0.00036525)
 #			cat("\nxConc[iBoot],iBoot",xConc[iBoot],iBoot)
 		posXConc <- ifelse(xConc[iBoot]>0,posXConc+1,posXConc)
-		binomIntConc<-binom.bayes(posXConc,iBoot,confStop,"central")
+		binomIntConc<-binom::binom.bayes(posXConc,iBoot,confStop,"central")
 		belowConc <- ifelse(binomIntConc$upper<0.05,1,0)
 		aboveConc <- ifelse(binomIntConc$lower>0.95,1,0)
 		midConc <- ifelse(binomIntConc$lower>0.05 & binomIntConc$upper<0.95,1,0)
 		posXFlux <- ifelse(xFlux[iBoot]>0,posXFlux+1,posXFlux)
-		binomIntFlux<-binom.bayes(posXFlux,iBoot,confStop,"central")
+		binomIntFlux<-binom::binom.bayes(posXFlux,iBoot,confStop,"central")
 		belowFlux <- ifelse(binomIntFlux$upper<0.05,1,0)
 		aboveFlux <- ifelse(binomIntFlux$lower>0.95,1,0)
 		midFlux <- ifelse(binomIntFlux$lower>0.05 & binomIntFlux$upper<0.95,1,0)
@@ -171,6 +244,7 @@ wBT<-function(eList,caseSetUp, ){
   xConc <- xConc[1:iBoot]
   xFlux <- xFlux[1:iBoot]
   eBoot <- list(bootOut=bootOut,wordsOut=wordsOut,xConc=xConc,xFlux=xFlux)
+  if (saveOutput) sink()
   return(eBoot)						
 }
 #
@@ -305,11 +379,11 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #
 #
 #
-setForBoot<-function (eList,windowY,windowQ,windowS,edgeAdjust) {
+setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE) {
 #  does the setup functions usually done by modelEstimation
 	localINFO <- eList$INFO
 	localDaily <- eList$Daily
-localSample <- eList$Sample
+  localSample <- eList$Sample
   numDays <- length(localDaily$DecYear)
   DecLow <- localDaily$DecYear[1]
   DecHigh <- localDaily$DecYear[numDays]

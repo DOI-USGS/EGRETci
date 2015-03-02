@@ -41,55 +41,12 @@
 #
 #
 library(EGRET)
-library(binom)
-library(survival)
-source("wBTCode.R")
-prob<-c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
-numSamples <- length(eList$Sample$Date)
-cat("\n Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
-message("\nEnter first water year of trend period\n")
-year1 <- as.numeric(readline())
-message("Enter last water year of trend period\n")
-year2 <- as.numeric(readline())
-yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
-yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
-nBoot <- 100  # if you want to make this flexible you can uncomment the next two lines
-# message("Enter nBoot the largest number of boot replicates allowed, typically 100\n")
-# nBoot <- as.numeric(readline())
-cat("\nnBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
-message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs\n")
-bootBreak <- as.numeric(readline())
-bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
-message("Enter blockLength, in days, typically 200 is a good choice\n")
-blockLength <- as.numeric(readline())
-confStop <- 0.7  # testing suggests that confStop = 0.7 is good
-# it is the confidence level required when checking to see if we can be confident that
-#  p is really below 0.1 or really above 0.1
-# message("Enter confidence interval for stopping, confStop, try 0.7\n")
-# confStop <- as.numeric(readline())
-message("Enter a filename for output (it will go in the working directory)\n")
-fileName<-readline()
-fullName<-paste(fileName,".RData",sep="")
-cat("\n\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
-cat("\n\n  Bootstrap process, for change from Water Year",year1,"to Water Year",year2 )
-cat("\n                   data set runs from WaterYear",yearData1, "to Water Year", yearData2)
-cat("\n  Bootstrap block length in days", blockLength)
-cat("\n  bootBreak is",bootBreak," confStop is",confStop)
-calStart <- yearData1 - 1
-countConcReject <- 0
-countFluxReject <- 0
-countFACReject <- 0
-caseSetUp <- data.frame(year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop)
-
-		
+library(EGRETci)
+eList <- Choptank_eList
+caseSetUp <- trendSetUp(eList)
 eList <- setPA(eList)
-eList <- setForBoot(eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE)
-#
+eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp)
-#	
-localINFO <- eList$INFO
-bootOut <- eBoot$bootOut
-wordsOut <- eBoot$wordsOut
-xConc <- eBoot$xConc
-xFlux <- eBoot$xFlux									
-save(caseSetUp,bootOut,wordsOut,xConc,xFlux,localINFO,file=fullName)
+
+#Save output
+saveEGRETci(eList, eBoot)

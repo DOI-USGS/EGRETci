@@ -13,7 +13,6 @@ Depends:
     R (>= 3.0)
 Imports:
     EGRET (>= 2.1.2),
-    survival,
     binom
 Suggests:
     xtable,

@@ -7,39 +7,38 @@
 #' Walks user through the set-up for a trend analysis
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
-#' @param \dots 
 #' @keywords WRTDS flow
-#' @return condition logical if TRUE, 
+#' @return condition data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
 #' @export
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
+#' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-trendSetUp <- function(eList,...){
+#' }
+trendSetUp <- function(eList){
   numSamples <- length(eList$Sample$Date)
-  cat("\n Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
-  message("\nEnter first water year of trend period\n")
+  cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
+  message("Enter first water year of trend period")
   year1 <- as.numeric(readline())
-  message("Enter last water year of trend period\n")
+  message("Enter last water year of trend period")
   year2 <- as.numeric(readline())
   yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
   yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
-  nBoot <- 100  # if you want to make this flexible you can uncomment the next two lines
-  # message("Enter nBoot the largest number of boot replicates allowed, typically 100\n")
-  # nBoot <- as.numeric(readline())
-  cat("\nnBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
-  message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs\n")
+#   nBoot <- 100  # if you want to make this flexible you can uncomment the next two lines
+  message("Enter nBoot the largest number of boot replicates allowed, typically 100")
+  nBoot <- as.numeric(readline())
+  cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+  message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
   bootBreak <- as.numeric(readline())
   bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
-  message("Enter blockLength, in days, typically 200 is a good choice\n")
+  message("Enter blockLength, in days, typically 200 is a good choice")
   blockLength <- as.numeric(readline())
-  confStop <- 0.7  # testing suggests that confStop = 0.7 is good
+#   confStop <- 0.7  # testing suggests that confStop = 0.7 is good
   # it is the confidence level required when checking to see if we can be confident that
   #  p is really below 0.1 or really above 0.1
-  # message("Enter confidence interval for stopping, confStop, try 0.7\n")
-  # confStop <- as.numeric(readline())
-
-
+  message("Enter confidence interval for stopping, confStop, testing suggests that 0.7 is good")
+  confStop <- as.numeric(readline())
   calStart <- yearData1 - 1
   countConcReject <- 0
   countFluxReject <- 0
@@ -55,28 +54,32 @@ trendSetUp <- function(eList,...){
 #' Saves critical information in a EGRETci workflow
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
-#' @param eBoot
-#' @param \dots 
+#' @param eBoot named list
+#' @param caseSetUp dataframe
+#' @param fileName string. If left blank (empty quotes), the function will interactively ask for a name to save.
 #' @export
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
+#' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' eList <- setPA(eList)
 #' eList <- setForBoot(eList)
-#' \dontrun{
 #' eBoot <- wBT(eList,caseSetUp)
-#' saveEGRETci(eList, eBoot)
+#' saveEGRETci(eList, eBoot, caseSetUp)
 #' }
-saveEGRETci <- function(eList, eBoot, ...){
+saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
   localINFO <- eList$INFO
   bootOut <- eBoot$bootOut
   wordsOut <- eBoot$wordsOut
   xConc <- eBoot$xConc
   xFlux <- eBoot$xFlux
   
-  message("Enter a filename for output (it will go in the working directory)\n")
-  fileName<-readline()
+  if(fileName == ""){
+    message("Enter a filename for output (it will go in the working directory)\n")
+    fileName<-readline()    
+  }
+
   fullName<-paste0(fileName,".RData")
   save(caseSetUp,bootOut,wordsOut,xConc,xFlux,localINFO,file=fullName)
   message("Saved to: ",getwd(),"/",fullName)
@@ -92,8 +95,8 @@ saveEGRETci <- function(eList, eBoot, ...){
 #' @param saveOutput logical
 #' @param fileName character
 #' @return eBoot
+#' @import EGRET
 #' @importFrom binom binom.bayes
-#' @param \dots 
 #' @export
 #' @examples
 #' library(EGRET)
@@ -160,13 +163,29 @@ wBT<-function(eList,caseSetUp,
 	cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
 	cat("\n\n      rep              Concentration             |              Flux")
   cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
+  if(saveOutput){
+    message("\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
+    message("\n  Bootstrap process, for change from Water Year ",year1," to Water Year ",year2)
+    message("                   data set runs from WaterYear ",yearData1, " to Water Year ", yearData2)
+    message("  Bootstrap block length in days ", blockLength)
+    message("  bootBreak is ",bootBreak,"  confStop is ",confStop)
+    
+    message("\n WRTDS estimated concentration change is ",fcc,"  mg/L" )
+    message(" WRTDS estimated flux change is         ",ffc,"  10^6 kg/yr")
+    message(" value is bootstrap replicate result (deltack or deltafk in paper)")
+    message(" nPos is cumulative number of positive trends")
+    message("\n post_p is posterior mean estimate of probability of a positive trend")
+    message(" Lower and Upper are estimates of the 90% CI values for magnitude of trend")
+    message("\n      rep              Concentration             |              Flux")
+    message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
+  }
 	for (iBoot in 1:nBoot){
 		bootSample<-blockSample(localSample=localSample,blockLength=blockLength)
-		eListBoot <- as.egret(localINFO,localDaily,bootSample,NA)
+		eListBoot <- EGRET::as.egret(localINFO,localDaily,bootSample,NA)
  		surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot,year1)
 		surfaces2 <- estSliceSurfacesSimpleAlt(eListBoot,year2)
 		combo <- makeCombo(surfaces1,surfaces2)
-		eListBoot <- as.egret(localINFO,localDaily,bootSample,combo)
+		eListBoot <- EGRET::as.egret(localINFO,localDaily,bootSample,combo)
 		res <- makeTwoYearsResults(eListBoot,year1,year2)
 #			cat("\nres",res[1],res[2],res[3],res[4])
 		xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
@@ -190,8 +209,22 @@ wBT<-function(eList,caseSetUp,
 		quantFlux<-quantile(xFlux[1:iBoot],prob,type=6)
 		lowFlux <- quantFlux[2]
 		highFlux <- quantFlux[8]
-		prints<-c(format(iBoot,digits=3,width=7),format(xConc[iBoot],digits=3,width=7),format(posXConc,digits=3,width=5),format(binomIntConc$mean,digits=3,width=7),format(quantConc[2],digits=3,width=7),format(quantConc[8],digits=3,width=7),"  |  ",format(xFlux[iBoot],digits=4,width=8),format(posXFlux,digits=3,width=5),format(binomIntFlux$mean,digits=3,width=7),format(quantFlux[2],digits=4,width=8),format(quantFlux[8],digits=4,width=8))
+
+		prints<-c(format(iBoot,digits=3,width=7),
+		          format(xConc[iBoot],digits=3,width=7),
+		          format(posXConc,digits=3,width=5),
+		          format(binomIntConc$mean,digits=3,width=7),
+		          format(quantConc[2],digits=3,width=7),
+		          format(quantConc[8],digits=3,width=7),"  |  ",
+		          format(xFlux[iBoot],digits=4,width=8),
+		          format(posXFlux,digits=3,width=5),
+		          format(binomIntFlux$mean,digits=3,width=7),
+		          format(quantFlux[2],digits=4,width=8),
+		          format(quantFlux[8],digits=4,width=8))
 		cat("\n",prints)
+		if(saveOutput){
+		  message(" ",paste(prints, collapse=" "))
+		}
 		test1 <- if(belowConc + aboveConc + midConc > 0.5 & belowFlux + aboveFlux + midFlux > 0.5 & iBoot >= bootBreak & iBoot > 30) 1 else 0
 		test2 <- if(midConc > 0.5 & midFlux > 0.5 & iBoot >= bootBreak & iBoot <= 30) 1 else 0
 		if(test1 + test2 > 0.5) break
@@ -244,13 +277,41 @@ wBT<-function(eList,caseSetUp,
   xConc <- xConc[1:iBoot]
   xFlux <- xFlux[1:iBoot]
   eBoot <- list(bootOut=bootOut,wordsOut=wordsOut,xConc=xConc,xFlux=xFlux)
-  if (saveOutput) sink()
+  if (saveOutput) {
+    sink()
+    message("\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ? ", words(rejectC))
+    message("  best estimate is ",fcc, " mg/L\n  Lower and Upper 90% CIs ",fquantConc[2]," ",fquantConc[8])
+    message("  also 95% CIs",fquantConc[1]," ",fquantConc[9],"\n and 50% CIs ",fquantConc[4]," ",fquantConc[6])
+    if(posXConc==0|posXConc==iBoot) message("* Note p-value should be considered to be < stated value")
+    message("  approximate two-sided p-value for Conc ",format(pValC,digits=2,width=9))
+    message("  Likelihood that Flow Normalized Concentration is trending up = ",format(likeCUp,digits=3,width=10)," is trending down = ",format(likeCDown,digits=3,width=10))
+    message("\n Should we reject Ho that Flow Normalized Flux Trend = 0 ? ",words(rejectF))
+    message("  best estimate is ",ffc, " 10^6 kg/year\n  Lower and Upper 90% CIs ",fquantFlux[2]," ",fquantFlux[8])
+    message("  also 95% CIs ",fquantFlux[1]," ",fquantFlux[9],"\n and 50% CIs ",fquantFlux[4]," ",fquantFlux[6])
+    message("  approximate two-sided p-value for Flux ",format(pValF,digits=2,width=9))
+    if(posXFlux==0|posXFlux==iBoot) message("* Note p-value should be considered to be < stated value")
+    message("  Likelihood that Flow Normalized Flux is trending up = ",format(likeFUp,digits=3,width=10)," is trending down= ",format(likeFDown,digits=3,width=10))  		
+    message("\n ",format(wordsOut[1],width=30),"\n ",format(wordsOut[3],width=30))
+    message(" ",format(wordsOut[2],width=30),"\n ",format(wordsOut[4],width=30))
+  }
   return(eBoot)						
 }
-#
-#
-#
-#
+
+#' surface slice
+#'
+#' Creates surface slice for one year.
+#'
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param year integer year
+#' @keywords WRTDS flow
+#' @import EGRET
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' eList <- setForBoot(eList)
+#' surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
 estSliceSurfacesSimpleAlt<-function(eList,year){
   localINFO <- eList$INFO
   localSample <- eList$Sample
@@ -258,7 +319,12 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   windowY <- localINFO$windowY
   windowS <- localINFO$windowS
   windowQ <- localINFO$windowQ
-  edgeAdjust <- localINFO$edgeAdjust
+  
+  edgeAdjust <- TRUE
+  if(!is.null(localINFO$edgeAdjust)){
+    edgeAdjust <- localINFO$edgeAdjust
+  }
+  
   originalColumns <- names(localSample)
   minNumObs<-localINFO$minNumObs
   minNumUncen<-localINFO$minNumUncen
@@ -273,6 +339,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   topYear<-bottomYear + (nVectorYear - 1)* stepYear 
   vectorYear <-seq(bottomYear,topYear,stepYear)
   surfaces<-array(NA,dim=c(14,length(vectorYear),3))
+  
   if(!is.null(localINFO$paStart) & !is.null(localINFO$paLong)){
     vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
     vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
@@ -294,7 +361,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   numDays <- localINFO$numDays
   DecLow <- localINFO$DecLow
   DecHigh <- localINFO$DecHigh
-  resultSurvReg<-runSurvReg(estPtYear,estPtLogQ,numDays,DecLow,DecHigh, localSample,windowY,windowQ,windowS,minNumObs,minNumUncen,interactive=FALSE,edgeAdjust)
+  resultSurvReg <- EGRET::runSurvReg(estPtYear,estPtLogQ,numDays,DecLow,DecHigh, localSample,windowY,windowQ,windowS,minNumObs,minNumUncen,interactive=FALSE,edgeAdjust)
   
   for(iQ in 1:14) {
     for(iY in 1:length(vectorIndex)){ 
@@ -305,10 +372,24 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   
   return(surfaces)
 }
-#
-#
-#
-#
+
+#' paVector
+#'
+#' Creates paVector
+#'
+#' @param year integer year
+#' @param paStart integer starting month for period of analysis
+#' @param paLong integer length of period of analysis
+#' @param vectorYear numeric vector of years
+#' @keywords WRTDS flow
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' year <- 2000
+#' paStart <- 10
+#' paLong <- 12
+#' vectorYear <- seq(1985,2005,5)
+#' output <- paVector(year, paStart, paLong, vectorYear)
 paVector <- function(year,paStart,paLong, vectorYear){
   
   nDaysInMonth <- c(31,28,31,30,31,30,31,31,30,31,30,31)
@@ -352,10 +433,20 @@ paVector <- function(year,paStart,paLong, vectorYear){
   
   return(vectorIndex)
 }
-#
-#
 
-#
+#' makeCombo
+#'
+#' Combine surface slices
+#'
+#' @param surfaces1 vector
+#' @param surfaces2 vector
+#' @keywords WRTDS flow
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' surfaces1 <- c(1,2,3)
+#' surfaces2 <- c(4, NA, 5)
+#' surfaces <- makeCombo(surfaces1, surfaces2)
 makeCombo <- function (surfaces1,surfaces2) {
 	surfaces1[is.na(surfaces1)]<-0
 	surfaces2[is.na(surfaces2)]<-0
@@ -363,22 +454,54 @@ makeCombo <- function (surfaces1,surfaces2) {
 	combo[combo == 0] <- NA
 	return(combo)
 }
-#
-#
+
+#' makeTwoYearsResults
+#'
+#' makeTwoYearsResults
+#'
+#' @param eList named list
+#' @param year1 integer
+#' @param year2 integer
+#' @keywords WRTDS flow
+#' @import EGRET
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' 
+#' twoResults <- makeTwoYearsResults(eList, 1985, 2005)
 makeTwoYearsResults <- function(eList,year1,year2){
 # note this thing only works if the pa is water year
-	returnDaily <- estDailyFromSurfaces(eList)
-	bootAnnRes<-setupYears(localDaily=returnDaily)
+	returnDaily <- EGRET::estDailyFromSurfaces(eList)
+	bootAnnRes<-EGRET::setupYears(localDaily=returnDaily)
 	AnnBase <- bootAnnRes[1,1]
 	index1 <- year1 - trunc(AnnBase) + 1
 	index2 <- year2 - trunc(AnnBase) + 1
-	twoYearsResults <- c(bootAnnRes$FNConc[index1],bootAnnRes$FNConc[index2],bootAnnRes$FNFlux[index1],bootAnnRes$FNFlux[index2])
+	twoYearsResults <- c(bootAnnRes$FNConc[index1],
+                       bootAnnRes$FNConc[index2],
+                       bootAnnRes$FNFlux[index1],
+                       bootAnnRes$FNFlux[index2])
 	return(twoYearsResults)
 }
-#
-#
-#
-#
+
+#' setForBoot
+#'
+#' setForBoot
+#'
+#' @param eList named list
+#' @param windowY numeric
+#' @param windowQ numeric
+#' @param windowS numeric
+#' @param edgeAdjust logical
+#' @keywords WRTDS flow
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' 
+#' bootSetUp <- setForBoot(eList)
 setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE) {
 #  does the setup functions usually done by modelEstimation
 	localINFO <- eList$INFO
@@ -396,8 +519,8 @@ setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=
   localINFO$stepYear <- surfaceIndexParameters[5]
   localINFO$nVectorYear <- surfaceIndexParameters[6]
   localINFO$windowY <- windowY
-  localINFO$windowQ <- 2
-  localINFO$windowS <- 0.5
+  localINFO$windowQ <- windowQ
+  localINFO$windowS <- windowS
   localINFO$minNumObs <- min(100,numSamples-20)
   localINFO$minNumUncen <- min(50,numSamples-20)
   localINFO$numDays <- numDays
@@ -407,10 +530,21 @@ setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=
   eList$INFO <- localINFO
   return(eList)
 }
-#
-#
-#
-#
+
+#' blockSample
+#'
+#' Get blockSample
+#'
+#' @param localSample Sample data frame
+#' @param blockLength integer
+#' @keywords WRTDS flow
+#' @return surfaces matrix
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' Sample <- eList$Sample
+#' bsReturn <- blockSample(Sample, 25)
 blockSample <- function(localSample, blockLength){
   numSamples <- length(localSample$Julian)
   dayOne <- localSample$Julian[1]
@@ -431,8 +565,8 @@ blockSample <- function(localSample, blockLength){
   newSample <- newSample[order(newSample$Julian),]
   return(newSample)
 }
-#
-#
+
+
 wordLike <- function(likeList){
 	firstPart <- c("Upward trend in concentration is","Downward trend in concentration is","Upward trend in flux is","Downward trend in flux is")
 	secondPart <- c("highly unlikely","very unlikely","unlikely","about as likely as not","likely","very likely","highly likely")
@@ -441,8 +575,7 @@ wordLike <- function(likeList){
 	wordLikeFour <- paste(firstPart,secondPart[levelLike],sep=" ")
 	return(wordLikeFour)
 }
-#
-#
+
 words <- function(z){
 	out <- if(z) "Reject Ho" else "Do Not Reject Ho"
 	return(out)	

@@ -118,10 +118,23 @@ plotFluxHistBoot <- function (eList, yearStart = NA, yearEnd = NA, fluxUnit = 9,
     lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh * unitFactorReturn, lty=2,col="green")
   }
 }
-#
-#
+
+#' saveCB
+#'
+#' saveCB
+#'
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @export
+#' @import EGRET
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' \dontrun{
+#' saveCB(eList)
+#' }
 saveCB<-function(eList){ 
-  INFO <-getInfo(eList)
-  saveName <- paste(INFO$staAbbrev,".",INFO$constitAbbrev,".CB.RData",sep = "")
+  INFO <-EGRET::getInfo(eList)
+  saveName <- paste0(INFO$staAbbrev,".",INFO$constitAbbrev,".CB.RData")
   save.image(file = saveName)
+  message("Saved to: ",getwd(),"/",saveName)
 }

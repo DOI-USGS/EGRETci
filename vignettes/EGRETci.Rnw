@@ -199,6 +199,18 @@ library(EGRETci)
 eList <- Choptank_eList
 #Interactive function to set up trend analysis:
 caseSetUp <- trendSetUp(eList)
+
+#Non-interactive:
+caseSetUp <- data.frame(nBoot=100,
+                        bootBreak=39,
+                        bootLength=200,
+                        confStop=0.7,
+                        year1=1980,
+                        year2=2005,
+                        yearData1=1980,
+                        yearData2=2011,
+                        numSamples=606)
+
 eList <- setPA(eList)
 eList <- setForBoot(eList)
 

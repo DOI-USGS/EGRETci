@@ -101,10 +101,10 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
+#' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' eList <- setPA(eList)
 #' eList <- setForBoot(eList)
-#' \dontrun{
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 

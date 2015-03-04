@@ -8,6 +8,7 @@
 #' @param col.pred character prediction color
 #' @param printTitle logical
 #' @param cex.main numeric title scale
+#' @param \dots graphical parameters
 #' @export
 #' @import EGRET
 #' @examples
@@ -30,6 +31,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
   nBoot <- attr(CIAnnualResults, "nBoot")
   blockLength <- attr(CIAnnualResults, "blockLength")
   probs <- attr(CIAnnualResults, "probs")
+  
   widthCI <- (max(probs) - min(probs))*100
   
   localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
@@ -65,6 +67,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
 #' @param col.pred character prediction color
 #' @param printTitle logical
 #' @param cex.main numeric title scale
+#' @param \dots graphical parameters
 #' @export
 #' @import EGRET
 #' @examples
@@ -84,6 +87,12 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
 plotFluxHistBoot <- function (eList, CIAnnualResults, 
                               plotFlowNorm=TRUE, fluxUnit = 9, 
                               col.pred="green", printTitle=TRUE, cex.main=1.1, ...){
+  
+  nBoot <- attr(CIAnnualResults, "nBoot")
+  blockLength <- attr(CIAnnualResults, "blockLength")
+  probs <- attr(CIAnnualResults, "probs")
+  
+  widthCI <- (max(probs) - min(probs))*100
   
   localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
@@ -172,7 +181,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' ciBands
 #'
 #' @param repAnnualResults named list returned from bootstrapping process
-#' @param AnnualResults data frame
+#' @param eList named list
 #' @param probs vector high and low confidence interval percentages
 #' @export
 #' @import EGRET

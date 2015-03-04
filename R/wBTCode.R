@@ -2,6 +2,43 @@
   packageStartupMessage("Although this software program has been used by the U.S. Geological Survey (USGS), no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.")
 }
 
+
+#' EGRETci package for confidence interval analysis
+#'
+#' \tabular{ll}{
+#' Package: \tab EGRETci\cr
+#' Type: \tab Package\cr
+#' License: \tab Unlimited for this package, dependencies have more restrictive licensing.\cr
+#' Copyright: \tab This software is in the public domain because it contains materials
+#' that originally came from the United States Geological Survey, an agency of
+#' the United States Department of Interior. For more information, see the
+#' official USGS copyright policy at
+#' http://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
+#' LazyLoad: \tab yes\cr
+#' }
+#'
+#' Collection of functions to do WRTDS and flowHistory analysis,
+#'  and produce graphs and tables of data and results from these analyses.
+#'
+#' @name EGRET-package
+#' @docType package
+#' @author Robert M. Hirsch \email{rhirsch@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
+#' @references Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
+#' (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
+#' chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
+#' @keywords water-quality graphics streamflow statistics 
+NULL
+
+#' Example repAnnualResults
+#'
+#' Example data representing data from the Choptank River at Greensboro, MD,  USGS data
+#' Data is a named list of the Daily, Sample, INFO dataframes, and the surface matrix.
+#'
+#' @name repAnnualResults
+#' @docType data
+#' @keywords water quality data
+NULL
+
 #' Interactive setup for EGRETci
 #'
 #' Walks user through the set-up for a trend analysis

@@ -239,3 +239,58 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   
   return(CIAnnualResults)
 }
+
+#' plotHistogramTrend
+#'
+#' plotHistogramTrend
+#'
+#' @param eBoot named list
+#' @param caseSetUp data frame
+#' @param xSeq vector
+#' @param flux logical if TRUE, plots flux results, if FALSE plots concentration
+#' @param printTitle logical if TRUE, includes title
+#' @param cex.main numeric title font size
+#' @param col.fill character fill color
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' \dontrun{
+#' caseSetUp <- trendSetUp(eList)
+#' eList <- setPA(eList)
+#' eList <- setForBoot(eList)
+#' eBoot <- wBT(eList,caseSetUp)
+#' plotHistogramTrend(eBoot,flux=FALSE, xSeq = seq(-20,60,5))
+#' plotHistogramTrend(eBoot,flux=TRUE, xSeq = seq(-20,60,5))
+#' }
+plotHistogramTrend <- function (eBoot, caseSetUp, xSeq=seq(-50,50,10), flux=TRUE, 
+                           printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
+  bootOut <- eBoot$bootOut
+  INFO <- eList$INFO 
+  
+  if(flux){
+    xFlux <- eBoot$xFlux
+    change<-100*bootOut$estF/bootOut$baseFlux
+    reps <- 100*xFlux/bootOut$baseFlux
+    xlabel <- "Flux trend, in %"
+    titleWord <- "Flux"
+  } else {
+    xConc <- eBoot$xConc
+    change<-100*bootOut$estC/bootOut$baseConc
+    reps <- 100*xConc/bootOut$baseConc
+    xlabel <- "Concentration trend, in %"
+    titleWord <- "Concentration"
+  }
+  
+  titleToPrint <-ifelse(printTitle, paste("Histogram of trend in",INFO$paramShortName,
+               "\n", titleWord,"Normalized Concentration:",caseSetUp$year1,"to",
+               caseSetUp$year2,"\n",INFO$shortName), "")
+  
+  hist(reps,breaks=xSeq,yaxs="i",xaxs="i",tcl=0.5,
+       main=titleToPrint,freq=FALSE,xlab=xlabel,col=col.fill,
+       cex.main= cex.main, ...)
+  abline(v=change,lwd=3,lty=2)
+  abline(v=0,lwd=3)
+  box()
+}
+  

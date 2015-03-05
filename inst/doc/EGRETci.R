@@ -27,19 +27,20 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 #  library(EGRET)
 #  library(EGRETci)
 #  eList <- Choptank_eList
+#  
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
 #  
 #  #Non-interactive:
-#  caseSetUp <- data.frame(nBoot=100,
-#                          bootBreak=39,
-#                          bootLength=200,
-#                          confStop=0.7,
-#                          year1=1980,
-#                          year2=2005,
-#                          yearData1=1980,
-#                          yearData2=2011,
-#                          numSamples=606)
+#  # caseSetUp <- data.frame(nBoot=100,
+#  #                         bootBreak=39,
+#  #                         blockLength=200,
+#  #                         confStop=0.7,
+#  #                         year1=1980,
+#  #                         year2=2005,
+#  #                         yearData1=1980,
+#  #                         yearData2=2011,
+#  #                         numSamples=606)
 #  
 #  eList <- setPA(eList)
 #  eList <- setForBoot(eList)
@@ -47,8 +48,32 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 #  eBoot <- wBT(eList,caseSetUp,
 #               saveOutput = TRUE, fileName = "outputText.txt")
 #  
-#  #Save output
+#  #Interactive save output function:
 #  saveEGRETci(eList, eBoot)
+
+## ----histExample, echo=TRUE, eval=TRUE, fig.cap="Concentration histogram"----
+library(EGRET)
+library(EGRETci)
+# Example data included in package:
+eList <- Choptank_eList
+eBoot <- Choptank_eBoot
+caseSetUp <- Choptank_caseSetUp
+
+#Concentration:
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
+
+
+## ----histExampleFlux, echo=TRUE, eval=TRUE, fig.cap="Flux histogram"----
+#Flux
+plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
+
+## ----histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example"----
+par(mfrow=c(1,2))
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, 
+                   xSeq = seq(-20,60,5),printTitle=FALSE)
+#Flux
+plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, 
+                   xSeq = seq(-20,60,5),printTitle=FALSE)
 
 ## ----workflowBaseR, echo=TRUE, eval=FALSE-----------------
 #  

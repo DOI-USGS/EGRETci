@@ -29,16 +29,6 @@
 #' @keywords water-quality graphics streamflow statistics 
 NULL
 
-#' Example repAnnualResults
-#'
-#' Example data representing data from the Choptank River at Greensboro, MD,  USGS data
-#' Data is a named list of the Daily, Sample, INFO dataframes, and the surface matrix.
-#'
-#' @name repAnnualResults
-#' @docType data
-#' @keywords water quality data
-NULL
-
 #' Interactive setup for EGRETci
 #'
 #' Walks user through the set-up for a trend analysis
@@ -74,8 +64,9 @@ trendSetUp <- function(eList){
 #   confStop <- 0.7  # testing suggests that confStop = 0.7 is good
   # it is the confidence level required when checking to see if we can be confident that
   #  p is really below 0.1 or really above 0.1
-  message("Enter confidence interval for stopping, confStop, testing suggests that 0.7 is good")
-  confStop <- as.numeric(readline())
+#   message("Enter confidence interval for stopping, confStop, testing suggests that 0.7 is good")
+#   confStop <- as.numeric(readline())
+  confStop <- 0.7
   calStart <- yearData1 - 1
   countConcReject <- 0
   countFluxReject <- 0
@@ -164,7 +155,7 @@ wBT<-function(eList,caseSetUp,
 	numSamples <- caseSetUp$numSamples
 	nBoot <- caseSetUp$nBoot
 	bootBreak <- caseSetUp$bootBreak
-	blockLength <-caseSetUp$blockLength
+	blockLength <- caseSetUp$blockLength
 	confStop <- caseSetUp$confStop
   xConc<-rep(NA,nBoot)
   xFlux<-rep(NA,nBoot)

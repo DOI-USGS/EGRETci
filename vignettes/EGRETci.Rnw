@@ -241,6 +241,36 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 \end{table}
 
 
+\clearpage
+
+There is also a data frame called \texttt{caseSetUp}, which contains a number of important parameters that define the way that the test was implemented.  They are presented here.
+
+\begin{table}[!ht]
+{\footnotesize
+\caption{This table defines the contents of the \texttt{caseSetUp} data frame} 
+\label{table:caseSetUp}
+\begin{tabular}{lll}
+  \hline
+\multicolumn{1}{c}{\textbf{\textsf{Column}}} &
+\multicolumn{1}{c}{\textbf{\textsf{Definition}}} \\ 
+  \hline
+  year1 & the water year that is the start of the trend period (an integer) \\ 
+  [5pt]yearData1 & the water year that is the start of the data set (an integer) \\ 
+  [5pt]year2 & the water year that is the end of the trend period (an integer) \\
+  [5pt]yearData2 & the water year that is the end of the data set (an integer) \\
+  [5pt]numSamples & number of samples in eList\$Sample \\
+  [5pt]nBoot & maximum number of replicates (called Mmax in paper) \\
+  [5pt]bootBreak & minimum number of replicates (called Mmin in paper) \\
+  [5pt]blockLength & length of blocks for bootstrap (called B in the paper) \\
+  [5pt]confStop & 1 - alphap, the width of the confidence interval used in adaptive stopping rule (default alphap=0.3 so confStop=0.7) \\
+   \hline
+\end{tabular}
+}
+\end{table}  
+
+
+\clearpage
+
 %------------------------------------------------------------
 \section{EGRETci Workflow}
 %------------------------------------------------------------ 
@@ -338,6 +368,8 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  Downward trend in concentration is highly unlikely 
  Downward trend in flux is highly unlikely
 \end{Verbatim}
+
+\clearpage
 
 %------------------------------------------------------------ 
 \section{Histograms}

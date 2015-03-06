@@ -245,6 +245,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' plotHistogramTrend
 #'
 #' @param eBoot named list
+#' @param eList named list
 #' @param caseSetUp data frame
 #' @param xSeq vector
 #' @param flux logical if TRUE, plots flux results, if FALSE plots concentration
@@ -255,15 +256,19 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
+#' eBoot <- Choptank_eBoot
+#' caseSetUp <- Choptank_caseSetUp
+#' plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE)
+#' 
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' eList <- setPA(eList)
 #' eList <- setForBoot(eList)
 #' eBoot <- wBT(eList,caseSetUp)
-#' plotHistogramTrend(eBoot,flux=FALSE, xSeq = seq(-20,60,5))
-#' plotHistogramTrend(eBoot,flux=TRUE, xSeq = seq(-20,60,5))
+#' plotHistogramTrend(eBoot,caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
+#' plotHistogramTrend(eBoot,caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
 #' }
-plotHistogramTrend <- function (eBoot, caseSetUp, xSeq=seq(-50,50,10), flux=TRUE, 
+plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), flux=TRUE, 
                            printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
   bootOut <- eBoot$bootOut
   INFO <- eList$INFO 
@@ -292,5 +297,7 @@ plotHistogramTrend <- function (eBoot, caseSetUp, xSeq=seq(-50,50,10), flux=TRUE
   abline(v=change,lwd=3,lty=2)
   abline(v=0,lwd=3)
   box()
+  axis(3, tcl=0.5, labels = FALSE)
+  axis(4, tcl=0.5, labels = FALSE)
 }
   

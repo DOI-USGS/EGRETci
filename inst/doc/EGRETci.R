@@ -31,17 +31,7 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
 #  
-#  #Non-interactive:
-#  # caseSetUp <- data.frame(nBoot=100,
-#  #                         bootBreak=39,
-#  #                         blockLength=200,
-#  #                         confStop=0.7,
-#  #                         year1=1980,
-#  #                         year2=2005,
-#  #                         yearData1=1980,
-#  #                         yearData2=2011,
-#  #                         numSamples=606)
-#  
+#  #Currently, only water-year calculations are supported
 #  eList <- setPA(eList)
 #  eList <- setForBoot(eList)
 #  
@@ -67,15 +57,16 @@ plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
 #Flux
 plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
 
-## ----histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example"----
+## ----histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example",  fig.width=7, fig.height=4----
 par(mfrow=c(1,2))
-plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, 
-                   xSeq = seq(-20,60,5),printTitle=FALSE)
-#Flux
-plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, 
-                   xSeq = seq(-20,60,5),printTitle=FALSE)
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE,
+                   printTitle=FALSE, ylim=c(0,0.07))
+plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
+                   printTitle=FALSE, ylim=c(0,0.07))
 
 ## ----workflowBaseR, echo=TRUE, eval=FALSE-----------------
+#  library(EGRET)
+#  library(EGRETci)
 #  
 #  eList <- Choptank_eList
 #  
@@ -101,6 +92,7 @@ plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
 #  library(doParallel)
 #  library(iterators)
 #  library(EGRET)
+#  library(EGRETci)
 #  
 #  eList <- Choptank_eList
 #  
@@ -132,6 +124,7 @@ eList <- Choptank_eList
 repAnnualResults <- repAnnualResults
 
 CIAnnualResults <- ciBands(eList, repAnnualResults, probs=c(0.05,0.95))
+
 plotConcHistBoot(eList, CIAnnualResults)
 
 ## ----plots2, echo=TRUE,eval=TRUE, fig.cap="plotFluxHistBoot"----

@@ -296,8 +296,25 @@ wBT<-function(eList,caseSetUp,
 	likeFUp <- (posXFlux + 0.5) / (iBoot + 1)
 	likeFDown <- 1 - likeFUp
 
-  cat("\n Likelihood that Flow Normalized Flux is trending up =",format(likeFUp,digits=3,width=10)," is trending down=",format(likeFDown,digits=3,width=10))			
-  bootOut<-data.frame(rejectC,pValC,estC,lowC,upC,lowC50,upC50,lowC95,upC95,likeCUp,likeCDown,rejectF,pValF,estF,lowF,upF,lowF50,upF50,lowF95,upF95,likeFUp,likeFDown,baseConc,baseFlux,iBoot)
+  cat("\n Likelihood that Flow Normalized Flux is trending up =",format(likeFUp,digits=3)," is trending down=",format(likeFDown,digits=3))			
+  
+bootOut<-data.frame(rejectC,
+                      pValC,
+                      estC,
+                      lowC,upC,
+                      lowC50,upC50,
+                      lowC95,upC95,
+                      likeCUp,likeCDown,
+                      rejectF,
+                      pValF,
+                      estF,
+                      lowF,upF,
+                      lowF50,upF50,
+                      lowF95,upF95,
+                      likeFUp,likeFDown,
+                      baseConc,baseFlux,
+                      iBoot)
+
   likeList <- c(likeCUp,likeCDown,likeFUp,likeFDown)
   wordsOut <- wordLike(likeList)
   cat("\n\n",format(wordsOut[1],width=30),"\n",format(wordsOut[3],width=30))
@@ -318,7 +335,7 @@ wBT<-function(eList,caseSetUp,
     message("  also 95% CIs ",fquantFlux[1]," ",fquantFlux[9],"\n and 50% CIs ",fquantFlux[4]," ",fquantFlux[6])
     message("  approximate two-sided p-value for Flux ",format(pValF,digits=2,width=9))
     if(posXFlux==0|posXFlux==iBoot) message("* Note p-value should be considered to be < stated value")
-    message("  Likelihood that Flow Normalized Flux is trending up = ",format(likeFUp,digits=3,width=10)," is trending down= ",format(likeFDown,digits=3,width=10))  		
+    message("  Likelihood that Flow Normalized Flux is trending up = ",format(likeFUp,digits=3)," is trending down= ",format(likeFDown,digits=3))  		
     message("\n ",format(wordsOut[1],width=30),"\n ",format(wordsOut[3],width=30))
     message(" ",format(wordsOut[2],width=30),"\n ",format(wordsOut[4],width=30))
   }

@@ -4,7 +4,7 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eBoot, caseSetUp, xSeq = seq(-50, 50, 10), flux = TRUE,
+plotHistogramTrend(eBoot, caseSetUp, xSeq = seq(-100, 100, 10), flux = TRUE,
   printTitle = TRUE, cex.main = 1.1, col.fill = "grey", ...)
 }
 \arguments{
@@ -26,15 +26,19 @@ plotHistogramTrend(eBoot, caseSetUp, xSeq = seq(-50, 50, 10), flux = TRUE,
 plotHistogramTrend
 }
 \examples{
+eBoot <- Choptank_eBoot
+caseSetUp <- Choptank_caseSetUp
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE)
+
+\dontrun{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
 caseSetUp <- trendSetUp(eList)
 eList <- setPA(eList)
 eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp)
-plotHistogramTrend(eBoot,flux=FALSE, xSeq = seq(-20,60,5))
-plotHistogramTrend(eBoot,flux=TRUE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot,caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot,caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
 }
 }
 

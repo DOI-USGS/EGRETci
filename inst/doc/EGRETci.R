@@ -93,7 +93,7 @@ plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
 #  }
 #  
 #  CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
-#  
+#  save(CIAnnualResults, file="CIAnnualResults.RData")
 #  
 
 ## ----workflowFlowHistoryBands, echo=TRUE,eval=FALSE-------
@@ -124,7 +124,7 @@ plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
 #  # save(repAnnualResults, file="repAnnualResults.RData")
 #  
 #  CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
-#  
+#  save(CIAnnualResults, file="CIAnnualResults.RData")
 
 ## ----plots1, echo=TRUE,eval=TRUE, fig.cap="plotConcHistBoot"----
 #Load package data:

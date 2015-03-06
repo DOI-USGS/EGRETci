@@ -197,6 +197,48 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 3)	Create confidence bands around the computed trends in Flow Normalized Concentration and Flow Normalized Flux.  This is done using a single interactive function called xxxxx and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (plotConcHistBoot, and plotFluxHistBoot).
 
 
+\begin{table}[!ht]
+{\footnotesize
+\caption{This table defines the contents of the eBoot list} 
+\label{table:eBoot1}
+\begin{tabular}{llll}
+  \hline
+\multicolumn{1}{c}{\textbf{\textsf{Data Frame}}} &
+\multicolumn{1}{c}{\textbf{\textsf{Column}}} &
+\multicolumn{1}{c}{\textbf{\textsf{Definition}}} \\ 
+  \hline
+  bootOut & rejectC & Reject Ho, (no trend in concentration), TRUE or FALSE \\ 
+  [5pt] & pValC & p-value for no trend in concentration \\ 
+  [5pt] & estC & standard WRTDS estimate of change from starting year to ending year in mg/L \\ 
+  [5pt] & lowC & Lower confidence limit (90\%) on concentration trend \\ 
+  [5pt] & upC & Upper confidence limit (90\%) on concentration trend \\ 
+  [5pt] & lowC50 & Lower confidence limit (50\%) on concentration trend \\ 
+  [5pt] & upC50 & Upper confidence limit (50\%) on concentration trend \\
+  [5pt] & lowC95 & Lower confidence limit (95\%) on concentration trend \\ 
+  [5pt] & upC95 & Upper confidence limit (95\%) on concentration trend \\ 
+  [5pt] & likeCUp & Likelihood that trend in concentration is upwards \\ 
+  [5pt] & likeCDown & Likelihood that trend in concentration is downwards \\
+  [5pt] & rejectF & Reject Ho, (no trend in flux), TRUE or FALSE \\ 
+  [5pt] & pValF & p-value for no trend in flux \\
+  [5pt] & estF & standard WRTDS estimate of change from starting year to ending year, in 10\textsuperscript{6} kg/yr \\
+  [5pt] & lowF & Lower confidence limit (90\%) on flux trend \\
+  [5pt] & upF & Upper confidence limit (90\%) on flux trend \\
+  [5pt] & lowF50 & Lower confidence limit (50\%) on flux trend \\
+  [5pt] & upF50 & Upper confidence limit (50\%) on flux trend \\
+  [5pt] & lowF95 & Lower confidence limit (95\%) on flux trend \\
+  [5pt] & upF95 & Upper confidence limit (95\%) on flux trend \\
+  [5pt] & likeFUp & Likelihood that trend in flux is upwards \\
+  [5pt] & likeFDown & Likelihood that trend in flux is downwards \\
+  [5pt] & baseConc & The estimated mean flow-normalized concentration in starting year, in mg/L \\
+  [5pt] & baseFlux & The estimated mean flow-normalized flux in starting year, in 10\textsuperscript{6} kg/yr \\
+  [5pt] & iBoot & The actual number of bootstrap replicates used \\
+  [5pt]wordsOut & & a vector of four character variables (self explanatory) \\
+  [5pt]xConc & & a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) \\
+  [5pt]xFlux & & a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10\textsuperscript{6} kg/yr) \\
+   \hline
+\end{tabular}
+}
+\end{table}
 
 
 %------------------------------------------------------------
@@ -360,7 +402,7 @@ for(n in 1:nBoot){
 }
  
 CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
-
+save(CIAnnualResults, file="CIAnnualResults.RData")
 
 @
 
@@ -395,7 +437,7 @@ stopCluster(cl)
 # save(repAnnualResults, file="repAnnualResults.RData")
 
 CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
- 
+save(CIAnnualResults, file="CIAnnualResults.RData")
 @
 
 

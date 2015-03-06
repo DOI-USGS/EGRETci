@@ -185,7 +185,60 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 \section{Introduction to EGRET Confidence Intervals}
 %------------------------------------------------------------ 
 
+    This package EGRETci is an early test version of the package that will encompass the various approaches to uncertainty estimation associated with trend analysis for the EGRET package.  The various functions included here are all discussed in the draft manuscript “A bootstrap method for estimating uncertainty of water quality trends” by Hirsch, Archfield, and De Cicco (draft version of March 5, 2015).  The present version of the EGRETci package is designed for interactive use only, but later versions will describe how batch workflows can be created.  Also, the current version can only do analysis of trends for water years, but later versions will allow it to evaluate any group of months (i.e. any `Period of Analysis' to use the term in the EGRET package).  The EGRETci package is designed to carry out three specific types of tasks.
+    
+    
+1)  Evaluate a trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving four functions: trendSetUp, setPA, setForBoot, and wBT.  The results come both in the form of a) console output, which shows the bootstrap replicate process as it is underway and provides text output of results, and b) a list of outputs called eBoot.  The contents of eBoot are described below.
 
+
+2)	Prepare histograms of values for the trend magnitudes, expressed in percent, for Flow Normalized Concentration and Flow Normalized Flux.  This is done with the function plotHistogramTrend.  It depends on outputs contained in eBoot.
+
+
+3)	Create confidence bands around the computed trends in Flow Normalized Concentration and Flow Normalized Flux.  This is done using a single interactive function called xxxxx and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (plotConcHistBoot, and plotFluxHistBoot).
+
+
+\begin{table}[!ht]
+{\footnotesize
+\caption{This table defines the contents of the eBoot list} 
+\label{table:eBoot1}
+\begin{tabular}{llll}
+  \hline
+\multicolumn{1}{c}{\textbf{\textsf{Data Frame}}} &
+\multicolumn{1}{c}{\textbf{\textsf{Column}}} &
+\multicolumn{1}{c}{\textbf{\textsf{Definition}}} \\ 
+  \hline
+  bootOut & rejectC & Reject Ho, (no trend in concentration), TRUE or FALSE \\ 
+  [5pt] & pValC & p-value for no trend in concentration \\ 
+  [5pt] & estC & standard WRTDS estimate of change from starting year to ending year in mg/L \\ 
+  [5pt] & lowC & Lower confidence limit (90\%) on concentration trend \\ 
+  [5pt] & upC & Upper confidence limit (90\%) on concentration trend \\ 
+  [5pt] & lowC50 & Lower confidence limit (50\%) on concentration trend \\ 
+  [5pt] & upC50 & Upper confidence limit (50\%) on concentration trend \\
+  [5pt] & lowC95 & Lower confidence limit (95\%) on concentration trend \\ 
+  [5pt] & upC95 & Upper confidence limit (95\%) on concentration trend \\ 
+  [5pt] & likeCUp & Likelihood that trend in concentration is upwards \\ 
+  [5pt] & likeCDown & Likelihood that trend in concentration is downwards \\
+  [5pt] & rejectF & Reject Ho, (no trend in flux), TRUE or FALSE \\ 
+  [5pt] & pValF & p-value for no trend in flux \\
+  [5pt] & estF & standard WRTDS estimate of change from starting year to ending year, in 10\textsuperscript{6} kg/yr \\
+  [5pt] & lowF & Lower confidence limit (90\%) on flux trend \\
+  [5pt] & upF & Upper confidence limit (90\%) on flux trend \\
+  [5pt] & lowF50 & Lower confidence limit (50\%) on flux trend \\
+  [5pt] & upF50 & Upper confidence limit (50\%) on flux trend \\
+  [5pt] & lowF95 & Lower confidence limit (95\%) on flux trend \\
+  [5pt] & upF95 & Upper confidence limit (95\%) on flux trend \\
+  [5pt] & likeFUp & Likelihood that trend in flux is upwards \\
+  [5pt] & likeFDown & Likelihood that trend in flux is downwards \\
+  [5pt] & baseConc & The estimated mean flow-normalized concentration in starting year, in mg/L \\
+  [5pt] & baseFlux & The estimated mean flow-normalized flux in starting year, in 10\textsuperscript{6} kg/yr \\
+  [5pt] & iBoot & The actual number of bootstrap replicates used \\
+  [5pt]wordsOut & & a vector of four character variables (self explanatory) \\
+  [5pt]xConc & & a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) \\
+  [5pt]xFlux & & a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10\textsuperscript{6} kg/yr) \\
+   \hline
+\end{tabular}
+}
+\end{table}
 
 
 %------------------------------------------------------------
@@ -197,19 +250,20 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 library(EGRET)
 library(EGRETci)
 eList <- Choptank_eList
+
 #Interactive function to set up trend analysis:
 caseSetUp <- trendSetUp(eList)
 
 #Non-interactive:
-caseSetUp <- data.frame(nBoot=100,
-                        bootBreak=39,
-                        bootLength=200,
-                        confStop=0.7,
-                        year1=1980,
-                        year2=2005,
-                        yearData1=1980,
-                        yearData2=2011,
-                        numSamples=606)
+# caseSetUp <- data.frame(nBoot=100,
+#                         bootBreak=39,
+#                         blockLength=200,
+#                         confStop=0.7,
+#                         year1=1980,
+#                         year2=2005,
+#                         yearData1=1980,
+#                         yearData2=2011,
+#                         numSamples=606)
 
 eList <- setPA(eList)
 eList <- setForBoot(eList)
@@ -217,7 +271,7 @@ eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp, 
              saveOutput = TRUE, fileName = "outputText.txt")
 
-#Save output
+#Interactive save output function:
 saveEGRETci(eList, eBoot)
 @
 
@@ -286,8 +340,46 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 \end{Verbatim}
 
 %------------------------------------------------------------ 
+\section{Histograms}
+\label{sec:histograms}
+%------------------------------------------------------------ 
+
+<<histExample, echo=TRUE, eval=TRUE, fig.cap="Concentration histogram">>=
+library(EGRET)
+library(EGRETci)
+# Example data included in package:
+eList <- Choptank_eList
+eBoot <- Choptank_eBoot
+caseSetUp <- Choptank_caseSetUp
+
+#Concentration:
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
+
+@
+
+
+<<histExampleFlux, echo=TRUE, eval=TRUE, fig.cap="Flux histogram">>=
+#Flux
+plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
+@
+
+\clearpage
+
+Plot together:
+
+<<histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example">>=
+par(mfrow=c(1,2))
+plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, 
+                   xSeq = seq(-20,60,5),printTitle=FALSE)
+#Flux
+plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, 
+                   xSeq = seq(-20,60,5),printTitle=FALSE)
+@
+
+\clearpage
+%------------------------------------------------------------ 
 \section{Confidence Bands}
-\label{sec:data frames}
+\label{sec:confBands}
 %------------------------------------------------------------ 
 
 Base-R workflow for confidence bands on model results:
@@ -310,7 +402,7 @@ for(n in 1:nBoot){
 }
  
 CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
-
+save(CIAnnualResults, file="CIAnnualResults.RData")
 
 @
 
@@ -345,7 +437,7 @@ stopCluster(cl)
 # save(repAnnualResults, file="repAnnualResults.RData")
 
 CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
- 
+save(CIAnnualResults, file="CIAnnualResults.RData")
 @
 
 

@@ -1,9 +1,16 @@
-#' plotConcHistBoot
+#' Graph of annual concentration, flow normalized concentration, 
+#' and confidence bands for flow normalized concentrations
+#' 
+#' Uses the output of modelEstimation in the EGRET package (results in the named 
+#' list eList), and the data frame CIAnnualResults (produced by EGRETci package 
+#' using scripts described in the vignette) to produce a graph of annual 
+#' concentration, flow normalized concentration, and confidence bands for 
+#' flow-normalized concentrations.  In addition to the arguments listed below, 
+#' it will accept any additional arguments that are listed for the EGRET function 
+#' plotConcHist.
 #'
-#' plotConcHistBoot
-#'
-#' @param eList named list
-#' @param CIAnnualResults data frame from ciBands (needs nBoot, probs, and blockLength attributes)
+#' @param eList named list from EGRET package after running modelEstimation
+#' @param CIAnnualResults data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)
 #' @param plotFlowNorm logical
 #' @param col.pred character prediction color
 #' @param printTitle logical
@@ -247,7 +254,10 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param eBoot named list
 #' @param eList named list
 #' @param caseSetUp data frame
-#' @param xSeq vector
+#' @param xSeq vector defaults to seq(-100,100,10). It is recommended to try the default
+#' first. The first argument in the seq function needs to be lower than the minimum value, the second argument 
+#' needs to be higher than the highest value, both should probably be multiples of 10 or 20, 
+#' and the third argument should probably be 5 or 10.  Finally, it is good to have the first and second arguments straddle zero. 
 #' @param flux logical if TRUE, plots flux results, if FALSE plots concentration
 #' @param printTitle logical if TRUE, includes title
 #' @param cex.main numeric title font size

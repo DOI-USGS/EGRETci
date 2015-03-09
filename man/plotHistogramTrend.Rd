@@ -15,7 +15,10 @@ plotHistogramTrend(eBoot, caseSetUp, eList, xSeq = seq(-100, 100, 10),
 
 \item{eList}{named list}
 
-\item{xSeq}{vector}
+\item{xSeq}{vector defaults to seq(-100,100,10). It is recommended to try the default
+first. The first argument in the seq function needs to be lower than the minimum value, the second argument
+needs to be higher than the highest value, both should probably be multiples of 10 or 20,
+and the third argument should probably be 5 or 10.  Finally, it is good to have the first and second arguments straddle zero.}
 
 \item{flux}{logical if TRUE, plots flux results, if FALSE plots concentration}
 

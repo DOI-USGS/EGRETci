@@ -2,15 +2,16 @@
 % Please edit documentation in R/plotCIs.R
 \name{plotConcHistBoot}
 \alias{plotConcHistBoot}
-\title{plotConcHistBoot}
+\title{Graph of annual concentration, flow normalized concentration,
+and confidence bands for flow normalized concentrations}
 \usage{
 plotConcHistBoot(eList, CIAnnualResults, plotFlowNorm = TRUE,
   col.pred = "green", printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
-\item{eList}{named list}
+\item{eList}{named list from EGRET package after running modelEstimation}
 
-\item{CIAnnualResults}{data frame from ciBands (needs nBoot, probs, and blockLength attributes)}
+\item{CIAnnualResults}{data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)}
 
 \item{plotFlowNorm}{logical}
 
@@ -23,7 +24,13 @@ plotConcHistBoot(eList, CIAnnualResults, plotFlowNorm = TRUE,
 \item{\dots}{graphical parameters}
 }
 \description{
-plotConcHistBoot
+Uses the output of modelEstimation in the EGRET package (results in the named
+list eList), and the data frame CIAnnualResults (produced by EGRETci package
+using scripts described in the vignette) to produce a graph of annual
+concentration, flow normalized concentration, and confidence bands for
+flow-normalized concentrations.  In addition to the arguments listed below,
+it will accept any additional arguments that are listed for the EGRET function
+plotConcHist.
 }
 \examples{
 library(EGRET)

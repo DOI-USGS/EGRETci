@@ -29,14 +29,18 @@
 #' @keywords water-quality graphics streamflow statistics 
 NULL
 
-#' Interactive setup for EGRETci
+#' Interactive setup for running wBT, the WRTDS Bootstrap Test
 #'
-#' Walks user through the set-up for a trend analysis
+#' Walks user through the set-up for the WRTDS Bootstrap Test.  Establishes 
+#' start and end year for the test period.  Sets the minimum number of 
+#' bootstrap replicates to be run, the maximum number of bootstrap replicates 
+#' to be run, and the block length (in days) for the block bootstrapping.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @keywords WRTDS flow
-#' @return condition data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
+#' @return caseSetUp data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
 #' @export
+#' @seealso \code{\link{setForBoot}}, \code{\link{wBT}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -114,19 +118,23 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
   message("Saved to: ",getwd(),"/",fullName)
 }
 
-#' Run EGRETci bootstrap
+#' Set up information prior to running wBT (WRTDS bootstrap test)
 #'
-#' Run EGRETci bootstrap
+#' Runs the WBT for a given data set to evaluate the significance level and 
+#' confidence intervals for the trends between two specified years.  The trends 
+#' evaluated are trends in flow normalized concentration and flow normalized flux.  
+#' Function produces text outputs and a named list (eBoot) that contains all of the 
+#' relevant outputs.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param caseSetUp data frame
-#' @param prob vector of probabilities
 #' @param saveOutput logical
 #' @param fileName character
-#' @return eBoot
+#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @import EGRET
 #' @importFrom binom binom.bayes
 #' @export
+#' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -137,13 +145,14 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975),
               saveOutput=TRUE, fileName="temp.txt"){
 	
   localINFO <- eList$INFO
 	localDaily <- eList$Daily
 	localSample <- eList$Sample
 	
+  prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
+  
   words <- function(z){
     out <- if(z) "Reject Ho" else "Do Not Reject Ho"
     return(out)	
@@ -305,7 +314,7 @@ wBT<-function(eList,caseSetUp,
 
   cat("\n Likelihood that Flow Normalized Flux is trending up =",format(likeFUp,digits=3)," is trending down=",format(likeFDown,digits=3))			
   
-bootOut<-data.frame(rejectC,
+  bootOut<-data.frame(rejectC,
                       pValC,
                       estC,
                       lowC,upC,

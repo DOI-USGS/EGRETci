@@ -2,27 +2,28 @@
 % Please edit documentation in R/wBTCode.R
 \name{wBT}
 \alias{wBT}
-\title{Run EGRETci bootstrap}
+\title{Set up information prior to running wBT (WRTDS bootstrap test)}
 \usage{
-wBT(eList, caseSetUp, prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95,
-  0.975), saveOutput = TRUE, fileName = "temp.txt")
+wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt")
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
 
 \item{caseSetUp}{data frame}
 
-\item{prob}{vector of probabilities}
-
 \item{saveOutput}{logical}
 
 \item{fileName}{character}
 }
 \value{
-eBoot
+eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 }
 \description{
-Run EGRETci bootstrap
+Runs the WBT for a given data set to evaluate the significance level and
+confidence intervals for the trends between two specified years.  The trends
+evaluated are trends in flow normalized concentration and flow normalized flux.
+Function produces text outputs and a named list (eBoot) that contains all of the
+relevant outputs.
 }
 \examples{
 library(EGRET)
@@ -33,5 +34,8 @@ eList <- setPA(eList)
 eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp)
 }
+}
+\seealso{
+trendSetUp, setForBoot
 }
 

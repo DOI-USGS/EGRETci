@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{trendSetUp}
 \alias{trendSetUp}
-\title{Interactive setup for EGRETci}
+\title{Interactive setup for running wBT, the WRTDS Bootstrap Test}
 \usage{
 trendSetUp(eList)
 }
@@ -13,7 +13,10 @@ trendSetUp(eList)
 condition data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
 }
 \description{
-Walks user through the set-up for a trend analysis
+Walks user through the set-up for the WRTDS Bootstrap Test.  Establishes
+start and end year for the test period.  Sets the minimum number of
+bootstrap replicates to be run, the maximum number of bootstrap replicates
+to be run, and the block length (in days) for the block bootstrapping.
 }
 \examples{
 library(EGRET)

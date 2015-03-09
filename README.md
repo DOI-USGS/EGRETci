@@ -16,12 +16,9 @@ Package Installation
 To install the `EGRETci` package you need to be using R 3.0 or greater. Then use the following command:
 
 ```R
-	library(devtools)
-	install_github("ldecicco-USGS/EGRETci")
+	install.packages("EGRETci", repos=c("http://owi.usgs.gov/R",
+        "http://cran.us.r-project.org"))
 ```
-
-
-
 
  [
    ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)

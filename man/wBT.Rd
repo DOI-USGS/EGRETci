@@ -36,6 +36,6 @@ eBoot <- wBT(eList,caseSetUp)
 }
 }
 \seealso{
-trendSetUp, setForBoot
+\code{\link{trendSetUp}}, \code{\link{setForBoot}}
 }
 

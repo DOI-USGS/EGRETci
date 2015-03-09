@@ -37,6 +37,8 @@ NULL
 #' to be run, and the block length (in days) for the block bootstrapping.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param \dots  additional arguments to bring in to reduce interactive options 
+#' (year1, year2, nBoot, bootBreak, blockLength)
 #' @keywords WRTDS flow
 #' @return caseSetUp data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
 #' @export
@@ -47,29 +49,53 @@ NULL
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' }
-trendSetUp <- function(eList){
+trendSetUp <- function(eList, ...){
+  
+  matchReturn <- list(...)
+
   numSamples <- length(eList$Sample$Date)
   cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples],"\n")
-  message("Enter first water year of trend period")
-  year1 <- as.numeric(readline())
-  message("Enter last water year of trend period")
-  year2 <- as.numeric(readline())
+  
+  
+  if(!is.null(matchReturn$year1)){
+    year1 <- matchReturn$year1
+  } else {
+    message("Enter first water year of trend period")
+    year1 <- as.numeric(readline())
+  }
+  if(!is.null(matchReturn$year2)){
+    year2 <- matchReturn$year2
+  } else {
+    message("Enter last water year of trend period")
+    year2 <- as.numeric(readline())
+  }
+  
   yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
   yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
-#   nBoot <- 100  # if you want to make this flexible you can uncomment the next two lines
-  message("Enter nBoot the largest number of boot replicates allowed, typically 100")
-  nBoot <- as.numeric(readline())
-  cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
-  message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
-  bootBreak <- as.numeric(readline())
+  
+  if(!is.null(matchReturn$nBoot)){
+    nBoot <- as.numeric(matchReturn$nBoot)
+  } else {
+    message("Enter nBoot the largest number of boot replicates allowed, typically 100")
+    nBoot <- as.numeric(readline())
+    cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+  }
+  
+  if(!is.null(matchReturn$bootBreak)){
+    bootBreak <- as.numeric(matchReturn$bootBreak)
+  } else {
+    message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
+    bootBreak <- as.numeric(readline())
+  }
   bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
-  message("Enter blockLength, in days, typically 200 is a good choice")
-  blockLength <- as.numeric(readline())
-#   confStop <- 0.7  # testing suggests that confStop = 0.7 is good
-  # it is the confidence level required when checking to see if we can be confident that
-  #  p is really below 0.1 or really above 0.1
-#   message("Enter confidence interval for stopping, confStop, testing suggests that 0.7 is good")
-#   confStop <- as.numeric(readline())
+  
+  if(!is.null(matchReturn$blockLength)){
+    blockLength <- as.numeric(matchReturn$blockLength)
+  } else {
+    message("Enter blockLength, in days, typically 200 is a good choice")
+    blockLength <- as.numeric(readline())
+  }
+  
   confStop <- 0.7
   calStart <- yearData1 - 1
   countConcReject <- 0

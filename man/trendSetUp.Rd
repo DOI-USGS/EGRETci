@@ -4,13 +4,16 @@
 \alias{trendSetUp}
 \title{Interactive setup for running wBT, the WRTDS Bootstrap Test}
 \usage{
-trendSetUp(eList)
+trendSetUp(eList, ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
+
+\item{\dots}{additional arguments to bring in to reduce interactive options
+(year1, year2, nBoot, bootBreak, blockLength)}
 }
 \value{
-condition data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
+caseSetUp data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
 }
 \description{
 Walks user through the set-up for the WRTDS Bootstrap Test.  Establishes
@@ -24,6 +27,9 @@ eList <- Choptank_eList
 \dontrun{
 caseSetUp <- trendSetUp(eList)
 }
+}
+\seealso{
+\code{\link{setForBoot}}, \code{\link{wBT}}
 }
 \keyword{WRTDS}
 \keyword{flow}

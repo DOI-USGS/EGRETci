@@ -28,3 +28,13 @@ NULL
 #' @docType data
 #' @keywords water quality data
 NULL
+
+#' Example CIAnnualResults
+#'
+#' Example data representing data from the Choptank River at Greensboro, MD,  USGS data
+#' Data is a a data frame returned from ciCalculations.
+#'
+#' @name Choptank_CIAnnualResults
+#' @docType data
+#' @keywords water quality data
+NULL

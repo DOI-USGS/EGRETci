@@ -139,10 +139,16 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 wBT<-function(eList,caseSetUp, 
               prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975),
               saveOutput=TRUE, fileName="temp.txt"){
-	localINFO <- eList$INFO
+	
+  localINFO <- eList$INFO
 	localDaily <- eList$Daily
 	localSample <- eList$Sample
 	
+  words <- function(z){
+    out <- if(z) "Reject Ho" else "Do Not Reject Ho"
+    return(out)	
+  }
+  
 	bootOut <- as.data.frame(matrix(ncol=25,nrow=1))
   colnames(bootOut) <- c("rejectC","pValC","estC","lowC","upC",
                          "lowC50","upC50","lowC95","upC95","likeCUp",
@@ -612,17 +618,37 @@ blockSample <- function(localSample, blockLength){
   return(newSample)
 }
 
-
+#' wordLike
+#'
+#' wordLike
+#'
+#' @param likeList list
+#' @return character vector for [1] Upward trend in concentration, 
+#' [2] Downward trend in concentration, [3] Upward trend in flux,
+#' [4] Downward trend in flux
+#' @export
+#' @examples
+#' likeList <- c(0.01, 0.5, 0.55, 0.99)
+#' Trends <- wordLike(likeList)
 wordLike <- function(likeList){
-	firstPart <- c("Upward trend in concentration is","Downward trend in concentration is","Upward trend in flux is","Downward trend in flux is")
-	secondPart <- c("highly unlikely","very unlikely","unlikely","about as likely as not","likely","very likely","highly likely")
+	firstPart <- c("Upward trend in concentration is",
+                 "Downward trend in concentration is",
+                 "Upward trend in flux is",
+                 "Downward trend in flux is")
+  
+	secondPart <- c("highly unlikely",
+                  "very unlikely",
+                  "unlikely",
+                  "about as likely as not",
+                  "likely",
+                  "very likely",
+                  "highly likely")
+  
 	breaks<-c(0,0.05,0.1,0.33,0.66,0.9,0.95,1)
+  
 	levelLike <- cut(likeList,breaks=breaks,labels=FALSE)
-	wordLikeFour <- paste(firstPart,secondPart[levelLike],sep=" ")
+	wordLikeFour <- paste(firstPart,secondPart[levelLike])
 	return(wordLikeFour)
 }
 
-words <- function(z){
-	out <- if(z) "Reject Ho" else "Do Not Reject Ho"
-	return(out)	
-}
+

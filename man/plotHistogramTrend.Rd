@@ -4,13 +4,16 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eBoot, caseSetUp, xSeq = seq(-100, 100, 10), flux = TRUE,
-  printTitle = TRUE, cex.main = 1.1, col.fill = "grey", ...)
+plotHistogramTrend(eBoot, caseSetUp, eList, xSeq = seq(-100, 100, 10),
+  flux = TRUE, printTitle = TRUE, cex.main = 1.1, col.fill = "grey",
+  ...)
 }
 \arguments{
 \item{eBoot}{named list}
 
 \item{caseSetUp}{data frame}
+
+\item{eList}{named list}
 
 \item{xSeq}{vector}
 
@@ -21,24 +24,28 @@ plotHistogramTrend(eBoot, caseSetUp, xSeq = seq(-100, 100, 10), flux = TRUE,
 \item{cex.main}{numeric title font size}
 
 \item{col.fill}{character fill color}
+
+\item{\dots}{base R graphical parameters that can be passed to the hist function}
 }
 \description{
 plotHistogramTrend
 }
 \examples{
-eBoot <- Choptank_eBoot
-caseSetUp <- Choptank_caseSetUp
-plotHistogramTrend(eBoot, caseSetUp, flux=FALSE)
-
-\dontrun{
 library(EGRET)
 eList <- Choptank_eList
+eBoot <- Choptank_eBoot
+caseSetUp <- Choptank_caseSetUp
+plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE)
+
+\dontrun{
 caseSetUp <- trendSetUp(eList)
 eList <- setPA(eList)
 eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp)
-plotHistogramTrend(eBoot,caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
-plotHistogramTrend(eBoot,caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot, caseSetUp, eList,
+                   flux=FALSE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot, caseSetUp, eList,
+                   flux=TRUE, xSeq = seq(-20,60,5))
 }
 }
 

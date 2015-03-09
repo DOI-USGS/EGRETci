@@ -71,7 +71,8 @@ trendSetUp <- function(eList){
   countConcReject <- 0
   countFluxReject <- 0
   countFACReject <- 0
-  caseSetUp <- data.frame(year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop)
+  caseSetUp <- data.frame(year1,yearData1,year2,yearData2,
+                          numSamples,nBoot,bootBreak,blockLength,confStop)
   
   return(caseSetUp)
   

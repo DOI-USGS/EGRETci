@@ -252,6 +252,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param printTitle logical if TRUE, includes title
 #' @param cex.main numeric title font size
 #' @param col.fill character fill color
+#' @param \dots base R graphical parameters that can be passed to the hist function
 #' @export
 #' @examples
 #' library(EGRET)
@@ -265,8 +266,10 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' eList <- setPA(eList)
 #' eList <- setForBoot(eList)
 #' eBoot <- wBT(eList,caseSetUp)
-#' plotHistogramTrend(eBoot,caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
-#' plotHistogramTrend(eBoot,caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
+#' plotHistogramTrend(eBoot, caseSetUp, eList, 
+#'                    flux=FALSE, xSeq = seq(-20,60,5))
+#' plotHistogramTrend(eBoot, caseSetUp, eList, 
+#'                    flux=TRUE, xSeq = seq(-20,60,5))
 #' }
 plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), flux=TRUE, 
                            printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
@@ -301,3 +304,57 @@ plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), 
   axis(4, tcl=0.5, labels = FALSE)
 }
   
+#' ciCalculations
+#'
+#' Interactive function to calculate WRTDS confidence bands
+#'
+#' @param eList named list
+#' @param \dots optionally include nBoot, blockLength, or widthCI
+#' @export
+#' @examples
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' \dontrun{
+#' CIAnnualResults <- ciCalculations(eList)
+#' }
+ciCalculations <- function (eList,...){
+  
+  matchReturn <- list(...)
+  
+  if(!is.null(matchReturn$nBoot)){
+    nBoot <- matchReturn$nBoot
+  } else {
+    message("Enter nBoot the largest number of boot replicates allowed, typically 100")
+    nBoot <- as.numeric(readline())
+    cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+  }
+  
+  if(!is.null(matchReturn$blockLength)){
+    blockLength <- matchReturn$blockLength
+  } else {
+    message("Enter blockLength, in days, typically 200 is a good choice")
+    blockLength <- as.numeric(readline())
+  }
+  
+  if(!is.null(matchReturn$widthCI)){
+    widthCI <- matchReturn$widthCI
+  } else {
+    message("Enter confidence interval, for example 90 represents a 90% confidence interval,")
+    message("the low and high returns are 5 and 95 % respectively")
+    widthCI <-  as.numeric(readline())
+  }
+  
+  ciLower <- (50-(widthCI/2))/100
+  ciUpper <- (50+(widthCI/2))/100
+  probs <- c(ciLower,ciUpper)
+  
+  repAnnualResults <- vector(mode = "list", length = nBoot)
+  for(n in 1:nBoot){
+    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+  }
+  
+  CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
+  
+  return(CIAnnualResults)
+
+}

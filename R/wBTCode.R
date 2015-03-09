@@ -45,7 +45,7 @@ NULL
 #' }
 trendSetUp <- function(eList){
   numSamples <- length(eList$Sample$Date)
-  cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples])
+  cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples],"\n")
   message("Enter first water year of trend period")
   year1 <- as.numeric(readline())
   message("Enter last water year of trend period")

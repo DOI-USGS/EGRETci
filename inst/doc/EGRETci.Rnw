@@ -19,7 +19,6 @@
 \usepackage{parskip}
 \usepackage{threeparttable}
 \usepackage{pdflscape}
-\usepackage{animate}
 \renewcommand\Affilfont{\itshape\small}
 
 \usepackage{csquotes}

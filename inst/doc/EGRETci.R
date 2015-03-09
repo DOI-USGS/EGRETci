@@ -44,24 +44,27 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 ## ----histExample, echo=TRUE, eval=TRUE, fig.cap="Concentration histogram"----
 library(EGRET)
 library(EGRETci)
+
 # Example data included in package:
-eList <- Choptank_eList
+eList <- Choptank_eList # Example data from EGRET package
 eBoot <- Choptank_eBoot
 caseSetUp <- Choptank_caseSetUp
 
 #Concentration:
-plotHistogramTrend(eBoot, caseSetUp, flux=FALSE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot, caseSetUp, eList, 
+                   flux=FALSE, xSeq = seq(-20,60,5))
 
 
 ## ----histExampleFlux, echo=TRUE, eval=TRUE, fig.cap="Flux histogram"----
 #Flux
-plotHistogramTrend(eBoot, caseSetUp, flux=TRUE, xSeq = seq(-20,60,5))
+plotHistogramTrend(eBoot, caseSetUp, eList,
+                   flux=TRUE, xSeq = seq(-20,60,5))
 
 ## ----histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example",  fig.width=7, fig.height=4----
 par(mfrow=c(1,2))
-plotHistogramTrend(eBoot, caseSetUp, flux=FALSE,
+plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07))
-plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
+plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07))
 
 ## ----workflowBaseR, echo=TRUE, eval=FALSE-----------------
@@ -70,20 +73,8 @@ plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
 #  
 #  eList <- Choptank_eList
 #  
-#  nBoot <- 100
-#  blockLength <- 200
+#  CIAnnualResults <- ciCalculations(eList)
 #  
-#  widthCI <- 90
-#  ciLower <- (50-(widthCI/2))/100
-#  ciUpper <- (50+(widthCI/2))/100
-#  probs <- c(ciLower,ciUpper)
-#  
-#  repAnnualResults <- vector(mode = "list", length = nBoot)
-#  for(n in 1:nBoot){
-#      repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
-#  }
-#  
-#  CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
 #  save(CIAnnualResults, file="CIAnnualResults.RData")
 #  
 
@@ -121,9 +112,7 @@ plotHistogramTrend(eBoot, caseSetUp, flux=TRUE,
 ## ----plots1, echo=TRUE,eval=TRUE, fig.cap="plotConcHistBoot"----
 #Load package data:
 eList <- Choptank_eList
-repAnnualResults <- repAnnualResults
-
-CIAnnualResults <- ciBands(eList, repAnnualResults, probs=c(0.05,0.95))
+CIAnnualResults <- Choptank_CIAnnualResults
 
 plotConcHistBoot(eList, CIAnnualResults)
 

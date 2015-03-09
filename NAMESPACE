@@ -3,6 +3,7 @@
 export(blockSample)
 export(bootAnnual)
 export(ciBands)
+export(ciCalculations)
 export(estSliceSurfacesSimpleAlt)
 export(makeCombo)
 export(makeTwoYearsResults)

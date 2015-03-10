@@ -36,18 +36,30 @@ NULL
 #' bootstrap replicates to be run, the maximum number of bootstrap replicates 
 #' to be run, and the block length (in days) for the block bootstrapping.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package.
 #' @param \dots  additional arguments to bring in to reduce interactive options 
 #' (year1, year2, nBoot, bootBreak, blockLength)
 #' @keywords WRTDS flow
-#' @return caseSetUp data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
+#' @return caseSetUp data frame with columns year1, yearData1, year2, yearData2, 
+#' numSamples, nBoot, bootBreak, blockLength, confStop. These correspond to:
+#' \tabular{ll}{
+#' Column Name \tab Manuscript Variable\cr
+#' year1 \tab \eqn{y_s} \cr
+#' year2 \tab \eqn{y_e} \cr
+#' nBoot \tab \eqn{M_max} \cr
+#' bootBreak \tab \eqn{M_min} \cr
+#' blockLength \tab \eqn{B} \cr
+#' }
 #' @export
 #' @seealso \code{\link{setForBoot}}, \code{\link{wBT}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' \dontrun{
+#' # Completely interactive:
 #' caseSetUp <- trendSetUp(eList)
+#' # Semi-interactive:
+#' caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
 #' }
 trendSetUp <- function(eList, ...){
   
@@ -97,10 +109,7 @@ trendSetUp <- function(eList, ...){
   }
   
   confStop <- 0.7
-  calStart <- yearData1 - 1
-  countConcReject <- 0
-  countFluxReject <- 0
-  countFACReject <- 0
+
   caseSetUp <- data.frame(year1,yearData1,year2,yearData2,
                           numSamples,nBoot,bootBreak,blockLength,confStop)
   

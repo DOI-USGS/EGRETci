@@ -7,13 +7,22 @@
 trendSetUp(eList, ...)
 }
 \arguments{
-\item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package.}
 
 \item{\dots}{additional arguments to bring in to reduce interactive options
 (year1, year2, nBoot, bootBreak, blockLength)}
 }
 \value{
-caseSetUp data frame with year1,yearData1,year2,yearData2,numSamples,nBoot,bootBreak,blockLength,confStop
+caseSetUp data frame with columns year1, yearData1, year2, yearData2,
+numSamples, nBoot, bootBreak, blockLength, confStop. These correspond to:
+\tabular{ll}{
+Column Name \tab Manuscript Variable\cr
+year1 \tab \eqn{y_s} \cr
+year2 \tab \eqn{y_e} \cr
+nBoot \tab \eqn{M_max} \cr
+bootBreak \tab \eqn{M_min} \cr
+blockLength \tab \eqn{B} \cr
+}
 }
 \description{
 Walks user through the set-up for the WRTDS Bootstrap Test.  Establishes
@@ -25,7 +34,10 @@ to be run, and the block length (in days) for the block bootstrapping.
 library(EGRET)
 eList <- Choptank_eList
 \dontrun{
+# Completely interactive:
 caseSetUp <- trendSetUp(eList)
+# Semi-interactive:
+caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
 }
 }
 \seealso{

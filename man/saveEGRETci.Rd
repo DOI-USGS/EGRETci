@@ -9,9 +9,9 @@ saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{eBoot}{named list}
+\item{eBoot}{named list. Returned from \code{\link{wBT}}.}
 
-\item{caseSetUp}{dataframe}
+\item{caseSetUp}{dataframe. Returned from \code{\link{trendSetUp}}.}
 
 \item{fileName}{string. If left blank (empty quotes), the function will interactively ask for a name to save.}
 }
@@ -28,5 +28,8 @@ eList <- setForBoot(eList)
 eBoot <- wBT(eList,caseSetUp)
 saveEGRETci(eList, eBoot, caseSetUp)
 }
+}
+\seealso{
+\code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
 }
 

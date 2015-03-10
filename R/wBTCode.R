@@ -122,10 +122,11 @@ trendSetUp <- function(eList, ...){
 #' Saves critical information in a EGRETci workflow
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param eBoot named list
-#' @param caseSetUp dataframe
+#' @param eBoot named list. Returned from \code{\link{wBT}}.
+#' @param caseSetUp dataframe. Returned from \code{\link{trendSetUp}}.
 #' @param fileName string. If left blank (empty quotes), the function will interactively ask for a name to save.
 #' @export
+#' @seealso \code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList

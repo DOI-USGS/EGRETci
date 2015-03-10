@@ -430,6 +430,7 @@ save(CIAnnualResults, file="CIAnnualResults.RData")
 
 @
 
+\clearpage
 
 Taking advantage of the foreach package to do parallel computing:
 
@@ -454,14 +455,14 @@ probs <- c(ciLower,ciUpper)
 nCores <- detectCores() - coreOut
 cl <- makeCluster(nCores)
 registerDoParallel(cl)
-repAnnualResults <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
+repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
    annualResults <- bootAnnual(eList, blockLength)  
 }
 stopCluster(cl)               
 
-# save(repAnnualResults, file="repAnnualResults.RData")
+# save(repAnnualResults, file="repAnnual.RData")
 
-CIAnnualResults <- ciBands(eList, repAnnualResults, probs)
+CIAnnualResults <- ciBands(eList, repAnnual, probs)
 save(CIAnnualResults, file="CIAnnualResults.RData")
 @
 
@@ -471,6 +472,7 @@ The following concentration and flux plots can then be generated from the CIAnnu
 <<plots1, echo=TRUE,eval=TRUE, fig.cap="plotConcHistBoot">>=
 #Load package data:
 eList <- Choptank_eList
+
 CIAnnualResults <- Choptank_CIAnnualResults
 
 plotConcHistBoot(eList, CIAnnualResults)
@@ -481,6 +483,7 @@ plotConcHistBoot(eList, CIAnnualResults)
 
 plotFluxHistBoot(eList, CIAnnualResults)
 @
+
 
 
 \end{document}

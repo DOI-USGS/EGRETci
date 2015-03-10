@@ -1,4 +1,4 @@
-## ----openLibrary, echo=FALSE, message=FALSE---------------
+## ----setup, include=FALSE---------------------------------
 library(xtable)
 options(continue=" ")
 options(width=60)
@@ -6,24 +6,8 @@ library(knitr)
 library(EGRET)
 library(EGRETci)
 
-## ----include=TRUE ,echo=FALSE,eval=TRUE-------------------
-opts_chunk$set(highlight=TRUE, tidy=TRUE, keep.space=TRUE, keep.blank.space=FALSE, keep.comment=TRUE, concordance=TRUE,tidy=FALSE,comment="")
 
-knit_hooks$set(inline = function(x) {
-   if (is.numeric(x)) round(x, 3)})
-knit_hooks$set(crop = hook_pdfcrop)
-
-bold.colHeaders <- function(x) {
-  x <- gsub("\\^(\\d)","$\\^\\1$",x)
-  x <- gsub("\\%","\\\\%",x)
-  x <- gsub("\\_"," ",x)
-  returnX <- paste("\\multicolumn{1}{c}{\\textbf{\\textsf{", x, "}}}", sep = "")
-}
-
-addSpace <- function(x) ifelse(x != "1", "[5pt]","")
-
-
-## ----workflowFlowHistory, echo=TRUE,eval=FALSE------------
+## ----eval=FALSE, echo=TRUE--------------------------------
 #  library(EGRET)
 #  library(EGRETci)
 #  eList <- Choptank_eList
@@ -40,8 +24,10 @@ addSpace <- function(x) ifelse(x != "1", "[5pt]","")
 #  
 #  #Interactive save output function:
 #  saveEGRETci(eList, eBoot)
+#  
+#  
 
-## ----histExample, echo=TRUE, eval=TRUE, fig.cap="Concentration histogram"----
+## ----, fig.height=7, fig.width=7--------------------------
 library(EGRET)
 library(EGRETci)
 
@@ -54,20 +40,19 @@ caseSetUp <- Choptank_caseSetUp
 plotHistogramTrend(eBoot, caseSetUp, eList, 
                    flux=FALSE, xSeq = seq(-20,60,5))
 
-
-## ----histExampleFlux, echo=TRUE, eval=TRUE, fig.cap="Flux histogram"----
 #Flux
 plotHistogramTrend(eBoot, caseSetUp, eList,
                    flux=TRUE, xSeq = seq(-20,60,5))
 
-## ----histExampleCombo, echo=TRUE, eval=TRUE, fig.cap="Combo example",  fig.width=7, fig.height=4----
+
+## ----, histExampleCombo, fig.width=7, fig.height=4--------
 par(mfrow=c(1,2))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07))
 
-## ----workflowBaseR, echo=TRUE, eval=FALSE-----------------
+## ----, eval=FALSE-----------------------------------------
 #  library(EGRET)
 #  library(EGRETci)
 #  
@@ -77,8 +62,9 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
 #  
 #  save(CIAnnualResults, file="CIAnnualResults.RData")
 #  
+#  
 
-## ----workflowFlowHistoryBands, echo=TRUE,eval=FALSE-------
+## ----, eval=FALSE-----------------------------------------
 #  library(foreach)
 #  library(doParallel)
 #  library(iterators)
@@ -108,16 +94,15 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
 #  
 #  CIAnnualResults <- ciBands(eList, repAnnual, probs)
 #  save(CIAnnualResults, file="CIAnnualResults.RData")
+#  
 
-## ----plots1, echo=TRUE,eval=TRUE, fig.cap="plotConcHistBoot"----
-#Load package data:
+## ----, fig.height=7---------------------------------------
 eList <- Choptank_eList
 
 CIAnnualResults <- Choptank_CIAnnualResults
 
 plotConcHistBoot(eList, CIAnnualResults)
 
-## ----plots2, echo=TRUE,eval=TRUE, fig.cap="plotFluxHistBoot"----
-
 plotFluxHistBoot(eList, CIAnnualResults)
+
 

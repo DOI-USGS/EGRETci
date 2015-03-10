@@ -7,7 +7,7 @@
 wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt")
 }
 \arguments{
-\item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{caseSetUp}{data frame}
 

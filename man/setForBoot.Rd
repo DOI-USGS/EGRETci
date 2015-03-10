@@ -8,7 +8,7 @@ setForBoot(eList, windowY = 7, windowQ = 2, windowS = 0.5,
   edgeAdjust = TRUE)
 }
 \arguments{
-\item{eList}{named list}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{windowY}{numeric}
 

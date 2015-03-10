@@ -7,7 +7,7 @@
 makeTwoYearsResults(eList, year1, year2)
 }
 \arguments{
-\item{eList}{named list}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{year1}{integer}
 

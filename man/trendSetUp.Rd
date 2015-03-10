@@ -7,7 +7,7 @@
 trendSetUp(eList, ...)
 }
 \arguments{
-\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package.}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{\dots}{additional arguments to bring in to reduce interactive options
 (year1, year2, nBoot, bootBreak, blockLength)}

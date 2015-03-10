@@ -36,7 +36,7 @@ NULL
 #' bootstrap replicates to be run, the maximum number of bootstrap replicates 
 #' to be run, and the block length (in days) for the block bootstrapping.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package.
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots  additional arguments to bring in to reduce interactive options 
 #' (year1, year2, nBoot, bootBreak, blockLength)
 #' @keywords WRTDS flow
@@ -121,7 +121,7 @@ trendSetUp <- function(eList, ...){
 #'
 #' Saves critical information in a EGRETci workflow
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list
 #' @param caseSetUp dataframe
 #' @param fileName string. If left blank (empty quotes), the function will interactively ask for a name to save.
@@ -161,7 +161,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' Function produces text outputs and a named list (eBoot) that contains all of the 
 #' relevant outputs.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param caseSetUp data frame
 #' @param saveOutput logical
 #' @param fileName character
@@ -397,7 +397,7 @@ wBT<-function(eList,caseSetUp,
 #'
 #' Creates surface slice for one year.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param year integer year
 #' @keywords WRTDS flow
 #' @import EGRET
@@ -555,7 +555,7 @@ makeCombo <- function (surfaces1,surfaces2) {
 #'
 #' makeTwoYearsResults
 #'
-#' @param eList named list
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param year1 integer
 #' @param year2 integer
 #' @keywords WRTDS flow
@@ -585,7 +585,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #'
 #' setForBoot
 #'
-#' @param eList named list
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param windowY numeric
 #' @param windowQ numeric
 #' @param windowS numeric

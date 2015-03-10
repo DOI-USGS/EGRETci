@@ -9,11 +9,11 @@ wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt")
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{caseSetUp}{data frame}
+\item{caseSetUp}{data frame. Returned from \code{\link{trendSetUp}}.}
 
-\item{saveOutput}{logical}
+\item{saveOutput}{logical. If \code{TRUE}, a text file will be saved in the working directory.}
 
-\item{fileName}{character}
+\item{fileName}{character. Name to save the output file if \code{saveOutput=TRUE}.}
 }
 \value{
 eBoot, a named list with bootOut,wordsOut,xConc,xFlux values

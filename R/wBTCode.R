@@ -163,9 +163,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' relevant outputs.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param caseSetUp data frame
-#' @param saveOutput logical
-#' @param fileName character
+#' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
+#' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
+#' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @import EGRET
 #' @importFrom binom binom.bayes

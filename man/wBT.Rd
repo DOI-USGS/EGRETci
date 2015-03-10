@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{wBT}
 \alias{wBT}
-\title{Set up information prior to running wBT (WRTDS bootstrap test)}
+\title{Run the WBT (WRTDS Bootstrap Test)}
 \usage{
 wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt")
 }

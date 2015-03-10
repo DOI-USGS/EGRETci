@@ -144,7 +144,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
   message("Saved to: ",getwd(),"/",fullName)
 }
 
-#' Set up information prior to running wBT (WRTDS bootstrap test)
+#' Run the WBT (WRTDS Bootstrap Test)
 #'
 #' Runs the WBT for a given data set to evaluate the significance level and 
 #' confidence intervals for the trends between two specified years.  The trends 

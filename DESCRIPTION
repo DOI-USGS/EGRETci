@@ -13,7 +13,8 @@ Depends:
     R (>= 3.0)
 Imports:
     EGRET (>= 2.1.1),
-    binom
+    binom,
+    lubridate
 Suggests:
     xtable,
     knitr,

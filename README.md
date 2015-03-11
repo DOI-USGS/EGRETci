@@ -20,6 +20,9 @@ To install the `EGRETci` package you need to be using R 3.0 or greater. Then use
         "http://cran.us.r-project.org"))
 ```
 
+Linux and Mac: [![travis](https://api.travis-ci.org/ldecicco-USGS/EGRETci.svg?branch=master)](https://travis-ci.org/ldecicco-USGS/EGRETci)
+
+
  [
    ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
  ](http://creativecommons.org/publicdomain/zero/1.0/)

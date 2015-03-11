@@ -9,13 +9,13 @@ blockSample(localSample, blockLength)
 \arguments{
 \item{localSample}{Sample data frame}
 
-\item{blockLength}{integer}
+\item{blockLength}{integer size of subset.}
 }
 \value{
 surfaces matrix
 }
 \description{
-Get blockSample
+Get a subset of the Sample data frame based on the user-specified blockLength.
 }
 \examples{
 library(EGRET)

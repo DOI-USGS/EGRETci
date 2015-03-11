@@ -13,7 +13,7 @@ saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 
 \item{caseSetUp}{dataframe. Returned from \code{\link{trendSetUp}}.}
 
-\item{fileName}{string. If left blank (empty quotes), the function will interactively ask for a name to save.}
+\item{fileName}{character. If left blank (empty quotes), the function will interactively ask for a name to save.}
 }
 \description{
 Saves critical information in a EGRETci workflow

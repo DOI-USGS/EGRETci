@@ -124,7 +124,7 @@ trendSetUp <- function(eList, ...){
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
 #' @param caseSetUp dataframe. Returned from \code{\link{trendSetUp}}.
-#' @param fileName string. If left blank (empty quotes), the function will interactively ask for a name to save.
+#' @param fileName character. If left blank (empty quotes), the function will interactively ask for a name to save.
 #' @export
 #' @seealso \code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
 #' @examples
@@ -399,7 +399,7 @@ wBT<-function(eList,caseSetUp,
 #' Creates surface slice for one year.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param year integer year
+#' @param year integer year to perform WRTDS analysis
 #' @keywords WRTDS flow
 #' @import EGRET
 #' @return surfaces matrix
@@ -472,9 +472,11 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 
 #' paVector
 #'
-#' Creates paVector
+#' Creates paVector. This is the index of which years are in the proper period of record.
 #'
-#' @param year integer year
+#' @param year integer year to look for. If the period of analysis is a water 
+#' year (\code{setPA(paStart = 10, paLong = 12)}), the year corresponds to the calendar year of that water year for Jan-Sept.
+#' If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the starting month.
 #' @param paStart integer starting month for period of analysis
 #' @param paLong integer length of period of analysis
 #' @param vectorYear numeric vector of years
@@ -485,7 +487,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 #' year <- 2000
 #' paStart <- 10
 #' paLong <- 12
-#' vectorYear <- seq(1985,2005,5)
+#' vectorYear <- c(seq(1999,2001,1),seq(1999,2001,1))
 #' output <- paVector(year, paStart, paLong, vectorYear)
 paVector <- function(year,paStart,paLong, vectorYear){
   
@@ -533,10 +535,10 @@ paVector <- function(year,paStart,paLong, vectorYear){
 
 #' makeCombo
 #'
-#' Combine surface slices
+#' Combine surface slices.
 #'
-#' @param surfaces1 vector
-#' @param surfaces2 vector
+#' @param surfaces1 vector returned from \code{\link{estSliceSurfacesSimpleAlt}}
+#' @param surfaces2 vector returned from \code{\link{estSliceSurfacesSimpleAlt}}
 #' @keywords WRTDS flow
 #' @return surfaces matrix
 #' @export
@@ -557,8 +559,8 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' makeTwoYearsResults
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param year1 integer
-#' @param year2 integer
+#' @param year1 integer. Initial year of a 2-year trend comparison.
+#' @param year2 integer. Second year of a 2-year trend comparison.
 #' @keywords WRTDS flow
 #' @import EGRET
 #' @return surfaces matrix
@@ -587,10 +589,10 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' setForBoot
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param windowY numeric
-#' @param windowQ numeric
-#' @param windowS numeric
-#' @param edgeAdjust logical
+#' @param windowY numeric specifying the half-window width in the time dimension, in units of years, default is 7
+#' @param windowQ numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2
+#' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
+#' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record.  
 #' @keywords WRTDS flow
 #' @return surfaces matrix
 #' @export
@@ -599,7 +601,8 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' eList <- Choptank_eList
 #' 
 #' bootSetUp <- setForBoot(eList)
-setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=TRUE) {
+setForBoot<-function (eList,windowY = 7, windowQ = 2, 
+                      windowS = 0.5, edgeAdjust=TRUE) {
 #  does the setup functions usually done by modelEstimation
 	localINFO <- eList$INFO
 	localDaily <- eList$Daily
@@ -630,10 +633,10 @@ setForBoot<-function (eList,windowY = 7, windowQ = 2, windowS = 0.5, edgeAdjust=
 
 #' blockSample
 #'
-#' Get blockSample
+#' Get a subset of the Sample data frame based on the user-specified blockLength.
 #'
 #' @param localSample Sample data frame
-#' @param blockLength integer
+#' @param blockLength integer size of subset.
 #' @keywords WRTDS flow
 #' @return surfaces matrix
 #' @export

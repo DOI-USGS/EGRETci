@@ -10,13 +10,13 @@ setForBoot(eList, windowY = 7, windowQ = 2, windowS = 0.5,
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{windowY}{numeric}
+\item{windowY}{numeric specifying the half-window width in the time dimension, in units of years, default is 7}
 
-\item{windowQ}{numeric}
+\item{windowQ}{numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2}
 
-\item{windowS}{numeric}
+\item{windowS}{numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5}
 
-\item{edgeAdjust}{logical}
+\item{edgeAdjust}{logical specifying whether to use the modified method for calculating the windows at the edge of the record.}
 }
 \value{
 surfaces matrix

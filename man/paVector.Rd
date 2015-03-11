@@ -7,7 +7,9 @@
 paVector(year, paStart, paLong, vectorYear)
 }
 \arguments{
-\item{year}{integer year}
+\item{year}{integer year to look for. If the period of analysis is a water
+year (\code{setPA(paStart = 10, paLong = 12)}), the year corresponds to the calendar year of that water year for Jan-Sept.
+If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the starting month.}
 
 \item{paStart}{integer starting month for period of analysis}
 
@@ -19,13 +21,13 @@ paVector(year, paStart, paLong, vectorYear)
 surfaces matrix
 }
 \description{
-Creates paVector
+Creates paVector. This is the index of which years are in the proper period of record.
 }
 \examples{
 year <- 2000
 paStart <- 10
 paLong <- 12
-vectorYear <- seq(1985,2005,5)
+vectorYear <- c(seq(1999,2001,1),seq(1999,2001,1))
 output <- paVector(year, paStart, paLong, vectorYear)
 }
 \keyword{WRTDS}

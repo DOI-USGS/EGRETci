@@ -7,15 +7,15 @@
 makeCombo(surfaces1, surfaces2)
 }
 \arguments{
-\item{surfaces1}{vector}
+\item{surfaces1}{vector returned from \code{\link{estSliceSurfacesSimpleAlt}}}
 
-\item{surfaces2}{vector}
+\item{surfaces2}{vector returned from \code{\link{estSliceSurfacesSimpleAlt}}}
 }
 \value{
 surfaces matrix
 }
 \description{
-Combine surface slices
+Combine surface slices.
 }
 \examples{
 surfaces1 <- c(1,2,3)

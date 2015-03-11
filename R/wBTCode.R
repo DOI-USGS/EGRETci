@@ -568,11 +568,21 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' 
-#' twoResults <- makeTwoYearsResults(eList, 1985, 2005)
+#' twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
+#' 
+#' eList <- setPA(eList, paStart=11, paLong=3)
+#' 
+#' twoResultsWinter <- makeTwoYearsResults(eList, 1985, 2005)
+#' 
 makeTwoYearsResults <- function(eList,year1,year2){
 # note this thing only works if the pa is water year
+  paStart <- eList$INFO[,"paStart"]
+  paLong <- eList$INFO[,"paLong"]
 	returnDaily <- EGRET::estDailyFromSurfaces(eList)
-	bootAnnRes<-EGRET::setupYears(localDaily=returnDaily)
+  
+	bootAnnRes<- EGRET::setupYears(localDaily=returnDaily, 
+                                 paStart=paStart, 
+                                 paLong=paLong)
 	AnnBase <- bootAnnRes[1,1]
 	index1 <- year1 - trunc(AnnBase) + 1
 	index2 <- year2 - trunc(AnnBase) + 1
@@ -585,7 +595,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 
 #' setForBoot
 #'
-#' setForBoot
+#' Adds window parameters to INFO file in eList.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param windowY numeric specifying the half-window width in the time dimension, in units of years, default is 7

@@ -9,13 +9,13 @@ paVector(year, paStart, paLong, vectorYear)
 \arguments{
 \item{year}{integer year to look for. If the period of analysis is a water
 year (\code{setPA(paStart = 10, paLong = 12)}), the year corresponds to the calendar year of that water year for Jan-Sept.
-If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the starting month.}
+If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the ending month.}
 
 \item{paStart}{integer starting month for period of analysis}
 
 \item{paLong}{integer length of period of analysis}
 
-\item{vectorYear}{numeric vector of years}
+\item{vectorYear}{numeric vector of decimal years}
 }
 \value{
 surfaces matrix
@@ -27,8 +27,21 @@ Creates paVector. This is the index of which years are in the proper period of r
 year <- 2000
 paStart <- 10
 paLong <- 12
-vectorYear <- c(seq(1999,2001,1),seq(1999,2001,1))
-output <- paVector(year, paStart, paLong, vectorYear)
+vectorYear <- c(seq(1999,2001,0.1))
+paIndexWaterYear <- paVector(year, paStart, paLong, vectorYear)
+requestedYears <- vectorYear[paIndexWaterYear]
+paStart <- 11
+paLong <- 3
+paIndexWinter <- paVector(year, paStart, paLong, vectorYear)
+requestedWinterYears <- vectorYear[paIndexWinter]
+paStart <- 6
+paLong <- 3
+paIndexSummer <- paVector(year, paStart, paLong, vectorYear)
+requestedSummerYears <- vectorYear[paIndexSummer]
+paStart <- 10
+paLong <- 3
+paIndexLate <- paVector(year, paStart, paLong, vectorYear)
+endOfYear <- vectorYear[paIndexLate]
 }
 \keyword{WRTDS}
 \keyword{flow}

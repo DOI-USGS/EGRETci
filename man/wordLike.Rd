@@ -15,7 +15,7 @@ character vector for [1] Upward trend in concentration,
 [4] Downward trend in flux
 }
 \description{
-wordLike
+Function called in \code{\link{wBT}} to convert numeric likelihood percentages to useful text.
 }
 \examples{
 likeList <- c(0.01, 0.5, 0.55, 0.99)

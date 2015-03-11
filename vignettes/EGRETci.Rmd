@@ -14,7 +14,7 @@ library(EGRETci)
 ```
 
 # Introduction to EGRET Confidence Intervals
-By Robert M. Hirsch, Stacey A. Archfield, Laura A. De Cicco
+By Robert M. Hirsch, Laura A. De Cicco
 
 This package **EGRETci** is an early test version of the package that will encompass the various approaches to uncertainty estimation associated with trend analysis for the **EGRET** package.  The various functions included here are all discussed in the draft manuscript _A bootstrap method for estimating uncertainty of water quality trends_ by Hirsch, Archfield, and De Cicco (draft version of March 5, 2015).  The present version of the **EGRETci** package is designed for interactive use only, but later versions will describe how batch workflows can be created.  Also, the current version can only do analysis of trends for water years, but later versions will allow it to evaluate any group of months (i.e. any 'Period of Analysis' to use the term in the EGRET package).  The **EGRETci** package is designed to carry out three specific types of tasks.
     

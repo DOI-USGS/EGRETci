@@ -7,7 +7,8 @@
 estSliceSurfacesSimpleAlt(eList, year)
 }
 \arguments{
-\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package,
+after running either \code{\link[EGRET]{modelEstimation}} or \code{\link{setForBoot}}.}
 
 \item{year}{integer year to perform WRTDS analysis}
 }

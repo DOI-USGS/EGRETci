@@ -22,7 +22,7 @@ setForBoot(eList, windowY = 7, windowQ = 2, windowS = 0.5,
 surfaces matrix
 }
 \description{
-setForBoot
+Adds window parameters to INFO file in eList.
 }
 \examples{
 library(EGRET)

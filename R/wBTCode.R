@@ -398,7 +398,8 @@ wBT<-function(eList,caseSetUp,
 #'
 #' Creates surface slice for one year.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, 
+#' after running either \code{\link[EGRET]{modelEstimation}} or \code{\link{setForBoot}}.
 #' @param year integer year to perform WRTDS analysis
 #' @keywords WRTDS flow
 #' @import EGRET
@@ -437,28 +438,30 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   vectorYear <-seq(bottomYear,topYear,stepYear)
   surfaces<-array(NA,dim=c(14,length(vectorYear),3))
   
-  if(!is.null(localINFO$paStart) & !is.null(localINFO$paLong)){
-    vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
-    vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
-  } else {
-    # Water year
-    vectorIndex <- paVector(year,10,12,vectorYear)
-    vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
+  if(is.null(localINFO$paStart) | is.null(localINFO$paLong)){
+    # Default to water year
+    localINFO$paStart <- 10
+    localINFO$paLong <- 12
   }
+  
+  vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
+  # Tack on one data point on either side
+  vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
   
   vectorYear <- vectorYear[vectorIndex]
   nVectorYear<-length(vectorYear)
   estPtLogQ<-rep(vectorLogQ,nVectorYear)
   estPtYear<-rep(vectorYear,each=14)
   
-#  colToKeep <- c("ConcLow","ConcHigh","Uncen","DecYear","SinDY","CosDY","LogQ")
-#  cat("\ncolToKeep",colToKeep)
-#  localSampleMin <- localSample[,which(originalColumns %in% colToKeep)]
-#  cat("\ngot past localSampleMin")
   numDays <- localINFO$numDays
   DecLow <- localINFO$DecLow
   DecHigh <- localINFO$DecHigh
-  resultSurvReg <- EGRET::runSurvReg(estPtYear,estPtLogQ,numDays,DecLow,DecHigh, localSample,windowY,windowQ,windowS,minNumObs,minNumUncen,interactive=FALSE,edgeAdjust)
+  
+  resultSurvReg <- EGRET::runSurvReg(estPtYear,estPtLogQ,numDays,
+                                     DecLow,DecHigh, localSample,
+                                     windowY,windowQ,windowS,
+                                     minNumObs,minNumUncen,
+                                     interactive=FALSE,edgeAdjust)
   
   for(iQ in 1:14) {
     for(iY in 1:length(vectorIndex)){ 
@@ -476,59 +479,55 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 #'
 #' @param year integer year to look for. If the period of analysis is a water 
 #' year (\code{setPA(paStart = 10, paLong = 12)}), the year corresponds to the calendar year of that water year for Jan-Sept.
-#' If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the starting month.
+#' If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the ending month.
 #' @param paStart integer starting month for period of analysis
 #' @param paLong integer length of period of analysis
-#' @param vectorYear numeric vector of years
+#' @param vectorYear numeric vector of decimal years
 #' @keywords WRTDS flow
+#' @import lubridate
 #' @return surfaces matrix
 #' @export
 #' @examples
 #' year <- 2000
 #' paStart <- 10
 #' paLong <- 12
-#' vectorYear <- c(seq(1999,2001,1),seq(1999,2001,1))
-#' output <- paVector(year, paStart, paLong, vectorYear)
+#' vectorYear <- c(seq(1999,2001,0.1))
+#' paIndexWaterYear <- paVector(year, paStart, paLong, vectorYear)
+#' requestedYears <- vectorYear[paIndexWaterYear]
+#' paStart <- 11
+#' paLong <- 3
+#' paIndexWinter <- paVector(year, paStart, paLong, vectorYear)
+#' requestedWinterYears <- vectorYear[paIndexWinter]
+#' paStart <- 6
+#' paLong <- 3
+#' paIndexSummer <- paVector(year, paStart, paLong, vectorYear)
+#' requestedSummerYears <- vectorYear[paIndexSummer]
+#' paStart <- 10
+#' paLong <- 3
+#' paIndexLate <- paVector(year, paStart, paLong, vectorYear)
+#' endOfYear <- vectorYear[paIndexLate]
 paVector <- function(year,paStart,paLong, vectorYear){
   
-  nDaysInMonth <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-  
-  Jan1Lo <- as.POSIXct(paste(year, "-01-01 00:00:00",sep=""),format="%Y-%m-%d %H:%M:%S")
-  Jan1Hi <- as.POSIXct(paste(year+1, "-01-01 00:00:00",sep=""),format="%Y-%m-%d %H:%M:%S")
-  
-  if (paStart + paLong > 12){
-    # Crosses January      
-    Lo <- as.POSIXct(paste(year-1,"-", paStart,"-01 00:00:00",sep=""),format="%Y-%m-%d %H:%M:%S")
-    Hi <- as.POSIXct(paste(year,"-", (paStart+paLong-13),"-",nDaysInMonth[paStart+paLong-13], " 23:59:59",sep=""),format="%Y-%m-%d %H:%M:%S")
-    
-    Jan1HiMinus <- as.POSIXct(paste(year-1, "-01-01 00:00:00",sep=""),format="%Y-%m-%d %H:%M:%S")
-    
-    yearsToAdd <- c(year-1,year)
-    
-    low <- c(Jan1HiMinus, Jan1Lo)
-    hi <- c(Jan1Lo, Jan1Hi)
-    
+  if (paStart + paLong > 13){
+    # Crosses January
+    minTime <- ymd(paste(year-1,paStart,1,sep="-"))
+    maxTime <- as.Date(ymd(paste(year,(paStart + paLong - 12),1)))-1
   } else {
-    # Completely comprises a calendar year
-    
-    Lo <- as.POSIXct(paste(year,"-", paStart,"-01 00:00:00",sep=""),format="%Y-%m-%d %H:%M:%S")
-    Hi <- as.POSIXct(paste(year,"-", paStart+paLong-1,"-",nDaysInMonth[paStart+paLong-1], " 23:59:59",sep=""),format="%Y-%m-%d %H:%M:%S")
-    
-    low <- c(Jan1Lo, Jan1Lo)
-    hi <- c(Jan1Hi, Jan1Hi)
-    
-    yearsToAdd <- c(year,year)
+    minTime <- ymd(paste(year,paStart,1,sep="-"))
+    if(paStart + paLong <= 12){
+      maxTime <- as.Date(ymd(paste(year,(paStart + paLong),1)))-1
+    } else {
+      #Special december issue
+      maxTime <- as.Date(ymd(paste(year,12,31)))
+    }
     
   }
   
-  dates <- c(Lo, Hi)
+  minTime <- decimal_date(minTime)
   
-  decimal <- as.numeric(difftime(dates, low, units = "secs"))
-  nonzero <- decimal != 0
-  decimal[nonzero] <- decimal[nonzero]/as.numeric(difftime(hi, low, units = "secs"))
-  decimal <- yearsToAdd + decimal
+  maxTime <- decimal_date(maxTime)
   
-  vectorIndex <- which(vectorYear >= decimal[1] & vectorYear <= decimal[2])
+  vectorIndex <- which(vectorYear >= minTime & vectorYear <= maxTime)
   
   return(vectorIndex)
 }
@@ -668,7 +667,7 @@ blockSample <- function(localSample, blockLength){
 
 #' wordLike
 #'
-#' wordLike
+#' Function called in \code{\link{wBT}} to convert numeric likelihood percentages to useful text.
 #'
 #' @param likeList list
 #' @return character vector for [1] Upward trend in concentration, 

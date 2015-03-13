@@ -30,16 +30,12 @@ plotFluxHistBoot
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-nBoot <- 100
-blockLength <- 200
-\dontrun{
-repAnnualResults <- vector(mode = "list", length = nBoot)
-for(n in 1:nBoot){
-   repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
-}
+CIAnnualResults <- Choptank_CIAnnualResults
+plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 
-CIAnnualResults <- ciBands(eList, repAnnualResults)
-plotFluxHistBoot(eList, CIAnnualResults)
+\dontrun{
+CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
+plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 }
 }
 

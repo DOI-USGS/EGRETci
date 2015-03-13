@@ -21,19 +21,15 @@
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' nBoot <- 100
-#' blockLength <- 200
+#' CIAnnualResults <- Choptank_CIAnnualResults
+#' plotConcHistBoot(eList, CIAnnualResults)
 #' \dontrun{
-#' repAnnualResults <- vector(mode = "list", length = nBoot)
-#' for(n in 1:nBoot){
-#'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
-#' }
-#' 
-#' CIAnnualResults <- ciBands(eList, repAnnualResults)
+#' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 #' plotConcHistBoot(eList, CIAnnualResults)
 #' }
 plotConcHistBoot <- function (eList, CIAnnualResults, 
-                              plotFlowNorm=TRUE, col.pred="green", printTitle=TRUE, cex.main=1.1, ...){
+                              plotFlowNorm=TRUE, col.pred="green", 
+                              printTitle=TRUE, cex.main=1.1, ...){
   
   nBoot <- attr(CIAnnualResults, "nBoot")
   blockLength <- attr(CIAnnualResults, "blockLength")
@@ -51,15 +47,11 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
                    "\n", periodName, "\n",title3)
   }
   
-  plotConcHist(eList,  col.pred=col.pred, printTitle=FALSE,...)
+  plotConcHist(eList,  col.pred=col.pred, printTitle=FALSE, 
+               plotFlowNorm = plotFlowNorm, ...)
   title(main=title, cex.main=cex.main)
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcLow,lty=2,col=col.pred)
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcHigh, lty=2,col=col.pred)
-  
-  if (plotFlowNorm) {
-    lines(CIAnnualResults$Year, CIAnnualResults$FNConcLow,lty=2,col=col.pred)
-    lines(CIAnnualResults$Year, CIAnnualResults$FNConcHigh, lty=2,col=col.pred)
-  }
   
 }
 
@@ -79,21 +71,18 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
 #' @import EGRET
 #' @examples
 #' library(EGRET)
-#' eList <- Choptank_eList
-#' nBoot <- 100
-#' blockLength <- 200
-#' \dontrun{
-#' repAnnualResults <- vector(mode = "list", length = nBoot)
-#' for(n in 1:nBoot){
-#'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
-#' }
+#' eList <- Choptank_eList 
+#' CIAnnualResults <- Choptank_CIAnnualResults
+#' plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 #' 
-#' CIAnnualResults <- ciBands(eList, repAnnualResults)
-#' plotFluxHistBoot(eList, CIAnnualResults)
+#' \dontrun{
+#' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
+#' plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 #' }
 plotFluxHistBoot <- function (eList, CIAnnualResults, 
                               plotFlowNorm=TRUE, fluxUnit = 9, 
-                              col.pred="green", printTitle=TRUE, cex.main=1.1, ...){
+                              col.pred="green", printTitle=TRUE, 
+                              cex.main=1.1, ...){
   
   nBoot <- attr(CIAnnualResults, "nBoot")
   blockLength <- attr(CIAnnualResults, "blockLength")
@@ -118,15 +107,11 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   }
   unitFactorReturn <- fluxUnit@unitFactor
   
-  plotFluxHist(eList,  col.pred=col.pred, printTitle=FALSE,...)
+  plotFluxHist(eList,  fluxUnit=fluxUnit, col.pred=col.pred,
+               plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
   title(main=title, cex.main=cex.main)
-  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow,lty=2,col=col.pred)
-  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh, lty=2,col=col.pred)
-  
-  if (plotFlowNorm) {
-    lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow * unitFactorReturn,lty=2,col=col.pred)
-    lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh * unitFactorReturn, lty=2,col=col.pred)
-  }
+  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow*unitFactorReturn,lty=2,col=col.pred)
+  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh*unitFactorReturn, lty=2,col=col.pred)
   
 }
 

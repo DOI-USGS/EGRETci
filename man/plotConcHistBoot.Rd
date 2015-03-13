@@ -35,15 +35,10 @@ plotConcHist.
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-nBoot <- 100
-blockLength <- 200
+CIAnnualResults <- Choptank_CIAnnualResults
+plotConcHistBoot(eList, CIAnnualResults)
 \dontrun{
-repAnnualResults <- vector(mode = "list", length = nBoot)
-for(n in 1:nBoot){
-   repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
-}
-
-CIAnnualResults <- ciBands(eList, repAnnualResults)
+CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 plotConcHistBoot(eList, CIAnnualResults)
 }
 }

@@ -27,7 +27,7 @@ library(EGRETci)
 #  
 #  
 
-## ----, fig.height=7, fig.width=7--------------------------
+## ----, fig.height=6, fig.width=6--------------------------
 library(EGRET)
 library(EGRETci)
 
@@ -48,9 +48,10 @@ plotHistogramTrend(eBoot, caseSetUp, eList,
 ## ----, histExampleCombo, fig.width=7, fig.height=4--------
 par(mfrow=c(1,2))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
-                   printTitle=FALSE, ylim=c(0,0.07))
+                   printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
-                   printTitle=FALSE, ylim=c(0,0.07))
+                   printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
+par(mfrow=c(1,1))                   
 
 ## ----, eval=FALSE-----------------------------------------
 #  library(EGRET)
@@ -60,7 +61,7 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
 #  
 #  CIAnnualResults <- ciCalculations(eList)
 #  
-#  save(CIAnnualResults, file="CIAnnualResults.RData")
+#  save(eList,CIAnnualResults, file="CIAnnualResults.RData")
 #  
 #  
 
@@ -93,10 +94,10 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
 #  # save(repAnnualResults, file="repAnnual.RData")
 #  
 #  CIAnnualResults <- ciBands(eList, repAnnual, probs)
-#  save(CIAnnualResults, file="CIAnnualResults.RData")
+#  save(eList,CIAnnualResults, file="CIAnnualResults.RData")
 #  
 
-## ----, fig.height=7---------------------------------------
+## ----, fig.height=5, fig.width=7--------------------------
 eList <- Choptank_eList
 
 CIAnnualResults <- Choptank_CIAnnualResults

@@ -285,9 +285,10 @@ plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), 
     titleWord <- "Concentration"
   }
   
-  titleToPrint <-ifelse(printTitle, paste("Histogram of trend in",INFO$paramShortName,
-               "\n", titleWord,"Normalized Concentration:",caseSetUp$year1,"to",
-               caseSetUp$year2,"\n",INFO$shortName), "")
+  titleToPrint <- ifelse(printTitle, paste("Histogram of trend in", INFO$paramShortName, "\n", 
+                                           "Flow Normalized", titleWord, caseSetUp$year1, "to", caseSetUp$year2, "\n", 
+                                           INFO$shortName), 
+                         "")
   
   hist(reps,breaks=xSeq,yaxs="i",xaxs="i",tcl=0.5,
        main=titleToPrint,freq=FALSE,xlab=xlabel,col=col.fill,

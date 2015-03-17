@@ -163,13 +163,22 @@ bootAnnual <- function(eList, blockLength=200){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
+  paStart <- 10
+  paLong <- 12
+  
+  if(!is.null(INFO$paLong)){
+    paLong <- INFO$paLong
+  }  
+  if(!is.null(INFO$paStart)){
+    paStart <- INFO$paStart
+  }
   
   bootSample <- EGRETci::blockSample(Sample, blockLength)
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   surfaces1<-EGRET::estSurfaces(eListBoot)
   eListBoot<-EGRET::as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1<-EGRET::estDailyFromSurfaces(eListBoot)
-  annualResults1 <- EGRET::setupYears(Daily1)
+  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   

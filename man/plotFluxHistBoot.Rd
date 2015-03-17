@@ -4,15 +4,20 @@
 \alias{plotFluxHistBoot}
 \title{plotFluxHistBoot}
 \usage{
-plotFluxHistBoot(eList, CIAnnualResults, plotFlowNorm = TRUE, fluxUnit = 9,
-  col.pred = "green", printTitle = TRUE, cex.main = 1.1, ...)
+plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
+  plotFlowNorm = TRUE, fluxUnit = 9, col.pred = "green",
+  printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
 \item{eList}{named list}
 
 \item{CIAnnualResults}{data frame from ciBands (needs nBoot, probs, and blockLength attributes)}
 
-\item{plotFlowNorm}{logical}
+\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+
+\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+
+\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
 
 \item{fluxUnit}{number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
 

@@ -5,15 +5,20 @@
 \title{Graph of annual concentration, flow normalized concentration,
 and confidence bands for flow normalized concentrations}
 \usage{
-plotConcHistBoot(eList, CIAnnualResults, plotFlowNorm = TRUE,
-  col.pred = "green", printTitle = TRUE, cex.main = 1.1, ...)
+plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
+  plotFlowNorm = TRUE, col.pred = "green", printTitle = TRUE,
+  cex.main = 1.1, ...)
 }
 \arguments{
 \item{eList}{named list from EGRET package after running modelEstimation}
 
 \item{CIAnnualResults}{data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)}
 
-\item{plotFlowNorm}{logical}
+\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+
+\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+
+\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
 
 \item{col.pred}{character prediction color}
 

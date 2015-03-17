@@ -76,7 +76,7 @@ par(mfrow=c(1,1))
 #  
 #  nBoot <- 100
 #  blockLength <- 200
-#  coreOut <- 2 #Number of cores to leave out of processing tasks
+#  coreOut <- 1 #Number of cores to leave out of processing tasks
 #  
 #  widthCI <- 90
 #  ciLower <- (50-(widthCI/2))/100

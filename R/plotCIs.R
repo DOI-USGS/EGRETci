@@ -192,7 +192,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' nBoot <- 100
 #' blockLength <- 200
 #' \dontrun{
-#' AnnualResults <- setupYears(eList$Daily)
+#' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
 #' for(n = 1:nBoot){
 #'    annualResults <- bootAnnual(eList, blockLength) 
@@ -200,6 +200,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' }
 #' 
 #' CIAnnualResults <- ciBands(eList, repAnnualResults)
+#' 
 #' }
 ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
@@ -207,7 +208,20 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
     stop("Please provide only lower and upper limit in the probs argument")
   }
 
-  AnnualResults <- setupYears(eList$Daily)
+  paStart <- 10
+  paLong <- 12
+  
+  INFO <- eList$INFO
+  
+  if(!is.null(INFO$paLong)){
+    paLong <- INFO$paLong
+  }
+  
+  if(!is.null(INFO$paStart)){
+    paStart <- INFO$paStart
+  }
+  
+  AnnualResults <- setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   
   nBoot <- length(repAnnualResults)
   numYears <- nrow(repAnnualResults[[1]])
@@ -227,7 +241,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
     quantConc <- quantile(manyAnnualResults[iYear,1,1:nBoot],prob=probs,type=6)
     quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6)
     
-    CIAnnualResults$Year[iYear] <- yearStart + iYear - 1
+    CIAnnualResults$Year[iYear] <- AnnualResults$DecYear[iYear]
     CIAnnualResults$FNConcLow[iYear] <- quantConc[1]
     CIAnnualResults$FNConcHigh[iYear] <- quantConc[2]
     CIAnnualResults$FNFluxLow[iYear] <- quantFlux[1]

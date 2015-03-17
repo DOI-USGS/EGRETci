@@ -22,7 +22,7 @@ eList <- Choptank_eList
 nBoot <- 100
 blockLength <- 200
 \dontrun{
-AnnualResults <- setupYears(eList$Daily)
+
 repAnnualResults <- vector(mode = "list", length = nBoot)
 for(n = 1:nBoot){
    annualResults <- bootAnnual(eList, blockLength)
@@ -30,6 +30,7 @@ for(n = 1:nBoot){
 }
 
 CIAnnualResults <- ciBands(eList, repAnnualResults)
+
 }
 }
 

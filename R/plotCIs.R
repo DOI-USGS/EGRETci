@@ -11,7 +11,9 @@
 #'
 #' @param eList named list from EGRET package after running modelEstimation
 #' @param CIAnnualResults data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)
-#' @param plotFlowNorm logical
+#' @param yearStart numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
+#' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
+#' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param printTitle logical
 #' @param cex.main numeric title scale
@@ -27,7 +29,7 @@
 #' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 #' plotConcHistBoot(eList, CIAnnualResults)
 #' }
-plotConcHistBoot <- function (eList, CIAnnualResults, 
+plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = NA, 
                               plotFlowNorm=TRUE, col.pred="green", 
                               printTitle=TRUE, cex.main=1.1, ...){
   
@@ -41,15 +43,16 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
                                    localDaily = eList$Daily)
   periodName <- setSeasonLabel(localAnnualResults)
   title3 <- paste(widthCI,"% CI on FN Concentration, Replicates =",nBoot,"Block=",blockLength,"days")
-  title <- ""
-  if (printTitle) {
-    title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
+
+  title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
                    "\n", periodName, "\n",title3)
-  }
   
-  plotConcHist(eList,  col.pred=col.pred, printTitle=FALSE, 
+  plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+               col.pred=col.pred, printTitle=FALSE, 
                plotFlowNorm = plotFlowNorm, ...)
-  title(main=title, cex.main=cex.main)
+  if(printTitle) {
+    title(main=title, cex.main=cex.main)
+  }
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcLow,lty=2,col=col.pred)
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcHigh, lty=2,col=col.pred)
   
@@ -61,8 +64,10 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
 #'
 #' @param eList named list
 #' @param CIAnnualResults data frame from ciBands (needs nBoot, probs, and blockLength attributes)
+#' @param yearStart numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
+#' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param fluxUnit number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}
-#' @param plotFlowNorm logical
+#' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param printTitle logical
 #' @param cex.main numeric title scale
@@ -80,6 +85,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults,
 #' plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 #' }
 plotFluxHistBoot <- function (eList, CIAnnualResults, 
+                              yearStart=NA, yearEnd=NA,
                               plotFlowNorm=TRUE, fluxUnit = 9, 
                               col.pred="green", printTitle=TRUE, 
                               cex.main=1.1, ...){
@@ -94,11 +100,9 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
                                    localDaily = eList$Daily)
   periodName <- setSeasonLabel(localAnnualResults)
   title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
-  title <- ""
-  if (printTitle) {
-    title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
-                   "\n", periodName, "\n",title3)
-  }
+  
+  title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
+                 "\n", periodName, "\n",title3)
   
   if (is.numeric(fluxUnit)) {
     fluxUnit <- fluxConst[shortCode = fluxUnit][[1]]
@@ -107,11 +111,16 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   }
   unitFactorReturn <- fluxUnit@unitFactor
   
-  plotFluxHist(eList,  fluxUnit=fluxUnit, col.pred=col.pred,
+  plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+               fluxUnit=fluxUnit, col.pred=col.pred,
                plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
-  title(main=title, cex.main=cex.main)
-  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow*unitFactorReturn,lty=2,col=col.pred)
-  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh*unitFactorReturn, lty=2,col=col.pred)
+  if (printTitle) {
+    title(main=title, cex.main=cex.main)
+  }
+  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow*unitFactorReturn,
+        lty=2,col=col.pred)
+  lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh*unitFactorReturn, 
+        lty=2,col=col.pred)
   
 }
 

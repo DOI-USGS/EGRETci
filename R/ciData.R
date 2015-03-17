@@ -4,7 +4,7 @@
 #' Example data representing data from the Choptank River at Greensboro, MD,  USGS data
 #' Data is a named list of the Daily, Sample, INFO dataframes, and the surface matrix.
 #'
-#' @name repAnnualResults
+#' @name Choptank_repAnnual
 #' @docType data
 #' @keywords water quality data
 NULL

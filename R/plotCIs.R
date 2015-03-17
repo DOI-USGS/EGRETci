@@ -25,6 +25,7 @@
 #' eList <- Choptank_eList
 #' CIAnnualResults <- Choptank_CIAnnualResults
 #' plotConcHistBoot(eList, CIAnnualResults)
+#' plotConcHistBoot(eList, CIAnnualResults, yearStart=1990, yearEnd=2002)
 #' \dontrun{
 #' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 #' plotConcHistBoot(eList, CIAnnualResults)
@@ -53,6 +54,15 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   if(printTitle) {
     title(main=title, cex.main=cex.main)
   }
+  
+  if(!is.na(yearStart)){
+    CIAnnualResults <- CIAnnualResults[CIAnnualResults$Year >= yearStart, ]
+  }
+  
+  if(!is.na(yearEnd)){
+    CIAnnualResults <- CIAnnualResults[CIAnnualResults$Year <= yearEnd, ]
+  }
+  
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcLow,lty=2,col=col.pred)
   lines(CIAnnualResults$Year, CIAnnualResults$FNConcHigh, lty=2,col=col.pred)
   
@@ -117,6 +127,15 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   if (printTitle) {
     title(main=title, cex.main=cex.main)
   }
+  
+  if(!is.na(yearStart)){
+    CIAnnualResults <- CIAnnualResults[CIAnnualResults$Year >= yearStart, ]
+  }
+  
+  if(!is.na(yearEnd)){
+    CIAnnualResults <- CIAnnualResults[CIAnnualResults$Year <= yearEnd, ]
+  }
+  
   lines(CIAnnualResults$Year, CIAnnualResults$FNFluxLow*unitFactorReturn,
         lty=2,col=col.pred)
   lines(CIAnnualResults$Year, CIAnnualResults$FNFluxHigh*unitFactorReturn, 

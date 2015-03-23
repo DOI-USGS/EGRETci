@@ -423,10 +423,7 @@ eList &lt;- Choptank_eList
 
 #Interactive function to set up trend analysis:
 caseSetUp &lt;- trendSetUp(eList)
-
-#Currently, only water-year calculations are supported
-eList &lt;- setPA(eList)
-eList &lt;- setForBoot(eList)
+eList &lt;- setForBoot(eList, caseSetUp)
 
 eBoot &lt;- wBT(eList,caseSetUp, 
              saveOutput = TRUE, fileName = &quot;outputText.txt&quot;)
@@ -442,55 +439,28 @@ saveEGRETci(eList, eBoot)
   Bootstrap process, for change from Water Year 1985 to Water Year 2005
                    data set runs from WaterYear 1980 to Water Year 2011
   Bootstrap block length in days 200
-  bootBreak is 9  confStop is 0.7
+  bootBreak is 39  confStop is 0.7
 
  WRTDS estimated concentration change is   0.328  mg/L
  WRTDS estimated flux change is          0.03148  10^6 kg/yr
- value is bootstrap replicate result (deltack or deltafk in paper)
- nPos is cumulative number of positive trends
- post_p is posterior mean estimate of probability of a positive trend
- Lower and Upper are estimates of the 90% CI values for magnitude of trend
-
-      rep              Concentration             |              Flux
-          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper
-       1   0.267     1    0.75   0.267   0.267   |    0.02585     1    0.75  0.02585  0.02585
-       2   0.295     2   0.833   0.267   0.295   |    0.02635     2   0.833  0.02585  0.02635
-       3   0.318     3   0.875   0.267   0.318   |    0.03256     3   0.875  0.02585  0.03256
-       4   0.233     4     0.9   0.233   0.318   |    0.02718     4     0.9  0.02585  0.03256
-       5   0.373     5   0.917   0.233   0.373   |    0.03897     5   0.917  0.02585  0.03897
-       6   0.309     6   0.929   0.233   0.373   |    0.03404     6   0.929  0.02585  0.03897
-       7   0.354     7   0.938   0.233   0.373   |    0.03824     7   0.938  0.02585  0.03897
-       8   0.293     8   0.944   0.233   0.373   |    0.02632     8   0.944  0.02585  0.03897
-       9   0.415     9    0.95   0.233   0.415   |    0.04439     9    0.95  0.02585  0.04439
-      10   0.421    10   0.955   0.233   0.421   |    0.04115    10   0.955  0.02585  0.04439
-      11   0.374    11   0.958   0.233   0.421   |    0.03796    11   0.958  0.02585  0.04439
-      12   0.362    12   0.962   0.233   0.421   |    0.03708    12   0.962  0.02585  0.04439
-      13   0.309    13   0.964   0.233   0.421   |    0.03073    13   0.964  0.02585  0.04439
-      14   0.353    14   0.967   0.233   0.421   |    0.03364    14   0.967  0.02585  0.04439
-      15    0.18    15   0.969    0.18   0.421   |    0.01796    15   0.969  0.01796  0.04439
-      16   0.312    16   0.971    0.18   0.421   |    0.02388    16   0.971  0.01796  0.04439
-      17   0.401    17   0.972    0.18   0.421   |    0.04159    17   0.972  0.01796  0.04439
-      18    0.34    18   0.974    0.18   0.421   |    0.03359    18   0.974  0.01796  0.04439
-      19   0.285    19   0.975    0.18   0.421   |    0.03073    19   0.975  0.01796  0.04439
-      20   0.291    20   0.976   0.183   0.421   |    0.02888    20   0.976  0.01826  0.04425
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
  best estimate is   0.328 mg/L
-  Lower and Upper 90% CIs    0.183    0.421
- also 95% CIs    0.180    0.421 
- and 50% CIs    0.292    0.370
- approximate two-sided p-value for Conc     0.048
+  Lower and Upper 90% CIs    0.237    0.380
+ also 95% CIs    0.206    0.387 
+ and 50% CIs    0.302    0.350
+ approximate two-sided p-value for Conc     0.025
 * Note p-value should be considered to be &lt; stated value
- Likelihood that Flow Normalized Concentration is trending up = 0.976  is trending down = 0.0238
+ Likelihood that Flow Normalized Concentration is trending up = 0.988 is trending down = 0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  best estimate is  0.03148 10^6 kg/year
-  Lower and Upper 90% CIs   0.0183   0.0442
- also 95% CIs   0.0180   0.0444 
- and 50% CIs   0.0266   0.0382
- approximate two-sided p-value for Flux     0.048
+  Lower and Upper 90% CIs   0.0218   0.0418
+ also 95% CIs   0.0192   0.0422 
+ and 50% CIs   0.0276   0.0368
+ approximate two-sided p-value for Flux     0.025
 * Note p-value should be considered to be &lt; stated value
- Likelihood that Flow Normalized Flux is trending up = 0.976  is trending down = 0.0238
+ Likelihood that Flow Normalized Flux is trending up = 0.988 is trending down = 0.0125
 
  Upward trend in concentration is highly likely 
  Upward trend in flux is highly likely

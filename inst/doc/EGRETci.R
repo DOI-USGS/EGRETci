@@ -14,10 +14,7 @@ library(EGRETci)
 #  
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
-#  
-#  #Currently, only water-year calculations are supported
-#  eList <- setPA(eList)
-#  eList <- setForBoot(eList)
+#  eList <- setForBoot(eList, caseSetUp)
 #  
 #  eBoot <- wBT(eList,caseSetUp,
 #               saveOutput = TRUE, fileName = "outputText.txt")

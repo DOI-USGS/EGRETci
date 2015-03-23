@@ -318,6 +318,8 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' }
 plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), flux=TRUE, 
                            printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
+  
+  periodName <- setSeasonLabel(data.frame(PeriodStart=caseSetUp$paStart,PeriodLong=caseSetUp$paLong))
   bootOut <- eBoot$bootOut
   INFO <- eList$INFO 
   
@@ -335,19 +337,18 @@ plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), 
     titleWord <- "Concentration"
   }
   
-  titleToPrint <- ifelse(printTitle, paste("Histogram of trend in", INFO$paramShortName, "\n", 
-                                           "Flow Normalized", titleWord, caseSetUp$year1, "to", caseSetUp$year2, "\n", 
-                                           INFO$shortName), 
+  titleToPrint <- ifelse(printTitle, paste("Histogram of trend in", 
+                                           INFO$paramShortName, "\n", "Flow Normalized", titleWord, 
+                                           caseSetUp$year1, "to", caseSetUp$year2, "\n", INFO$shortName, periodName), 
                          "")
-  
-  hist(reps,breaks=xSeq,yaxs="i",xaxs="i",tcl=0.5,
-       main=titleToPrint,freq=FALSE,xlab=xlabel,col=col.fill,
-       cex.main= cex.main, ...)
-  abline(v=change,lwd=3,lty=2)
-  abline(v=0,lwd=3)
+  hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", tcl = 0.5, 
+       main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
+       cex.main = cex.main, ...)
+  abline(v = change, lwd = 3, lty = 2)
+  abline(v = 0, lwd = 3)
   box()
-  axis(3, tcl=0.5, labels = FALSE)
-  axis(4, tcl=0.5, labels = FALSE)
+  axis(3, tcl = 0.5, labels = FALSE)
+  axis(4, tcl = 0.5, labels = FALSE)
 }
   
 #' ciCalculations

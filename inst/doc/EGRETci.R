@@ -48,6 +48,7 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
+# To return to 1 row, 1 column:
 par(mfrow=c(1,1))                   
 
 ## ----, eval=FALSE-----------------------------------------

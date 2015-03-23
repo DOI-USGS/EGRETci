@@ -15,17 +15,20 @@ library(EGRETci)
 
 # Introduction to EGRET Confidence Intervals
 By Robert M. Hirsch, Laura A. De Cicco
+version of March 23, 2015
 
-This package **EGRETci** is an early test version of the package that will encompass the various approaches to uncertainty estimation associated with trend analysis for the **EGRET** package.  The various functions included here are all discussed in the draft manuscript _A bootstrap method for estimating uncertainty of water quality trends_ by Hirsch, Archfield, and De Cicco (draft version of March 9, 2015).  The present version of the **EGRETci** package is designed for interactive use only, but later versions will describe how batch workflows can be created.  Also, the current version can only do analysis of trends for water years, but later versions will allow it to evaluate any group of months (i.e. any 'Period of Analysis' to use the term in the EGRET package).  The **EGRETci** package is designed to carry out three specific types of tasks.
+This package **EGRETci** is test version of the package that will encompass the various approaches to uncertainty estimation associated with WRTDS trend analysis implemented in the **EGRET** package.  The various functions included here are all discussed in the draft manuscript _A bootstrap method for estimating uncertainty of water quality trends_ by Hirsch, Archfield, and De Cicco (draft version of March 9, 2015).  The  **EGRETci** package is designed for interactive or batch use.  Instructions for both are included here in the vignette.  The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS.  Users should consult the **EGRET** vignette for more background on those issues. 
+
+  The **EGRETci** package is designed to carry out three specific types of tasks.
     
     
-1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving four functions: `trendSetUp`, `setPA`, `setForBoot`, and `wBT`.  The results come in two forms: 1) console output, which shows the bootstrap replicate process as it is underway and provides text output of results, and 2) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.
+1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving three functions: `trendSetUp`, `setForBoot`, and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
+
+2)  Plot histograms of values for the trend magnitudes, expressed in percent, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.  Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period).  Such analyses would require a small amount of script writing by the user.
+ 
 
 
-2)  Prepare histograms of values for the trend magnitudes, expressed in percent, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.
-
-
-3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a single interactive function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
+3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
 The following table provides definitions of the four data frames that constitute the named list **eBoot**
 
@@ -74,8 +77,10 @@ There is also a data frame called caseSetUp (created with the `trendSetUp` funct
 |bootBreak | minimum number of replicates (called Mmin in paper) |
 |blockLength | length of blocks for bootstrap (called B in the paper) |
 |confStop | 1 - alphap, the width of the confidence interval used in adaptive stopping rule (default alphap=0.3 so confStop=0.7) |
+|paStart | The calendar month that is the start of the Period of Analysis (an integer) |
+|paLong | The number of calendar months that constitute the Period of Analysis (an integer) |
 
-The following is an example workflow for an interactive run of the WBT (WRTDS Bootstrap Test), using the example data set in Choptank_eList.
+The following is an example workflow for an interactive run of the WBT (WRTDS Bootstrap Test), using the example data set in Choptank_eList.  Note that if one wishes to use smoothing parameters other than the default values, they need to be set within eList before running the `wBT` function. For example, if one wanted to use windowY = 10 (rather than the 7 year window that is the default), the eList being used would have to be modified like this:  eList$INFO$windowY <- 10.
 
 ```{r eval=FALSE, echo=TRUE  } 
 library(EGRET)
@@ -84,8 +89,6 @@ eList <- Choptank_eList
 
 #Interactive function to set up trend analysis:
 caseSetUp <- trendSetUp(eList)
-eList <- setForBoot(eList, caseSetUp)
-
 eBoot <- wBT(eList,caseSetUp, 
              saveOutput = TRUE, fileName = "outputText.txt")
 
@@ -94,6 +97,9 @@ saveEGRETci(eList, eBoot)
 
 
 ```
+To run the `wBT` in batch mode the only difference from this script is that the call to `trendSetUp` should include all the needed bootstrap parameters.  So, for example that line of the script could become:
+
+caseSetUp <- trendSetUp(eList, year1=1990, year2=2012, nBoot = 50, bootBeak = 39, blockLength = 200, paStart = 10, paLong = 12)
 
 The output in `outputText.txt` is:
 ```
@@ -109,34 +115,33 @@ The output in `outputText.txt` is:
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
  best estimate is   0.328 mg/L
-  Lower and Upper 90% CIs    0.237    0.380
- also 95% CIs    0.206    0.387 
- and 50% CIs    0.302    0.350
+  Lower and Upper 90% CIs    0.260    0.408
+ also 95% CIs    0.251    0.412 
+ and 50% CIs    0.308    0.349
  approximate two-sided p-value for Conc     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Concentration is trending up = 0.988 is trending down = 0.0125
+ Likelihood that Flow Normalized Concentration is trending up = 0.988  is trending down = 0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  best estimate is  0.03148 10^6 kg/year
-  Lower and Upper 90% CIs   0.0218   0.0418
- also 95% CIs   0.0192   0.0422 
- and 50% CIs   0.0276   0.0368
+  Lower and Upper 90% CIs   0.0235   0.0408
+ also 95% CIs   0.0221   0.0451 
+ and 50% CIs   0.0283   0.0353
  approximate two-sided p-value for Flux     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Flux is trending up = 0.988 is trending down = 0.0125
+ Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
 
  Upward trend in concentration is highly likely 
  Upward trend in flux is highly likely
  Downward trend in concentration is highly unlikely 
  Downward trend in flux is highly unlikely
-
 ```
 
 ## Histograms
 
-These functions plot histograms of all of the trend slopes from the full set of replicates created by wBT.  These slopes are stored in the eBoot list.  The first example workflow can be used to plot the two histograms: one for trends in Flow Normalized Concentration and one for Flow Normalized Flux.  
+These functions plot histograms of all of the trend slopes from the full set of replicates created by `wBT`.  These slopes are stored in the eBoot list.  The first example workflow can be used to plot the two histograms: one for trends in Flow Normalized Concentration and one for Flow Normalized Flux.  
 
-A comment about the final argument in these functions: The default is xSeq = seq(-100,100,10).  This means that the bins for the histogram will run from -100 to +100 in steps of 10 (the units are percentage change).  This will almost certainly be to broad a set of bins, but the first run, with the xSeq left at its devault values (meaning you can just leave it out of the argument list) will give you an idea of the true range that you need to consider.  Then, run it again with a much tighter range that still includes all of the replicate trends.  For example, suppose we see that the replicates seen in the first plot run tell us this: the lowest value is between -30 and -20 and the highest value is between 40 and 50, then we give the command again we should say xSeq = seq(-30,50,10).  If it turns out that all the values are much closer to zero we might use something like xSeq = seq(-15,5,5) so the bins are a width of 5 rather than 10.  It is also a good idea to have the full width of the histogram include zero.  So in the case where the values were all in the range of +20 to +70, you might use something like xSeq = seq(0,70,10).  
+A comment about the final argument in these functions: The default is `xSeq = seq(-100,100,10)`.  This means that the bins for the histogram will run from -100 to +100 in steps of 10 (the units are percentage change).  This will almost certainly be too broad a set of bins, but the first run, with the xSeq left at its devault values (meaning that you can just leave it out of the argument list) will give you an idea of the true range that you need to consider.  Then, run it again with a much tighter range that still includes all of the replicate trends.  For example, suppose we see that the replicates seen in the first plot run tell us this: the lowest value is between -30 and -20 and the highest value is between 40 and 50, then we give the command again we should say `xSeq = seq(-30,50,10)`.  If it turns out that all the values are much closer to zero we might use something like `xSeq = seq(-15,5,5)` so the bins are a width of 5 rather than 10.  It is also a good idea to have the full width of the histogram include zero.  For example, in the case where the values were all in the range of +20 to +70, you might use something like `xSeq = seq(0,70,10)`.  
 
 Here is an example workflow where the analyst has already determined what a good xSeq argument might be.
 
@@ -169,16 +174,24 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
-# To return to 1 row, 1 column:
+# To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 ```
 
 ## Confidence Bands
 
-There are two versions of the workflow for confidence bands.  The first is very simple, but results in the use of a very large amount of computer time (easily an hour).  It is best done in the Terminal or some other window, rather than in the console, because it will make it impossible for other work in R to take place if it is done in the console.  The second way it can be done is using parallel computing in R.  A script for that purpose is provided.  It does require three extra packages be installed (**foreach**, **doParallel**, and **iterators**).  It is also best to run this in the terminal, because if it is run in the console, no other work can be done while it is running.  Regardless of the way that the computations are done, they will result in the creation of a small data frame called CIAnnualResults.  Once that data frame exists, the graphics can be produced using the functions `plotConcHistBoot` and `plotFluxHistBoot`.  In either case they only require two arguments (eList and CIAnnualResults).  However, the user can specify a number of other arguments.  These other arguments are the same ones used in the `plotConcHist` and `plotFluxHist` functions in the base **EGRET** package.
+There are two versions of the workflow for confidence bands, the first just uses a single computer core which means it takes a long time to run (jobs can take an hour or more), but it is simple to run.  It uses the function `ciCalculations` and can be run interactively or in batch.  Two scripts for that are provided below.  It is best done in the Terminal or some other window, rather than in the console.  If run in the console it will make it impossible for other work in R to take place while the job is running.  The second way it can be done is using parallel computing in R.  A script for that purpose is provided.  It does require three extra packages be installed (**foreach**, **doParallel**, and **iterators**).  It is also best to run this in the terminal, because if it is run in the console, no other R work can be done while it is running.  
+
+Regardless of the way that the computations are done, they will result in the creation of a small data frame called CIAnnualResults.  In either case it is imperative that the standard WRTDS model be fitted first (using regular EGRET code) to provide a baseline for the confidence bands. The code and the workflows shown assure that this will be done, you don't need to do anything to make that happen.  
 
 
-Base-R workflow for confidence bands on model results:
+Regardless of the approach being taken to the computations, the user needs to set up any non-default values of the parameters for model estimation and period of analysis.  For example:
+
+If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the `setPA` function.  For example if we want to do the analysis for the three months starting with April, the command would be `eList <- setPA(eList, paStart = 4, paLong = 3)`.
+
+If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be  `eList$INFO$windowY <- 10`, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and EdgeAdjust (see help page for `modelEstimation`).  
+
+This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package.
 
 ```{r, eval=FALSE}
 library(EGRET)
@@ -192,6 +205,12 @@ save(eList,CIAnnualResults, file="CIAnnualResults.RData")
 
 
 ```
+To run the `ciCalculations` function in batch mode, the only difference is that additional arguments are specified in the call to the function.  For example the call to `ciCalculations` might read as follows:
+
+```{r eval=FALSE}
+CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200, widthCI = 90)
+```
+as long as all required arguments (nBoot, blockLength, and widthCI) are specified there will be no interaction needed.
 
 
 Taking advantage of the foreach package to do parallel computing:
@@ -204,6 +223,7 @@ library(EGRET)
 library(EGRETci)
 
 eList <- Choptank_eList
+eList <- modelEstimation(eList) 
 
 nBoot <- 100
 blockLength <- 200
@@ -228,8 +248,11 @@ CIAnnualResults <- ciBands(eList, repAnnual, probs)
 save(eList,CIAnnualResults, file="CIAnnualResults.RData")
 
 ```
+Regardless of the way that the computations are done the outputs that are needed for the graphics are contained in eList and CIAnnualResults (which in either script will end up in a file called CIAnnualResults.RData).  Once that file is loaded the graphics can be produced using the functions `plotConcHistBoot` and `plotFluxHistBoot`.  Each of these functions only require two arguments (eList and CIAnnualResults).  However, the user can specify a number of other arguments.  These other arguments are the same ones used in the `plotConcHist` and `plotFluxHist` functions in the base **EGRET** package.
 
-Regardless of the way you implemented ciCalculations, the following concentration and flux plots can then be generated from the CIAnnualResults data.  If they aren't already loaded, you will need to load the file CIAnnualResults.RData, which contains eList, and CIAnnualResults.
+The user can also view a table of the confidence interval values shown in these graphics simply by using the command CIAnnualResults (fluxes will be in units if kg/day).
+
+Here is a script for producing these graphics, using the example eList and CIAnnualResults data frames included in the package.
 
 ```{r, fig.height=5, fig.width=7}
 eList <- Choptank_eList

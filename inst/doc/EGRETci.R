@@ -14,8 +14,6 @@ library(EGRETci)
 #  
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
-#  eList <- setForBoot(eList, caseSetUp)
-#  
 #  eBoot <- wBT(eList,caseSetUp,
 #               saveOutput = TRUE, fileName = "outputText.txt")
 #  
@@ -48,7 +46,7 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
 plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
-# To return to 1 row, 1 column:
+# To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 
 ## ----, eval=FALSE-----------------------------------------
@@ -63,6 +61,9 @@ par(mfrow=c(1,1))
 #  
 #  
 
+## ----eval=FALSE-------------------------------------------
+#  CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200, widthCI = 90)
+
 ## ----, eval=FALSE-----------------------------------------
 #  library(foreach)
 #  library(doParallel)
@@ -71,6 +72,7 @@ par(mfrow=c(1,1))
 #  library(EGRETci)
 #  
 #  eList <- Choptank_eList
+#  eList <- modelEstimation(eList)
 #  
 #  nBoot <- 100
 #  blockLength <- 200

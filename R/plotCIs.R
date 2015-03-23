@@ -309,7 +309,6 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' 
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setForBoot(eList, caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' plotHistogramTrend(eBoot, caseSetUp, eList, 
 #'                    flux=FALSE, xSeq = seq(-20,60,5))

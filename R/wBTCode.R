@@ -88,7 +88,7 @@ trendSetUp <- function(eList, ...){
   if(!is.null(matchReturn$nBoot)){
     nBoot <- as.numeric(matchReturn$nBoot)
   } else {
-    message("Enter nBoot the largest number of boot replicates allowed, typically 100")
+    message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
     cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
   }
@@ -108,10 +108,41 @@ trendSetUp <- function(eList, ...){
     blockLength <- as.numeric(readline())
   }
   
+  if(is.null(matchReturn$paStart)){
+    if(!is.null(eList$INFO$paStart)){
+      paStart <- eList$INFO$paStart
+    } else {
+      message("Period of Analysis, enter paStart (from 1 to 12), for Water Year enter 10")
+      paStart <- as.numeric(readline())
+    }
+  } else {
+    paStart <- matchReturn$paStart
+  }
+  
+  if(is.null(matchReturn$paLong)){
+    if(!is.null(eList$INFO$paLong)){
+      paLong <- eList$INFO$paLong
+    } else {
+      message("Period of Analysis, enter paLong (from 1 to 12), for Water Year or Calendar year enter 12")
+      paLong <- as.numeric(readline())
+    }
+  } else {
+    paLong <- matchReturn$paLong
+  }
+  
   confStop <- 0.7
 
-  caseSetUp <- data.frame(year1,yearData1,year2,yearData2,
-                          numSamples,nBoot,bootBreak,blockLength,confStop)
+  caseSetUp <- data.frame(year1=year1,
+                          yearData1=yearData1,
+                          year2=year2,
+                          yearData2=yearData2,
+                          numSamples=numSamples,
+                          nBoot=nBoot,
+                          bootBreak=bootBreak,
+                          blockLength=blockLength,
+                          confStop=confStop,
+                          paStart=paStart,
+                          paLong=paLong)
   
   return(caseSetUp)
   
@@ -132,8 +163,7 @@ trendSetUp <- function(eList, ...){
 #' eList <- Choptank_eList
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setPA(eList)
-#' eList <- setForBoot(eList)
+#' eList <- setForBoot(eList,caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' saveEGRETci(eList, eBoot, caseSetUp)
 #' }
@@ -176,8 +206,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' eList <- Choptank_eList
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setPA(eList)
-#' eList <- setForBoot(eList)
+#' eList <- setForBoot(eList, caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
@@ -208,6 +237,9 @@ wBT<-function(eList,caseSetUp,
 	nBoot <- caseSetUp$nBoot
 	bootBreak <- caseSetUp$bootBreak
 	blockLength <- caseSetUp$blockLength
+  periodName <- setSeasonLabel(data.frame(PeriodStart=caseSetUp$paStart,PeriodLong=caseSetUp$paLong))
+  cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
+  cat("\n\n",periodName)
 	confStop <- caseSetUp$confStop
   xConc<-rep(NA,nBoot)
   xFlux<-rep(NA,nBoot)
@@ -228,8 +260,10 @@ wBT<-function(eList,caseSetUp,
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 4, width = 8)
+  
 	if(saveOutput) sink(fileName)
-	cat("\n\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
+	
+  cat("\n\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
 	cat("\n\n  Bootstrap process, for change from Water Year",year1,"to Water Year",year2 )
 	cat("\n                   data set runs from WaterYear",yearData1, "to Water Year", yearData2)
 	cat("\n  Bootstrap block length in days", blockLength)
@@ -237,14 +271,15 @@ wBT<-function(eList,caseSetUp,
   
   cat("\n\n WRTDS estimated concentration change is",fcc," mg/L" )
 	cat("\n WRTDS estimated flux change is        ",ffc," 10^6 kg/yr")
-	cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
-	cat("\n nPos is cumulative number of positive trends")
-	cat("\n post_p is posterior mean estimate of probability of a positive trend")
-	cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
-	cat("\n\n      rep              Concentration             |              Flux")
-  cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
+# 	cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
+# 	cat("\n nPos is cumulative number of positive trends")
+# 	cat("\n post_p is posterior mean estimate of probability of a positive trend")
+# 	cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
+# 	cat("\n\n      rep              Concentration             |              Flux")
+#   cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
   if(saveOutput){
     message("\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
+    message("\n",periodName)
     message("\n  Bootstrap process, for change from Water Year ",year1," to Water Year ",year2)
     message("                   data set runs from WaterYear ",yearData1, " to Water Year ", yearData2)
     message("  Bootstrap block length in days ", blockLength)
@@ -252,7 +287,7 @@ wBT<-function(eList,caseSetUp,
     
     message("\n WRTDS estimated concentration change is ",fcc,"  mg/L" )
     message(" WRTDS estimated flux change is         ",ffc,"  10^6 kg/yr")
-    message(" value is bootstrap replicate result (deltack or deltafk in paper)")
+#     message(" value is bootstrap replicate result (deltack or deltafk in paper)")
     message(" nPos is cumulative number of positive trends")
     message("\n post_p is posterior mean estimate of probability of a positive trend")
     message(" Lower and Upper are estimates of the 90% CI values for magnitude of trend")
@@ -301,8 +336,17 @@ wBT<-function(eList,caseSetUp,
 		          format(binomIntFlux$mean,digits=3,width=7),
 		          format(quantFlux[2],digits=4,width=8),
 		          format(quantFlux[8],digits=4,width=8))
-		cat("\n",prints)
-		if(saveOutput){
+# 		cat("\n",prints)
+		if(!saveOutput){
+		  cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
+		  cat("\n nPos is cumulative number of positive trends")
+		  cat("\n post_p is posterior mean estimate of probability of a positive trend")
+		  cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
+		  cat("\n\n      rep              Concentration             |              Flux")
+		  cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
+      cat("\n",prints)
+# 		  message(" ",paste(prints, collapse=" ")) #this would go *with* saveOutput if we want it back to original
+		} else {
 		  message(" ",paste(prints, collapse=" "))
 		}
 		test1 <- if(belowConc + aboveConc + midConc > 0.5 & belowFlux + aboveFlux + midFlux > 0.5 & iBoot >= bootBreak & iBoot > 30) 1 else 0
@@ -408,8 +452,11 @@ wBT<-function(eList,caseSetUp,
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' eList <- setForBoot(eList)
+#' \dontrun{
+#' caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
+#' eList <- setForBoot(eList, caseSetUp)
 #' surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
+#' }
 estSliceSurfacesSimpleAlt<-function(eList,year){
   localINFO <- eList$INFO
   localSample <- eList$Sample
@@ -598,6 +645,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' Adds window parameters to INFO file in eList.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param caseSetUp data frame returned from \code{\link{trendSetUp}}
 #' @param windowY numeric specifying the half-window width in the time dimension, in units of years, default is 7
 #' @param windowQ numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2
 #' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
@@ -608,14 +656,17 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' 
-#' bootSetUp <- setForBoot(eList)
-setForBoot<-function (eList,windowY = 7, windowQ = 2, 
+#' \dontrun{
+#' caseSetUp <- trendSetUp(eList)
+#' bootSetUp <- setForBoot(eList,caseSetUp)
+#' }
+setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2, 
                       windowS = 0.5, edgeAdjust=TRUE) {
 #  does the setup functions usually done by modelEstimation
 	localINFO <- eList$INFO
 	localDaily <- eList$Daily
   localSample <- eList$Sample
+  
   numDays <- length(localDaily$DecYear)
   DecLow <- localDaily$DecYear[1]
   DecHigh <- localDaily$DecYear[numDays]
@@ -636,6 +687,9 @@ setForBoot<-function (eList,windowY = 7, windowQ = 2,
   localINFO$DecLow <- DecLow
   localINFO$DecHigh <- DecHigh
   localINFO$edgeAdjust <- edgeAdjust
+	localINFO$paStart <- caseSetUp$paStart
+	localINFO$paLong <- caseSetUp$paLong
+  
   eList$INFO <- localINFO
   return(eList)
 }

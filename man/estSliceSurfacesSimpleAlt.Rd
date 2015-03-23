@@ -21,8 +21,11 @@ Creates surface slice for one year.
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-eList <- setForBoot(eList)
+\dontrun{
+caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
+eList <- setForBoot(eList, caseSetUp)
 surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
+}
 }
 \keyword{WRTDS}
 \keyword{flow}

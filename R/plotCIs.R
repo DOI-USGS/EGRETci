@@ -309,8 +309,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' 
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setPA(eList)
-#' eList <- setForBoot(eList)
+#' eList <- setForBoot(eList, caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' plotHistogramTrend(eBoot, caseSetUp, eList, 
 #'                    flux=FALSE, xSeq = seq(-20,60,5))
@@ -371,7 +370,7 @@ ciCalculations <- function (eList,...){
   if(!is.null(matchReturn$nBoot)){
     nBoot <- matchReturn$nBoot
   } else {
-    message("Enter nBoot the largest number of boot replicates allowed, typically 100")
+    message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
     cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
   }
@@ -396,6 +395,10 @@ ciCalculations <- function (eList,...){
   probs <- c(ciLower,ciUpper)
   
   repAnnualResults <- vector(mode = "list", length = nBoot)
+  
+  cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
+  eList <- modelEstimation(eList)
+  
   for(n in 1:nBoot){
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
   }

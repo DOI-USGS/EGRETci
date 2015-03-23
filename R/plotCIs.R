@@ -258,8 +258,8 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   
   manyAnnualResults <- array(NA, dim=c(numYears,2,nBoot))
   for (i in 1:nBoot){
-    manyAnnualResults[,1,i] <- 2*AnnualResults$FNConc - repAnnualResults[[i]]$FNConc
-    manyAnnualResults[,2,i] <- 2*AnnualResults$FNFlux - repAnnualResults[[i]]$FNFlux
+    manyAnnualResults[,1,i] <- 2*log(AnnualResults$FNConc) - log(repAnnualResults[[i]]$FNConc)
+    manyAnnualResults[,2,i] <- 2*log(AnnualResults$FNFlux) - log(repAnnualResults[[i]]$FNFlux)
   }
   
   CIAnnualResults <- data.frame(matrix(ncol = 5, nrow = numYears))
@@ -270,10 +270,10 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
     quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6)
     
     CIAnnualResults$Year[iYear] <- AnnualResults$DecYear[iYear]
-    CIAnnualResults$FNConcLow[iYear] <- quantConc[1]
-    CIAnnualResults$FNConcHigh[iYear] <- quantConc[2]
-    CIAnnualResults$FNFluxLow[iYear] <- quantFlux[1]
-    CIAnnualResults$FNFluxHigh[iYear] <- quantFlux[2]
+    CIAnnualResults$FNConcLow[iYear] <- exp(quantConc[1])
+    CIAnnualResults$FNConcHigh[iYear] <- exp(quantConc[2])
+    CIAnnualResults$FNFluxLow[iYear] <- exp(quantFlux[1])
+    CIAnnualResults$FNFluxHigh[iYear] <- exp(quantFlux[2])
   }
   
   attr(CIAnnualResults, "nBoot") <- nBoot

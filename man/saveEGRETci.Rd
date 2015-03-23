@@ -23,7 +23,6 @@ library(EGRET)
 eList <- Choptank_eList
 \dontrun{
 caseSetUp <- trendSetUp(eList)
-eList <- setForBoot(eList,caseSetUp)
 eBoot <- wBT(eList,caseSetUp)
 saveEGRETci(eList, eBoot, caseSetUp)
 }

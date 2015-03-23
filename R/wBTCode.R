@@ -163,7 +163,6 @@ trendSetUp <- function(eList, ...){
 #' eList <- Choptank_eList
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setForBoot(eList,caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' saveEGRETci(eList, eBoot, caseSetUp)
 #' }
@@ -196,6 +195,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
+#' @param \dots arguments to send to internal function \code{\link{trendSetUp}}.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @import EGRET
 #' @importFrom binom binom.bayes
@@ -206,12 +206,13 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' eList <- Choptank_eList
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
-#' eList <- setForBoot(eList, caseSetUp)
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt"){
+              saveOutput=TRUE, fileName="temp.txt", ...){
 	
+  eList <- setForBoot(eList, caseSetUp, ...)
+  
   localINFO <- eList$INFO
 	localDaily <- eList$Daily
 	localSample <- eList$Sample
@@ -238,8 +239,7 @@ wBT<-function(eList,caseSetUp,
 	bootBreak <- caseSetUp$bootBreak
 	blockLength <- caseSetUp$blockLength
   periodName <- setSeasonLabel(data.frame(PeriodStart=caseSetUp$paStart,PeriodLong=caseSetUp$paLong))
-  cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
-  cat("\n\n",periodName)
+
 	confStop <- caseSetUp$confStop
   xConc<-rep(NA,nBoot)
   xFlux<-rep(NA,nBoot)
@@ -262,7 +262,9 @@ wBT<-function(eList,caseSetUp,
   ffc <- format(regDeltaFlux, digits = 4, width = 8)
   
 	if(saveOutput) sink(fileName)
-	
+  cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
+  cat("\n\n",periodName)
+  
   cat("\n\n",eList$INFO$shortName,"  ",eList$INFO$paramShortName)
 	cat("\n\n  Bootstrap process, for change from Water Year",year1,"to Water Year",year2 )
 	cat("\n                   data set runs from WaterYear",yearData1, "to Water Year", yearData2)

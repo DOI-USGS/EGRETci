@@ -42,7 +42,6 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE)
 
 \dontrun{
 caseSetUp <- trendSetUp(eList)
-eList <- setForBoot(eList, caseSetUp)
 eBoot <- wBT(eList,caseSetUp)
 plotHistogramTrend(eBoot, caseSetUp, eList,
                    flux=FALSE, xSeq = seq(-20,60,5))

@@ -22,7 +22,7 @@ This package **EGRETci** is test version of the package that will encompass the 
   The **EGRETci** package is designed to carry out three specific types of tasks.
     
     
-1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving three functions: `trendSetUp`, `setForBoot`, and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
+1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving the functions: `setForBoot` and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
 
 2)  Plot histograms of values for the trend magnitudes, expressed in percent, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.  Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period).  Such analyses would require a small amount of script writing by the user.
  
@@ -80,7 +80,7 @@ There is also a data frame called caseSetUp (created with the `trendSetUp` funct
 |paStart | The calendar month that is the start of the Period of Analysis (an integer) |
 |paLong | The number of calendar months that constitute the Period of Analysis (an integer) |
 
-The following is an example workflow for an interactive run of the WBT (WRTDS Bootstrap Test), using the example data set in Choptank_eList.  Note that if one wishes to use smoothing parameters other than the default values, they need to be set within eList before running the `wBT` function. For example, if one wanted to use windowY = 10 (rather than the 7 year window that is the default), the eList being used would have to be modified like this:  eList$INFO$windowY <- 10.
+The following is an example workflow for an interactive run of the WBT (WRTDS Bootstrap Test), using the example data set in Choptank_eList.  Note that if one wishes to use smoothing parameters other than the default values, they can be assigned using the `wBT` function. For example, if one wanted to use windowY = 10 (rather than the 7 year window that is the default), the eList being used would have to be modified like this:  `eList$INFO$windowY <- 10`.
 
 ```{r eval=FALSE, echo=TRUE  } 
 library(EGRET)
@@ -90,19 +90,35 @@ eList <- Choptank_eList
 #Interactive function to set up trend analysis:
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp, 
-             saveOutput = TRUE, fileName = "outputText.txt")
+             saveOutput = TRUE, 
+             fileName = "outputText.txt",
+             windowY = 10)
 
 #Interactive save output function:
 saveEGRETci(eList, eBoot)
 
 
 ```
+
 To run the `wBT` in batch mode the only difference from this script is that the call to `trendSetUp` should include all the needed bootstrap parameters.  So, for example that line of the script could become:
 
-caseSetUp <- trendSetUp(eList, year1=1990, year2=2012, nBoot = 50, bootBeak = 39, blockLength = 200, paStart = 10, paLong = 12)
+```{r eval=FALSE}
+caseSetUp <- trendSetUp(eList, 
+                        year1=1990, 
+                        year2=2012, 
+                        nBoot = 50, 
+                        bootBreak = 39, 
+                        blockLength = 200, 
+                        paStart = 10, 
+                        paLong = 12)
+```
 
 The output in `outputText.txt` is:
 ```
+ Choptank River    Inorganic nitrogen (nitrate and nitrite)
+
+ Water Year
+
  Choptank River    Inorganic nitrogen (nitrate and nitrite)
 
   Bootstrap process, for change from Water Year 1985 to Water Year 2005
@@ -110,26 +126,26 @@ The output in `outputText.txt` is:
   Bootstrap block length in days 200
   bootBreak is 39  confStop is 0.7
 
- WRTDS estimated concentration change is   0.328  mg/L
- WRTDS estimated flux change is          0.03148  10^6 kg/yr
+ WRTDS estimated concentration change is  0.318  mg/L
+ WRTDS estimated flux change is  0.02707  10^6 kg/yr
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
- best estimate is   0.328 mg/L
-  Lower and Upper 90% CIs    0.260    0.408
- also 95% CIs    0.251    0.412 
- and 50% CIs    0.308    0.349
+ best estimate is   0.318 mg/L
+  Lower and Upper 90% CIs    0.247    0.368
+ also 95% CIs    0.232    0.398 
+ and 50% CIs    0.275    0.332
  approximate two-sided p-value for Conc     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Concentration is trending up = 0.988  is trending down = 0.0125
+ Likelihood that Flow Normalized Concentration is trending up = 0.988 is trending down = 0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
- best estimate is  0.03148 10^6 kg/year
-  Lower and Upper 90% CIs   0.0235   0.0408
- also 95% CIs   0.0221   0.0451 
- and 50% CIs   0.0283   0.0353
+ best estimate is  0.02707 10^6 kg/year
+  Lower and Upper 90% CIs   0.0206   0.0361
+ also 95% CIs   0.0188   0.0374 
+ and 50% CIs   0.0234   0.0310
  approximate two-sided p-value for Flux     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
+ Likelihood that Flow Normalized Flux is trending up = 0.988 is trending down = 0.0125
 
  Upward trend in concentration is highly likely 
  Upward trend in flux is highly likely
@@ -166,7 +182,7 @@ plotHistogramTrend(eBoot, caseSetUp, eList,
 
 Alternatively, the two plots can be shown side-by-side using a workflow like this.
 
-Use the par function to set up both functions to plot side-by-side:
+Use the `par` function to set up both functions to plot side-by-side:
 
 ```{r , histExampleCombo, fig.width=7, fig.height=4}
 par(mfrow=c(1,2))
@@ -202,9 +218,8 @@ eList <- Choptank_eList
 CIAnnualResults <- ciCalculations(eList)
 
 save(eList,CIAnnualResults, file="CIAnnualResults.RData")
-
-
 ```
+
 To run the `ciCalculations` function in batch mode, the only difference is that additional arguments are specified in the call to the function.  For example the call to `ciCalculations` might read as follows:
 
 ```{r eval=FALSE}

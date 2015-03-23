@@ -15,12 +15,24 @@ library(EGRETci)
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
 #  eBoot <- wBT(eList,caseSetUp,
-#               saveOutput = TRUE, fileName = "outputText.txt")
+#               saveOutput = TRUE,
+#               fileName = "outputText.txt",
+#               windowY = 10)
 #  
 #  #Interactive save output function:
 #  saveEGRETci(eList, eBoot)
 #  
 #  
+
+## ----eval=FALSE-------------------------------------------
+#  caseSetUp <- trendSetUp(eList,
+#                          year1=1990,
+#                          year2=2012,
+#                          nBoot = 50,
+#                          bootBreak = 39,
+#                          blockLength = 200,
+#                          paStart = 10,
+#                          paLong = 12)
 
 ## ----, fig.height=6, fig.width=6--------------------------
 library(EGRET)
@@ -58,8 +70,6 @@ par(mfrow=c(1,1))
 #  CIAnnualResults <- ciCalculations(eList)
 #  
 #  save(eList,CIAnnualResults, file="CIAnnualResults.RData")
-#  
-#  
 
 ## ----eval=FALSE-------------------------------------------
 #  CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200, widthCI = 90)

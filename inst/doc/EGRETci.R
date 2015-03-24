@@ -3,6 +3,7 @@ library(xtable)
 options(continue=" ")
 options(width=60)
 library(knitr)
+library(rmarkdown)
 library(EGRET)
 library(EGRETci)
 

@@ -1,21 +1,29 @@
-<!--
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{Introduction to EGRET Confidence Intervals}
--->
+---
+title: "Introduction to EGRET Confidence Intervals"
+author: "Robert M. Hirsch, Laura A. De Cicco"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Introduction to EGRET Confidence Intervals}
+  \usepackage[utf8]{inputenc}
+---
+
+`r  format(Sys.Date(),"%B %d, %Y")`
 
 ```{r setup, include=FALSE}
 library(xtable)
 options(continue=" ")
 options(width=60)
 library(knitr)
+library(rmarkdown)
 library(EGRET)
 library(EGRETci)
 
 ```
 
-# Introduction to EGRET Confidence Intervals
-By Robert M. Hirsch, Laura A. De Cicco
-version of March 23, 2015
+#Introduction
 
 This package **EGRETci** is test version of the package that will encompass the various approaches to uncertainty estimation associated with WRTDS trend analysis implemented in the **EGRET** package.  The various functions included here are all discussed in the draft manuscript _A bootstrap method for estimating uncertainty of water quality trends_ by Hirsch, Archfield, and De Cicco (draft version of March 9, 2015).  The  **EGRETci** package is designed for interactive or batch use.  Instructions for both are included here in the vignette.  The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS.  Users should consult the **EGRET** vignette for more background on those issues. 
 
@@ -30,6 +38,7 @@ This package **EGRETci** is test version of the package that will encompass the 
 
 3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
+##Required data frames
 The following table provides definitions of the four data frames that constitute the named list **eBoot**
 
 |Data Frame |Column | Definition |
@@ -80,6 +89,8 @@ There is also a data frame called caseSetUp (created with the `trendSetUp` funct
 |paStart | The calendar month that is the start of the Period of Analysis (an integer) |
 |paLong | The number of calendar months that constitute the Period of Analysis (an integer) |
 
+
+## Sample Bootstrap Test Workflow
 The following is an example workflow for an interactive run of the WBT (WRTDS Bootstrap Test), using the example data set in Choptank_eList.  Note that if one wishes to use smoothing parameters other than the default values, they can be assigned using the `wBT` function. For example, if one wanted to use windowY = 10 (rather than the 7 year window that is the default), the eList being used would have to be modified like this:  `eList$INFO$windowY <- 10`.
 
 ```{r eval=FALSE, echo=TRUE  } 
@@ -194,7 +205,7 @@ plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
 par(mfrow=c(1,1))                   
 ```
 
-## Confidence Bands
+# Confidence Bands
 
 There are two versions of the workflow for confidence bands, the first just uses a single computer core which means it takes a long time to run (jobs can take an hour or more), but it is simple to run.  It uses the function `ciCalculations` and can be run interactively or in batch.  Two scripts for that are provided below.  It is best done in the Terminal or some other window, rather than in the console.  If run in the console it will make it impossible for other work in R to take place while the job is running.  The second way it can be done is using parallel computing in R.  A script for that purpose is provided.  It does require three extra packages be installed (**foreach**, **doParallel**, and **iterators**).  It is also best to run this in the terminal, because if it is run in the console, no other R work can be done while it is running.  
 

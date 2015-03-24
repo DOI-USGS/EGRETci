@@ -11,7 +11,7 @@ saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 
 \item{eBoot}{named list. Returned from \code{\link{wBT}}.}
 
-\item{caseSetUp}{dataframe. Returned from \code{\link{trendSetUp}}.}
+\item{caseSetUp}{data frame. Returned from \code{\link{trendSetUp}}.}
 
 \item{fileName}{character. If left blank (empty quotes), the function will interactively ask for a name to save.}
 }

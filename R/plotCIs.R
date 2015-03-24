@@ -372,7 +372,7 @@ ciCalculations <- function (eList,...){
   } else {
     message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
-    cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+    cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
   }
   
   if(!is.null(matchReturn$blockLength)){

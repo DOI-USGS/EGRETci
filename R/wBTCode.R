@@ -90,7 +90,7 @@ trendSetUp <- function(eList, ...){
   } else {
     message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
-    cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+    cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
   }
   
   if(!is.null(matchReturn$bootBreak)){
@@ -108,27 +108,27 @@ trendSetUp <- function(eList, ...){
     blockLength <- as.numeric(readline())
   }
   
-  if(is.null(matchReturn$paStart)){
-    if(!is.null(eList$INFO$paStart)){
-      paStart <- eList$INFO$paStart
-    } else {
-      message("Period of Analysis, enter paStart (from 1 to 12), for Water Year enter 10")
-      paStart <- as.numeric(readline())
-    }
-  } else {
-    paStart <- matchReturn$paStart
-  }
-  
-  if(is.null(matchReturn$paLong)){
-    if(!is.null(eList$INFO$paLong)){
-      paLong <- eList$INFO$paLong
-    } else {
-      message("Period of Analysis, enter paLong (from 1 to 12), for Water Year or Calendar year enter 12")
-      paLong <- as.numeric(readline())
-    }
-  } else {
-    paLong <- matchReturn$paLong
-  }
+#   if(is.null(matchReturn$paStart)){
+#     if(!is.null(eList$INFO$paStart)){
+#       paStart <- eList$INFO$paStart
+#     } else {
+#       message("Period of Analysis, enter paStart (from 1 to 12), for Water Year enter 10")
+#       paStart <- as.numeric(readline())
+#     }
+#   } else {
+#     paStart <- matchReturn$paStart
+#   }
+#   
+#   if(is.null(matchReturn$paLong)){
+#     if(!is.null(eList$INFO$paLong)){
+#       paLong <- eList$INFO$paLong
+#     } else {
+#       message("Period of Analysis, enter paLong (from 1 to 12), for Water Year or Calendar year enter 12")
+#       paLong <- as.numeric(readline())
+#     }
+#   } else {
+#     paLong <- matchReturn$paLong
+#   }
   
   confStop <- 0.7
 
@@ -140,9 +140,10 @@ trendSetUp <- function(eList, ...){
                           nBoot=nBoot,
                           bootBreak=bootBreak,
                           blockLength=blockLength,
-                          confStop=confStop,
-                          paStart=paStart,
-                          paLong=paLong)
+                          confStop=confStop)
+# ,
+#                           paStart=paStart,
+#                           paLong=paLong)
   
   return(caseSetUp)
   
@@ -154,7 +155,7 @@ trendSetUp <- function(eList, ...){
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
-#' @param caseSetUp dataframe. Returned from \code{\link{trendSetUp}}.
+#' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param fileName character. If left blank (empty quotes), the function will interactively ask for a name to save.
 #' @export
 #' @seealso \code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
@@ -195,7 +196,6 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
-#' @param \dots arguments to send to internal function \code{\link{trendSetUp}}.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @import EGRET
 #' @importFrom binom binom.bayes
@@ -209,9 +209,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt", ...){
+              saveOutput=TRUE, fileName="temp.txt"){
 	
-  eList <- setForBoot(eList, caseSetUp, ...)
+  eList <- setForBoot(eList, caseSetUp)
   
   localINFO <- eList$INFO
 	localDaily <- eList$Daily
@@ -238,7 +238,8 @@ wBT<-function(eList,caseSetUp,
 	nBoot <- caseSetUp$nBoot
 	bootBreak <- caseSetUp$bootBreak
 	blockLength <- caseSetUp$blockLength
-  periodName <- setSeasonLabel(data.frame(PeriodStart=caseSetUp$paStart,PeriodLong=caseSetUp$paLong))
+  periodName <- setSeasonLabel(data.frame(PeriodStart=localINFO$paStart,
+                                          PeriodLong=localINFO$paLong))
 
 	confStop <- caseSetUp$confStop
   xConc<-rep(NA,nBoot)
@@ -463,6 +464,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   localINFO <- eList$INFO
   localSample <- eList$Sample
   localDaily <- eList$Daily
+  
   windowY <- localINFO$windowY
   windowS <- localINFO$windowS
   windowQ <- localINFO$windowQ
@@ -669,6 +671,22 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	localDaily <- eList$Daily
   localSample <- eList$Sample
   
+  if(is.null(localINFO$windowY)){
+    localINFO$windowY <- windowY
+  }
+  
+	if(is.null(localINFO$windowQ)){
+	  localINFO$windowQ <- windowQ
+	}
+  
+	if(is.null(localINFO$windowS)){
+	  localINFO$windowS <- windowS
+	}
+  
+	if(is.null(localINFO$edgeAdjust)){
+	  localINFO$edgeAdjust <-edgeAdjust
+	}
+  
   numDays <- length(localDaily$DecYear)
   DecLow <- localDaily$DecYear[1]
   DecHigh <- localDaily$DecYear[numDays]
@@ -680,15 +698,14 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
   localINFO$bottomYear <- surfaceIndexParameters[4]
   localINFO$stepYear <- surfaceIndexParameters[5]
   localINFO$nVectorYear <- surfaceIndexParameters[6]
-  localINFO$windowY <- windowY
-  localINFO$windowQ <- windowQ
-  localINFO$windowS <- windowS
+
   localINFO$minNumObs <- min(100,numSamples-20)
   localINFO$minNumUncen <- min(50,numSamples-20)
   localINFO$numDays <- numDays
   localINFO$DecLow <- DecLow
   localINFO$DecHigh <- DecHigh
   localINFO$edgeAdjust <- edgeAdjust
+  
 	localINFO$paStart <- caseSetUp$paStart
 	localINFO$paLong <- caseSetUp$paLong
   

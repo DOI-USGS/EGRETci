@@ -472,11 +472,11 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   vectorYear <-seq(bottomYear,topYear,stepYear)
   surfaces<-array(NA,dim=c(14,length(vectorYear),3))
   
-  if(is.null(localINFO$paStart) | is.null(localINFO$paLong)){
-    # Default to water year
-    localINFO$paStart <- 10
-    localINFO$paLong <- 12
-  }
+#   if(is.null(localINFO$paStart) | is.null(localINFO$paLong)){
+#     # Default to water year
+#     localINFO$paStart <- 10
+#     localINFO$paLong <- 12
+#   }
   
   vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
   # Tack on one data point on either side

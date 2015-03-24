@@ -90,10 +90,10 @@ trendSetUp <- function(eList, ...){
   if(!is.null(matchReturn$nBoot)){
     nBoot <- as.numeric(matchReturn$nBoot)
   } else {
-    message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
+    message("Enter nBoot, the maximum number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
   }
-  cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
+  cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
   
   if(!is.null(matchReturn$bootBreak)){
     bootBreak <- as.numeric(matchReturn$bootBreak)
@@ -653,6 +653,11 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	localINFO <- eList$INFO
 	localDaily <- eList$Daily
   localSample <- eList$Sample
+
+	numDays <- length(localDaily$DecYear)
+	DecLow <- localDaily$DecYear[1]
+	DecHigh <- localDaily$DecYear[numDays]
+	numSamples <- length(localSample$Julian)
   
   if(is.null(localINFO$windowY)){
     localINFO$windowY <- windowY
@@ -670,10 +675,13 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	  localINFO$edgeAdjust <-edgeAdjust
 	}
   
-  numDays <- length(localDaily$DecYear)
-  DecLow <- localDaily$DecYear[1]
-  DecHigh <- localDaily$DecYear[numDays]
-  numSamples <- length(localSample$Julian)
+	if (is.null(localINFO$minNumObs)) {
+	  localINFO$minNumObs <- min(100, numSamples - 20)
+	}
+	if (is.null(localINFO$minNumUncen)) {
+	  localINFO$minNumUncen <- min(100, numSamples - 20)
+	}
+  
   surfaceIndexParameters <- surfaceIndex(localDaily)
   localINFO$bottomLogQ <- surfaceIndexParameters[1]
   localINFO$stepLogQ <- surfaceIndexParameters[2]
@@ -682,16 +690,12 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
   localINFO$stepYear <- surfaceIndexParameters[5]
   localINFO$nVectorYear <- surfaceIndexParameters[6]
 
-  localINFO$minNumObs <- min(100,numSamples-20)
-  localINFO$minNumUncen <- min(50,numSamples-20)
+
   localINFO$numDays <- numDays
   localINFO$DecLow <- DecLow
   localINFO$DecHigh <- DecHigh
   localINFO$edgeAdjust <- edgeAdjust
-  
-	localINFO$paStart <- caseSetUp$paStart
-	localINFO$paLong <- caseSetUp$paLong
-  
+    
   eList$INFO <- localINFO
   return(eList)
 }

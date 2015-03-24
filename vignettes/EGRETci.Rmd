@@ -1,6 +1,7 @@
 ---
 title: "Introduction to EGRET Confidence Intervals"
 author: "Robert M. Hirsch, Laura A. De Cicco"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: 
   rmarkdown::html_vignette:
     toc: true
@@ -9,8 +10,6 @@ vignette: >
   %\VignetteIndexEntry{Introduction to EGRET Confidence Intervals}
   \usepackage[utf8]{inputenc}
 ---
-
-`r  format(Sys.Date(),"%B %d, %Y")`
 
 
 ```{r setup, include=FALSE}

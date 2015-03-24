@@ -1,9 +1,9 @@
 ## ----setup, include=FALSE---------------------------------
 library(xtable)
+library(rmarkdown)
 options(continue=" ")
 options(width=60)
 library(knitr)
-library(rmarkdown)
 library(EGRET)
 library(EGRETci)
 
@@ -16,24 +16,28 @@ library(EGRETci)
 #  #Interactive function to set up trend analysis:
 #  caseSetUp <- trendSetUp(eList)
 #  eBoot <- wBT(eList,caseSetUp,
-#               saveOutput = TRUE,
-#               fileName = "outputText.txt",
-#               windowY = 10)
+#               fileName = "outputText.txt")
 #  
 #  #Interactive save output function:
-#  saveEGRETci(eList, eBoot)
+#  saveEGRETci(eList, eBoot, caseSetUp)
 #  
 #  
 
 ## ----eval=FALSE-------------------------------------------
+#  library(EGRET)
+#  library(EGRETci)
+#  eList <- Choptank_eList
+#  eList <- setPA(eList, paStart = 12, paLong = 4)
+#  eList$INFO$windowY <- 10
+#  eList$INFO$minNumObs <- 50
 #  caseSetUp <- trendSetUp(eList,
 #                          year1=1990,
 #                          year2=2012,
 #                          nBoot = 50,
 #                          bootBreak = 39,
-#                          blockLength = 200,
-#                          paStart = 10,
-#                          paLong = 12)
+#                          blockLength = 200)
+#  eBoot <- wBT(eList, caseSetUp, fileName ="outputText.txt")
+#  saveEGRETci(eList, eBoot, caseSetUp, fileName = "output")
 
 ## ----, fig.height=6, fig.width=6--------------------------
 library(EGRET)

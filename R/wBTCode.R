@@ -67,20 +67,22 @@ trendSetUp <- function(eList, ...){
 
   numSamples <- length(eList$Sample$Date)
   cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples],"\n")
-  
-  
+ 
   if(!is.null(matchReturn$year1)){
     year1 <- matchReturn$year1
   } else {
     message("Enter first water year of trend period")
     year1 <- as.numeric(readline())
   }
+  cat("year1 = ",year1," this is the first water year of trend period\n")
+  
   if(!is.null(matchReturn$year2)){
     year2 <- matchReturn$year2
   } else {
     message("Enter last water year of trend period")
     year2 <- as.numeric(readline())
   }
+  cat("year2 = ",year2," this is the last water year of trend period\n")
   
   yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
   yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
@@ -90,8 +92,8 @@ trendSetUp <- function(eList, ...){
   } else {
     message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
-    cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
   }
+  cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
   
   if(!is.null(matchReturn$bootBreak)){
     bootBreak <- as.numeric(matchReturn$bootBreak)
@@ -99,7 +101,10 @@ trendSetUp <- function(eList, ...){
     message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
     bootBreak <- as.numeric(readline())
   }
+
   bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
+  
+  cat("bootBreak = ",bootBreak," this is the minimum number of replicates that will be run\n")
   
   if(!is.null(matchReturn$blockLength)){
     blockLength <- as.numeric(matchReturn$blockLength)
@@ -107,28 +112,9 @@ trendSetUp <- function(eList, ...){
     message("Enter blockLength, in days, typically 200 is a good choice")
     blockLength <- as.numeric(readline())
   }
+  cat("blockLength = ",blockLength," this is the number of days in a bootstrap block\n")
   
-#   if(is.null(matchReturn$paStart)){
-#     if(!is.null(eList$INFO$paStart)){
-#       paStart <- eList$INFO$paStart
-#     } else {
-#       message("Period of Analysis, enter paStart (from 1 to 12), for Water Year enter 10")
-#       paStart <- as.numeric(readline())
-#     }
-#   } else {
-#     paStart <- matchReturn$paStart
-#   }
-#   
-#   if(is.null(matchReturn$paLong)){
-#     if(!is.null(eList$INFO$paLong)){
-#       paLong <- eList$INFO$paLong
-#     } else {
-#       message("Period of Analysis, enter paLong (from 1 to 12), for Water Year or Calendar year enter 12")
-#       paLong <- as.numeric(readline())
-#     }
-#   } else {
-#     paLong <- matchReturn$paLong
-#   }
+
   
   confStop <- 0.7
 
@@ -141,9 +127,6 @@ trendSetUp <- function(eList, ...){
                           bootBreak=bootBreak,
                           blockLength=blockLength,
                           confStop=confStop)
-# ,
-#                           paStart=paStart,
-#                           paLong=paLong)
   
   return(caseSetUp)
   

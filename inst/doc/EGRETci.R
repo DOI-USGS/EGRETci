@@ -1,5 +1,4 @@
 ## ----setup, include=FALSE---------------------------------
-library(xtable)
 library(rmarkdown)
 options(continue=" ")
 options(width=60)

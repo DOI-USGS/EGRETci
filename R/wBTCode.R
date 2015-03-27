@@ -150,12 +150,7 @@ trendSetUp <- function(eList, ...){
 #' eBoot <- wBT(eList,caseSetUp)
 #' saveEGRETci(eList, eBoot, caseSetUp)
 #' }
-saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
-  localINFO <- eList$INFO
-  bootOut <- eBoot$bootOut
-  wordsOut <- eBoot$wordsOut
-  xConc <- eBoot$xConc
-  xFlux <- eBoot$xFlux
+saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
   
   if(fileName == ""){
     message("Enter a filename for output (it will go in the working directory)\n")
@@ -163,7 +158,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName=""){
   }
 
   fullName<-paste0(fileName,".RData")
-  save(caseSetUp,bootOut,wordsOut,xConc,xFlux,localINFO,file=fullName)
+  save(eList, eBoot, caseSetUp, file = fullName)
   message("Saved to: ",getwd(),"/",fullName)
 }
 

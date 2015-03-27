@@ -4,16 +4,16 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eBoot, caseSetUp, eList, xSeq = seq(-100, 100, 10),
+plotHistogramTrend(eList, eBoot, caseSetUp, xSeq = seq(-100, 100, 10),
   flux = TRUE, printTitle = TRUE, cex.main = 1.1, col.fill = "grey",
   ...)
 }
 \arguments{
-\item{eBoot}{named list}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{caseSetUp}{data frame}
+\item{eBoot}{named list. Returned from \code{\link{wBT}}.}
 
-\item{eList}{named list}
+\item{caseSetUp}{data frame. Returned from \code{\link{trendSetUp}}.}
 
 \item{xSeq}{vector defaults to seq(-100,100,10). It is recommended to try the default
 first. The first argument in the seq function needs to be lower than the minimum value, the second argument
@@ -38,14 +38,14 @@ library(EGRET)
 eList <- Choptank_eList
 eBoot <- Choptank_eBoot
 caseSetUp <- Choptank_caseSetUp
-plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE)
+plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE)
 
 \dontrun{
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)
-plotHistogramTrend(eBoot, caseSetUp, eList,
+plotHistogramTrend(eList, eBoot, caseSetUp,
                    flux=FALSE, xSeq = seq(-20,60,5))
-plotHistogramTrend(eBoot, caseSetUp, eList,
+plotHistogramTrend(eList, eBoot, caseSetUp,
                    flux=TRUE, xSeq = seq(-20,60,5))
 }
 }

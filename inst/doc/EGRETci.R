@@ -48,19 +48,19 @@ eBoot <- Choptank_eBoot
 caseSetUp <- Choptank_caseSetUp
 
 #Concentration:
-plotHistogramTrend(eBoot, caseSetUp, eList, 
+plotHistogramTrend(eList, eBoot, caseSetUp,  
                    flux=FALSE, xSeq = seq(-20,60,5))
 
 #Flux
-plotHistogramTrend(eBoot, caseSetUp, eList,
+plotHistogramTrend(eList, eBoot, caseSetUp,
                    flux=TRUE, xSeq = seq(-20,60,5))
 
 
 ## ----, histExampleCombo, fig.width=7, fig.height=4--------
 par(mfrow=c(1,2))
-plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE,
+plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
-plotHistogramTrend(eBoot, caseSetUp, eList, flux=TRUE,
+plotHistogramTrend(eList, eBoot, caseSetUp, flux=TRUE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   

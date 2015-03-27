@@ -287,9 +287,9 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #'
 #' plotHistogramTrend
 #'
-#' @param eBoot named list
-#' @param eList named list
-#' @param caseSetUp data frame
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param eBoot named list. Returned from \code{\link{wBT}}.
+#' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param xSeq vector defaults to seq(-100,100,10). It is recommended to try the default
 #' first. The first argument in the seq function needs to be lower than the minimum value, the second argument 
 #' needs to be higher than the highest value, both should probably be multiples of 10 or 20, 
@@ -305,41 +305,38 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' eList <- Choptank_eList
 #' eBoot <- Choptank_eBoot
 #' caseSetUp <- Choptank_caseSetUp
-#' plotHistogramTrend(eBoot, caseSetUp, eList, flux=FALSE)
+#' plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE)
 #' 
 #' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
-#' plotHistogramTrend(eBoot, caseSetUp, eList, 
+#' plotHistogramTrend(eList, eBoot, caseSetUp,  
 #'                    flux=FALSE, xSeq = seq(-20,60,5))
-#' plotHistogramTrend(eBoot, caseSetUp, eList, 
+#' plotHistogramTrend(eList, eBoot, caseSetUp, 
 #'                    flux=TRUE, xSeq = seq(-20,60,5))
 #' }
-plotHistogramTrend <- function (eBoot, caseSetUp, eList, xSeq=seq(-100,100,10), flux=TRUE, 
-                           printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
+plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10), 
+                                flux=TRUE, printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
   
-  periodName <- setSeasonLabel(data.frame(PeriodStart=caseSetUp$paStart,PeriodLong=caseSetUp$paLong))
-  bootOut <- eBoot$bootOut
-  INFO <- eList$INFO 
-  
-  if(flux){
-    xFlux <- eBoot$xFlux
-    change<-100*bootOut$estF/bootOut$baseFlux
-    reps <- 100*xFlux/bootOut$baseFlux
+  periodName <- setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
+                                          PeriodLong = eList$INFO$paLong))
+  if (flux) {
+    change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
+    reps <- 100 * eBoot$xFlux/eBoot$bootOut$baseFlux
     xlabel <- "Flux trend, in %"
     titleWord <- "Flux"
   } else {
-    xConc <- eBoot$xConc
-    change<-100*bootOut$estC/bootOut$baseConc
-    reps <- 100*xConc/bootOut$baseConc
+    change <- 100 * eBoot$bootOut$estC/eBoot$bootOut$baseConc
+    reps <- 100 * eBoot$xConc/eBoot$bootOut$baseConc
     xlabel <- "Concentration trend, in %"
     titleWord <- "Concentration"
   }
   
   titleToPrint <- ifelse(printTitle, paste("Histogram of trend in", 
-                                           INFO$paramShortName, "\n", "Flow Normalized", titleWord, 
-                                           caseSetUp$year1, "to", caseSetUp$year2, "\n", INFO$shortName, periodName), 
-                         "")
+                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                             caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
+                             periodName), "")
+  
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", tcl = 0.5, 
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, ...)

@@ -322,21 +322,21 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10),
                                           PeriodLong = eList$INFO$paLong))
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
-    reps <- 100 * eBoot$xFlux/eBoot$bootOut$baseFlux
+    reps <- eBoot$pFlux
     xlabel <- "Flux trend, in %"
     titleWord <- "Flux"
   } else {
     change <- 100 * eBoot$bootOut$estC/eBoot$bootOut$baseConc
-    reps <- 100 * eBoot$xConc/eBoot$bootOut$baseConc
+    reps <- eBoot$pConc
     xlabel <- "Concentration trend, in %"
     titleWord <- "Concentration"
   }
   
-  titleToPrint <- ifelse(printTitle, paste("Histogram of trend in", 
-                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                             caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
-                             periodName), "")
-  
+  titleToPrint <- ifelse(printTitle, 
+                         paste("Histogram of trend in", 
+                               eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                               caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
+                               periodName), "")
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", tcl = 0.5, 
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, ...)

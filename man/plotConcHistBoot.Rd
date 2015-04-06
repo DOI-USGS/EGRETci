@@ -6,8 +6,8 @@
 and confidence bands for flow normalized concentrations}
 \usage{
 plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
-  plotFlowNorm = TRUE, col.pred = "green", printTitle = TRUE,
-  cex.main = 1.1, ...)
+  plotFlowNorm = TRUE, col.pred = "green", concMax = NA,
+  printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
 \item{eList}{named list from EGRET package after running modelEstimation}
@@ -21,6 +21,8 @@ plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 \item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
 
 \item{col.pred}{character prediction color}
+
+\item{concMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
 
 \item{printTitle}{logical}
 

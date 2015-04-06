@@ -5,7 +5,7 @@
 \title{plotFluxHistBoot}
 \usage{
 plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
-  plotFlowNorm = TRUE, fluxUnit = 9, col.pred = "green",
+  plotFlowNorm = TRUE, fluxUnit = 9, fluxMax = NA, col.pred = "green",
   printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
@@ -20,6 +20,8 @@ plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 \item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
 
 \item{fluxUnit}{number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
+
+\item{fluxMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
 
 \item{col.pred}{character prediction color}
 

@@ -15,6 +15,7 @@
 #' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
+#' @param concMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
 #' @param printTitle logical
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
@@ -31,7 +32,7 @@
 #' plotConcHistBoot(eList, CIAnnualResults)
 #' }
 plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = NA, 
-                              plotFlowNorm=TRUE, col.pred="green", 
+                              plotFlowNorm=TRUE, col.pred="green", concMax = NA,
                               printTitle=TRUE, cex.main=1.1, ...){
   
   nBoot <- attr(CIAnnualResults, "nBoot")
@@ -48,9 +49,19 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
                    "\n", periodName, "\n",title3)
   
+  if(is.na(concMax)){
+    numYears <- length(localAnnualResults$DecYear)
+    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
+    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
+    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    
+    annConc <- subAnnualResults$Conc
+    concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,annConc), na.rm=TRUE)
+  }
+  
   plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                col.pred=col.pred, printTitle=FALSE, 
-               plotFlowNorm = plotFlowNorm, ...)
+               plotFlowNorm = plotFlowNorm, concMax = concMax, ...)
   if(printTitle) {
     title(main=title, cex.main=cex.main)
   }
@@ -77,6 +88,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param yearStart numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param fluxUnit number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}
+#' @param fluxMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param printTitle logical
@@ -96,7 +108,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' }
 plotFluxHistBoot <- function (eList, CIAnnualResults, 
                               yearStart=NA, yearEnd=NA,
-                              plotFlowNorm=TRUE, fluxUnit = 9, 
+                              plotFlowNorm=TRUE, fluxUnit = 9, fluxMax=NA,
                               col.pred="green", printTitle=TRUE, 
                               cex.main=1.1, ...){
   
@@ -121,8 +133,19 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   }
   unitFactorReturn <- fluxUnit@unitFactor
   
+  if(is.na(fluxMax)){
+    numYears <- length(localAnnualResults$DecYear)
+    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
+    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
+    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    
+    annFlux<-unitFactorReturn*subAnnualResults$Flux
+    
+    fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,annFlux), na.rm=TRUE)
+  }
+  
   plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
-               fluxUnit=fluxUnit, col.pred=col.pred,
+               fluxUnit=fluxUnit, col.pred=col.pred,fluxMax=fluxMax,
                plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
   if (printTitle) {
     title(main=title, cex.main=cex.main)

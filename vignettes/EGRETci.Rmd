@@ -71,6 +71,9 @@ The following table provides definitions of the four data frames that constitute
 |wordsOut | | a vector of four character variables (self explanatory) |
 |xConc | | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) |
 |xFlux | | a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10^6^ kg/yr) |
+|pConc |  | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change |
+|pFlux |  | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change |
+
 
 
 There is also a data frame called caseSetUp (created with the `trendSetUp` function), which contains a number of important parameters that define the way that the test was implemented.  They are presented here.

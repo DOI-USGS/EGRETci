@@ -20,7 +20,7 @@
 #' Collection of functions to do WRTDS and flowHistory analysis,
 #'  and produce graphs and tables of data and results from these analyses.
 #'
-#' @name EGRET-package
+#' @name EGRETci-package
 #' @docType package
 #' @author Robert M. Hirsch \email{rhirsch@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
 #' @references Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
@@ -173,7 +173,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
-#' @import EGRET
+#' @importFrom EGRET as.egret
 #' @importFrom binom binom.bayes
 #' @export
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
@@ -274,12 +274,12 @@ wBT<-function(eList,caseSetUp,
   for (iBoot in 1:nBoot) {
     bootSample <- blockSample(localSample = localSample, 
                               blockLength = blockLength)
-    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
+    eListBoot <- as.egret(localINFO, localDaily, bootSample, 
                                  NA)
     surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, year1)
     surfaces2 <- estSliceSurfacesSimpleAlt(eListBoot, year2)
     combo <- makeCombo(surfaces1, surfaces2)
-    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
+    eListBoot <- as.egret(localINFO, localDaily, bootSample, 
                                  combo)
     res <- makeTwoYearsResults(eListBoot, year1, year2)
     xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
@@ -453,7 +453,7 @@ wBT<-function(eList,caseSetUp,
 #' after running either \code{\link[EGRET]{modelEstimation}} or \code{\link{setForBoot}}.
 #' @param year integer year to perform WRTDS analysis
 #' @keywords WRTDS flow
-#' @import EGRET
+#' @importFrom EGRET runSurvReg
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -512,7 +512,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   DecLow <- localINFO$DecLow
   DecHigh <- localINFO$DecHigh
   
-  resultSurvReg <- EGRET::runSurvReg(estPtYear,estPtLogQ,numDays,
+  resultSurvReg <- runSurvReg(estPtYear,estPtLogQ,numDays,
                                      DecLow,DecHigh, localSample,
                                      windowY,windowQ,windowS,
                                      minNumObs,minNumUncen,
@@ -616,7 +616,8 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' @param year1 integer. Initial year of a 2-year trend comparison.
 #' @param year2 integer. Second year of a 2-year trend comparison.
 #' @keywords WRTDS flow
-#' @import EGRET
+#' @importFrom EGRET estDailyFromSurfaces
+#' @importFrom EGRET setupYears
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -633,9 +634,9 @@ makeTwoYearsResults <- function(eList,year1,year2){
 # note this thing only works if the pa is water year
   paStart <- eList$INFO[,"paStart"]
   paLong <- eList$INFO[,"paLong"]
-	returnDaily <- EGRET::estDailyFromSurfaces(eList)
+	returnDaily <- estDailyFromSurfaces(eList)
   
-	bootAnnRes<- EGRET::setupYears(localDaily=returnDaily, 
+	bootAnnRes<- setupYears(localDaily=returnDaily, 
                                  paStart=paStart, 
                                  paLong=paLong)
 	AnnBase <- bootAnnRes[1,1]
@@ -659,6 +660,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
 #' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record.  
 #' @keywords WRTDS flow
+#' @importFrom EGRET surfaceIndex
 #' @return surfaces matrix
 #' @export
 #' @examples

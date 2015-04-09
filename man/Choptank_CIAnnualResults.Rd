@@ -6,7 +6,7 @@
 \title{Example CIAnnualResults}
 \description{
 Example data representing data from the Choptank River at Greensboro, MD,  USGS data
-Data is a a data frame returned from ciCalculations.
+Data is a a data frame returned from \code{ciCalculations}.
 }
 \keyword{data}
 \keyword{quality}

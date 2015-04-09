@@ -32,7 +32,7 @@ NULL
 #' Example CIAnnualResults
 #'
 #' Example data representing data from the Choptank River at Greensboro, MD,  USGS data
-#' Data is a a data frame returned from ciCalculations.
+#' Data is a a data frame returned from \code{ciCalculations}.
 #'
 #' @name Choptank_CIAnnualResults
 #' @docType data

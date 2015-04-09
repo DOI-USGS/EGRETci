@@ -20,7 +20,9 @@
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
 #' @export
-#' @import EGRET
+#' @importFrom EGRET setupYears
+#' @importFrom EGRET setSeasonLabel
+#' @importFrom EGRET plotConcHist
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -95,7 +97,10 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
 #' @export
-#' @import EGRET
+#' @importFrom EGRET setupYears
+#' @importFrom EGRET setSeasonLabel
+#' @importFrom EGRET plotFluxHist
+#' @importFrom EGRET fluxConst
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList 
@@ -173,7 +178,6 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @export
-#' @import EGRET
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -181,7 +185,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' saveCB(eList)
 #' }
 saveCB<-function(eList){ 
-  INFO <-EGRET::getInfo(eList)
+  INFO <-eList$INFO
   saveName <- paste0(INFO$staAbbrev,".",INFO$constitAbbrev,".CB.RData")
   save.image(file = saveName)
   message("Saved to: ",getwd(),"/",saveName)
@@ -194,7 +198,10 @@ saveCB<-function(eList){
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param blockLength integer suggested value is 200
 #' @export
-#' @import EGRET
+#' @importFrom EGRET as.egret
+#' @importFrom EGRET estSurfaces
+#' @importFrom EGRET setupYears
+#' @importFrom EGRET estDailyFromSurfaces
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -215,12 +222,12 @@ bootAnnual <- function(eList, blockLength=200){
     paStart <- INFO$paStart
   }
   
-  bootSample <- EGRETci::blockSample(Sample, blockLength)
-  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
-  surfaces1<-EGRET::estSurfaces(eListBoot)
-  eListBoot<-EGRET::as.egret(INFO,Daily,bootSample,surfaces1)
-  Daily1<-EGRET::estDailyFromSurfaces(eListBoot)
-  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
+  bootSample <- blockSample(Sample, blockLength)
+  eListBoot <- as.egret(INFO,Daily,bootSample,NA)
+  surfaces1<-estSurfaces(eListBoot)
+  eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
+  Daily1<-estDailyFromSurfaces(eListBoot)
+  annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   
@@ -236,7 +243,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' @param eList named list
 #' @param probs vector high and low confidence interval percentages
 #' @export
-#' @import EGRET
+#' @importFrom EGRET setupYears
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -377,6 +384,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10),
 #' @param eList named list
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
+#' @importFrom EGRET modelEstimation
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList

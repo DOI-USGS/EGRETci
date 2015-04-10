@@ -71,6 +71,9 @@ The following table provides definitions of the four data frames that constitute
 |wordsOut | | a vector of four character variables (self explanatory) |
 |xConc | | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) |
 |xFlux | | a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10^6^ kg/yr) |
+|pConc |  | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change |
+|pFlux |  | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change |
+
 
 
 There is also a data frame called caseSetUp (created with the `trendSetUp` function), which contains a number of important parameters that define the way that the test was implemented.  They are presented here.
@@ -124,31 +127,31 @@ The output in `outputText.txt` looks like this:
 
  Water Year
 
-  Bootstrap process, for change from Water Year 1985 to Water Year 2005
-                   data set runs from WaterYear 1980 to Water Year 2011
+  Bootstrap process, for change from Water Year 1985 to Water Year 2010
+                   data set runs from Water Year 1980 to Water Year 2011
   Bootstrap block length in days 200
   bootBreak is 39  confStop is 0.7
 
- WRTDS estimated concentration change is  0.318  mg/L
- WRTDS estimated flux change is  0.02707  10^6 kg/yr
+ WRTDS estimated concentration change is   0.444  mg/L
+ WRTDS estimated flux change is          0.03593  10^6 kg/yr
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
- best estimate is   0.318 mg/L
-  Lower and Upper 90% CIs    0.247    0.368
- also 95% CIs    0.232    0.398 
- and 50% CIs    0.275    0.332
+ best estimate is   0.444 mg/L
+  Lower and Upper 90% CIs    0.337    0.569
+ also 95% CIs    0.305    0.581 
+ and 50% CIs    0.391    0.476
  approximate two-sided p-value for Conc     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Concentration is trending up = 0.988 is trending down = 0.0125
+ Likelihood that Flow Normalized Concentration is trending up =      0.988  is trending down =     0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
- best estimate is  0.02707 10^6 kg/year
-  Lower and Upper 90% CIs   0.0206   0.0361
- also 95% CIs   0.0188   0.0374 
- and 50% CIs   0.0234   0.0310
+ best estimate is  0.03593 10^6 kg/year
+  Lower and Upper 90% CIs   0.0180   0.0463
+ also 95% CIs   0.0172   0.0476 
+ and 50% CIs   0.0301   0.0387
  approximate two-sided p-value for Flux     0.025
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Flux is trending up = 0.988 is trending down = 0.0125
+ Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
 
  Upward trend in concentration is highly likely 
  Upward trend in flux is highly likely

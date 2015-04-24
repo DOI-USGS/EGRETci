@@ -66,7 +66,8 @@ trendSetUp <- function(eList, ...){
   matchReturn <- list(...)
 
   numSamples <- length(eList$Sample$Date)
-  cat("Sample set runs from",eList$Sample$DecYear[1]," to",eList$Sample$DecYear[numSamples],"\n")
+  message("Sample set runs from ", as.integer(eList$Sample$DecYear[1])," to ",
+          as.integer(eList$Sample$DecYear[numSamples]))
  
   if(!is.null(matchReturn$year1)){
     year1 <- matchReturn$year1
@@ -74,7 +75,7 @@ trendSetUp <- function(eList, ...){
     message("Enter first water year of trend period")
     year1 <- as.numeric(readline())
   }
-  cat("year1 = ",year1," this is the first water year of trend period\n")
+  message("year1 = ",year1," this is the first water year of trend period")
   
   if(!is.null(matchReturn$year2)){
     year2 <- matchReturn$year2
@@ -82,7 +83,7 @@ trendSetUp <- function(eList, ...){
     message("Enter last water year of trend period")
     year2 <- as.numeric(readline())
   }
-  cat("year2 = ",year2," this is the last water year of trend period\n")
+  message("year2 = ",year2," this is the last water year of trend period")
   
   yearData1 <- trunc(eList$Sample$DecYear[1]+0.25)
   yearData2 <- trunc(eList$Sample$DecYear[numSamples]+0.25)
@@ -93,7 +94,7 @@ trendSetUp <- function(eList, ...){
     message("Enter nBoot, the maximum number of bootstrap replicates to be used, typically 100")
     nBoot <- as.numeric(readline())
   }
-  cat("nBoot = ",nBoot," this is the maximum number of replicates that will be run\n")
+  message("nBoot = ",nBoot," this is the maximum number of replicates that will be run")
   
   if(!is.null(matchReturn$bootBreak)){
     bootBreak <- as.numeric(matchReturn$bootBreak)
@@ -104,7 +105,7 @@ trendSetUp <- function(eList, ...){
 
   bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
   
-  cat("bootBreak = ",bootBreak," this is the minimum number of replicates that will be run\n")
+  message("bootBreak = ",bootBreak," this is the minimum number of replicates that will be run")
   
   if(!is.null(matchReturn$blockLength)){
     blockLength <- as.numeric(matchReturn$blockLength)
@@ -112,7 +113,7 @@ trendSetUp <- function(eList, ...){
     message("Enter blockLength, in days, typically 200 is a good choice")
     blockLength <- as.numeric(readline())
   }
-  cat("blockLength = ",blockLength," this is the number of days in a bootstrap block\n")
+  message("blockLength = ",blockLength," this is the number of days in a bootstrap block")
 
   confStop <- 0.7
 

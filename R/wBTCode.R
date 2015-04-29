@@ -131,9 +131,9 @@ trendSetUp <- function(eList, ...){
   
 }
 
-#' Save EGRETci workspace
+#' Save EGRETci workspace after wBT
 #'
-#' Saves critical information in a EGRETci workflow
+#' Saves critical information in a EGRETci workflow when analyzing trends over a set of two years.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
@@ -187,7 +187,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' }
 wBT<-function(eList,caseSetUp, 
               saveOutput=TRUE, fileName="temp.txt"){
-	
+
   eList <- setForBoot(eList, caseSetUp)
   localINFO <- eList$INFO
   localDaily <- eList$Daily
@@ -240,7 +240,7 @@ wBT<-function(eList,caseSetUp,
   LFluxDiff <- log(res[4]) - log(res[3])
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 4, width = 8)
-  if (saveOutput) sink(fileName)
+  if (saveOutput) { sink(fileName) }
   cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
   cat("\n\n", periodName)
   cat("\n\n  Bootstrap process, for change from Water Year", 
@@ -252,6 +252,12 @@ wBT<-function(eList,caseSetUp,
   cat("\n\n WRTDS estimated concentration change is", fcc, 
       " mg/L")
   cat("\n WRTDS estimated flux change is        ", ffc, " 10^6 kg/yr")
+  cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
+  cat("\n nPos is cumulative number of positive trends")
+  cat("\n post_p is posterior mean estimate of probability of a positive trend")
+  cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
+  cat("\n\n      rep              Concentration             |              Flux")
+  cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
   if (saveOutput) {
     message("\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
     message("\n", periodName)
@@ -321,12 +327,6 @@ wBT<-function(eList,caseSetUp,
                 format(quantFlux[2],digits = 4, width = 8), 
                 format(quantFlux[8],digits = 4, width = 8))
     if (!saveOutput) {
-      cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
-      cat("\n nPos is cumulative number of positive trends")
-      cat("\n post_p is posterior mean estimate of probability of a positive trend")
-      cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
-      cat("\n\n      rep              Concentration             |              Flux")
-      cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
       cat("\n", prints)
     } else {
       message(" ", paste(prints, collapse = " "))
@@ -435,13 +435,13 @@ wBT<-function(eList,caseSetUp,
             format(pValF, digits = 2, width = 9))
     if (posXFlux == 0 | posXFlux == iBoot) 
       message("* Note p-value should be considered to be < stated value")
-    message("  Likelihood that Flow Normalized Flux is trending up = ", 
-            format(likeFUp, digits = 3), " is trending down= ", 
-            format(likeFDown, digits = 3))
-    message("\n ", format(wordsOut[1], width = 30), "\n ", 
-            format(wordsOut[3], width = 30))
-    message(" ", format(wordsOut[2], width = 30), "\n ", 
-            format(wordsOut[4], width = 30))
+      message("  Likelihood that Flow Normalized Flux is trending up = ", 
+              format(likeFUp, digits = 3), " is trending down= ", 
+              format(likeFDown, digits = 3))
+      message("\n ", format(wordsOut[1], width = 30), "\n ", 
+              format(wordsOut[3], width = 30))
+      message(" ", format(wordsOut[2], width = 30), "\n ", 
+              format(wordsOut[4], width = 30))
   }
   return(eBoot)					
 }

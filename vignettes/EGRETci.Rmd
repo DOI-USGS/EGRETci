@@ -291,7 +291,7 @@ repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
 }
 stopCluster(cl)               
 
-# save(repAnnualResults, file="repAnnual.RData")
+# save(repAnnual, file="repAnnual.RData")
 
 CIAnnualResults <- ciBands(eList, repAnnual, probs)
 save(eList,CIAnnualResults, file="CIAnnualResults.RData")

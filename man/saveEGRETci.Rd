@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{saveEGRETci}
 \alias{saveEGRETci}
-\title{Save EGRETci workspace}
+\title{Save EGRETci workspace after wBT}
 \usage{
 saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 }
@@ -16,7 +16,7 @@ saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 \item{fileName}{character. If left blank (empty quotes), the function will interactively ask for a name to save.}
 }
 \description{
-Saves critical information in a EGRETci workflow
+Saves critical information in a EGRETci workflow when analyzing trends over a set of two years.
 }
 \examples{
 library(EGRET)

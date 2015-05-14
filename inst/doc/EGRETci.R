@@ -38,7 +38,7 @@ library(EGRETci)
 #  eBoot <- wBT(eList, caseSetUp, fileName ="outputText.txt")
 #  saveEGRETci(eList, eBoot, caseSetUp, fileName = "output")
 
-## ----, fig.height=6, fig.width=6--------------------------
+## ---- fig.height=6, fig.width=6---------------------------
 library(EGRET)
 library(EGRETci)
 
@@ -56,7 +56,7 @@ plotHistogramTrend(eList, eBoot, caseSetUp,
                    flux=TRUE, xSeq = seq(-20,60,5))
 
 
-## ----, histExampleCombo, fig.width=7, fig.height=4--------
+## ---- histExampleCombo, fig.width=7, fig.height=4---------
 par(mfrow=c(1,2))
 plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE,
                    printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
@@ -65,7 +65,7 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux=TRUE,
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 
-## ----, eval=FALSE-----------------------------------------
+## ---- eval=FALSE------------------------------------------
 #  library(EGRET)
 #  library(EGRETci)
 #  
@@ -78,7 +78,7 @@ par(mfrow=c(1,1))
 ## ----eval=FALSE-------------------------------------------
 #  CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200, widthCI = 90)
 
-## ----, eval=FALSE-----------------------------------------
+## ---- eval=FALSE------------------------------------------
 #  library(foreach)
 #  library(doParallel)
 #  library(iterators)
@@ -105,13 +105,13 @@ par(mfrow=c(1,1))
 #  }
 #  stopCluster(cl)
 #  
-#  # save(repAnnualResults, file="repAnnual.RData")
+#  # save(repAnnual, file="repAnnual.RData")
 #  
 #  CIAnnualResults <- ciBands(eList, repAnnual, probs)
 #  save(eList,CIAnnualResults, file="CIAnnualResults.RData")
 #  
 
-## ----, fig.height=5, fig.width=7--------------------------
+## ---- fig.height=5, fig.width=7---------------------------
 eList <- Choptank_eList
 
 CIAnnualResults <- Choptank_CIAnnualResults

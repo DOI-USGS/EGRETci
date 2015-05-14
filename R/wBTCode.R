@@ -480,9 +480,9 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   }
   
   originalColumns <- names(localSample)
-  minNumObs<-localINFO$minNumObs
-  minNumUncen<-localINFO$minNumUncen
-  bottomLogQ<-localINFO$bottomLogQ
+  minNumObs <- min(c(localINFO$minNumObs, length(localSample$ConcLow)), na.rm=TRUE)
+  minNumUncen <- min(c(localINFO$minNumUncen, sum(localSample$Uncen)), na.rm=TRUE)
+  bottomLogQ <- localINFO$bottomLogQ
   stepLogQ <- localINFO$stepLogQ
   topLogQ<-bottomLogQ + 13 * stepLogQ
   vectorLogQ<-seq(bottomLogQ,topLogQ,stepLogQ)

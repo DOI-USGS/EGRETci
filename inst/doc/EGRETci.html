@@ -53,7 +53,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">Introduction to EGRET Confidence Intervals</h1>
 <h4 class="author"><em>Robert M. Hirsch, Laura A. De Cicco</em></h4>
-<h4 class="date"><em>10 April, 2015</em></h4>
+<h4 class="date"><em>14 May, 2015</em></h4>
 </div>
 
 <div id="TOC">
@@ -452,7 +452,7 @@ repAnnual &lt;-<span class="st"> </span><span class="kw">foreach</span>(<span cl
 }
 <span class="kw">stopCluster</span>(cl)               
 
-<span class="co"># save(repAnnualResults, file=&quot;repAnnual.RData&quot;)</span>
+<span class="co"># save(repAnnual, file=&quot;repAnnual.RData&quot;)</span>
 
 CIAnnualResults &lt;-<span class="st"> </span><span class="kw">ciBands</span>(eList, repAnnual, probs)
 <span class="kw">save</span>(eList,CIAnnualResults, <span class="dt">file=</span><span class="st">&quot;CIAnnualResults.RData&quot;</span>)</code></pre>

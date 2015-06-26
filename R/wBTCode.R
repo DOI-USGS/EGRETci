@@ -200,9 +200,9 @@ wBT<-function(eList,caseSetUp,
     return(out)
   }
   bootOut <- as.data.frame(matrix(ncol = 25, nrow = 1))
-  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC", 
-                         "upC", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
-                         "likeCDown", "rejectF", "pValF", "estF", "lowF", "upF", 
+  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC90", 
+                         "upC90", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
+                         "likeCDown", "rejectF", "pValF", "estF", "lowF90", "upF90", 
                          "lowF50", "upF50", "lowF95", "upF95", "likeFUp", "likeFDown", 
                          "baseConc", "baseFlux", "iBoot")
   year1 <- caseSetUp$year1

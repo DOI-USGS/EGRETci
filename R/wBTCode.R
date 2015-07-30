@@ -188,6 +188,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 wBT<-function(eList,caseSetUp, 
               saveOutput=TRUE, fileName="temp.txt"){
 
+  #   This is the version of wBT that includes the revised calculation of the 
+  #    two-sided p-value, added 16Jul2015, RMHirsch
+  #
   eList <- setForBoot(eList, caseSetUp)
   localINFO <- eList$INFO
   localDaily <- eList$Daily
@@ -200,9 +203,9 @@ wBT<-function(eList,caseSetUp,
     return(out)
   }
   bootOut <- as.data.frame(matrix(ncol = 25, nrow = 1))
-  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC90", 
-                         "upC90", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
-                         "likeCDown", "rejectF", "pValF", "estF", "lowF90", "upF90", 
+  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC", 
+                         "upC", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
+                         "likeCDown", "rejectF", "pValF", "estF", "lowF", "upF", 
                          "lowF50", "upF50", "lowF95", "upF95", "likeFUp", "likeFDown", 
                          "baseConc", "baseFlux", "iBoot")
   year1 <- caseSetUp$year1
@@ -222,19 +225,12 @@ wBT<-function(eList,caseSetUp,
   pFlux <- rep(NA, nBoot)
   posXConc <- 0
   posXFlux <- 0
-  
-  possibleError1 <- tryCatch(
-    surfaces1 <- estSliceSurfacesSimpleAlt(eList, year1),
-    error = function(e) e
-  ) 
-  
-  possibleError2 <- tryCatch(
-    surfaces2 <- estSliceSurfacesSimpleAlt(eList, year2),
-    error = function(e) e
-  ) 
-
-  if(!inherits(possibleError1, "error") & !inherits(possibleError2, "error")){
-
+  possibleError1 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eList, 
+                                                                    year1), error = function(e) e)
+  possibleError2 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eList, 
+                                                                    year2), error = function(e) e)
+  if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
+                                                     "error")) {
     combo <- makeCombo(surfaces1, surfaces2)
     eListCombo <- as.egret(localINFO, localDaily, localSample, 
                            combo)
@@ -251,8 +247,9 @@ wBT<-function(eList,caseSetUp,
     LFluxDiff <- log(res[4]) - log(res[3])
     fcc <- format(regDeltaConc, digits = 3, width = 7)
     ffc <- format(regDeltaFlux, digits = 4, width = 8)
-    
-    if (saveOutput) { sink(fileName) }
+    if (saveOutput) {
+      sink(fileName)
+    }
     cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
     cat("\n\n", periodName)
     cat("\n\n  Bootstrap process, for change from Water Year", 
@@ -263,7 +260,8 @@ wBT<-function(eList,caseSetUp,
     cat("\n  bootBreak is", bootBreak, " confStop is", confStop)
     cat("\n\n WRTDS estimated concentration change is", fcc, 
         " mg/L")
-    cat("\n WRTDS estimated flux change is        ", ffc, " 10^6 kg/yr")
+    cat("\n WRTDS estimated flux change is        ", ffc, 
+        " 10^6 kg/yr")
     cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
     cat("\n nPos is cumulative number of positive trends")
     cat("\n post_p is posterior mean estimate of probability of a positive trend")
@@ -282,55 +280,58 @@ wBT<-function(eList,caseSetUp,
               confStop)
       message("\n WRTDS estimated concentration change is ", 
               fcc, "  mg/L")
-      message(" WRTDS estimated flux change is         ", ffc, 
-              "  10^6 kg/yr")
+      message(" WRTDS estimated flux change is         ", 
+              ffc, "  10^6 kg/yr")
       message(" nPos is cumulative number of positive trends")
       message("\n post_p is posterior mean estimate of probability of a positive trend")
       message(" Lower and Upper are estimates of the 90% CI values for magnitude of trend")
       message("\n      rep              Concentration             |              Flux")
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
-    
     for (iBoot in 1:nBoot) {
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength)
       eListBoot <- as.egret(localINFO, localDaily, bootSample, 
-                                   NA)
-      possibleError3 <- tryCatch(
-        surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, year1),
-        error = function(e) e
-      ) 
-      possibleError4 <- tryCatch(
-        surfaces2 <- estSliceSurfacesSimpleAlt(eListBoot, year2),
-        error = function(e) e
-      ) 
-      
-      if(!inherits(possibleError3, "error") & !inherits(possibleError4, "error")){
+                            NA)
+      possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 
+                                                                        year1), error = function(e) e)
+      possibleError4 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eListBoot, 
+                                                                        year2), error = function(e) e)
+      if (!inherits(possibleError3, "error") & !inherits(possibleError4, 
+                                                         "error")) {
         combo <- makeCombo(surfaces1, surfaces2)
-        eListBoot <- as.egret(localINFO, localDaily, bootSample, 
-                                     combo)
-        res <- makeTwoYearsResults(eListBoot, year1, year2)
-        xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
-        xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - res[3]) * 
-                                                0.00036525)
+        eListBoot <- as.egret(localINFO, localDaily, 
+                              bootSample, combo)
+        res <- makeTwoYearsResults(eListBoot, year1, 
+                                   year2)
+        xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - 
+                                                res[1])
+        xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - 
+                                                 res[3]) * 0.00036525)
         LConc <- (2 * LConcDiff) - (log(res[2]) - log(res[1]))
         pConc[iBoot] <- (100 * exp(LConc)) - 100
         LFlux <- (2 * LFluxDiff) - (log(res[4]) - log(res[3]))
         pFlux[iBoot] <- (100 * exp(LFlux)) - 100
-        posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 1, posXConc)
-        binomIntConc <- binom::binom.bayes(posXConc, iBoot, confStop, 
-                                           "central")
-        belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)
-        aboveConc <- ifelse(binomIntConc$lower > 0.95, 1, 0)
-        midConc <- ifelse(binomIntConc$lower > 0.05 & binomIntConc$upper < 
-                            0.95, 1, 0)
-        posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 1, posXFlux)
-        binomIntFlux <- binom::binom.bayes(posXFlux, iBoot, confStop, 
-                                           "central")
-        belowFlux <- ifelse(binomIntFlux$upper < 0.05, 1, 0)
-        aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 1, 0)
-        midFlux <- ifelse(binomIntFlux$lower > 0.05 & binomIntFlux$upper < 
-                            0.95, 1, 0)
+        posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 
+                             1, posXConc)
+        binomIntConc <- binom::binom.bayes(posXConc, 
+                                           iBoot, confStop, "central")
+        belowConc <- ifelse(binomIntConc$upper < 0.05, 
+                            1, 0)
+        aboveConc <- ifelse(binomIntConc$lower > 0.95, 
+                            1, 0)
+        midConc <- ifelse(binomIntConc$lower > 0.05 & 
+                            binomIntConc$upper < 0.95, 1, 0)
+        posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 
+                             1, posXFlux)
+        binomIntFlux <- binom::binom.bayes(posXFlux, 
+                                           iBoot, confStop, "central")
+        belowFlux <- ifelse(binomIntFlux$upper < 0.05, 
+                            1, 0)
+        aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 
+                            1, 0)
+        midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
+                            binomIntFlux$upper < 0.95, 1, 0)
         quantConc <- quantile(xConc[1:iBoot], prob, type = 6)
         lowConc <- quantConc[2]
         highConc <- quantConc[8]
@@ -339,41 +340,37 @@ wBT<-function(eList,caseSetUp,
         highFlux <- quantFlux[8]
         prints <- c(format(iBoot, digits = 3, width = 7), 
                     format(xConc[iBoot], digits = 3, width = 7), 
-                    format(posXConc, digits = 3,width = 5), 
-                    format(binomIntConc$mean, digits = 3), 
-                    format(quantConc[2], digits = 3, width = 7),
-                    format(quantConc[8], digits = 3, width = 7), 
-                    "  |  ", 
-                    format(xFlux[iBoot], digits = 4, width = 8), 
-                    format(posXFlux,digits = 3, width = 5), 
-                    format(binomIntFlux$mean,digits = 3, width = 7), 
-                    format(quantFlux[2],digits = 4, width = 8), 
-                    format(quantFlux[8],digits = 4, width = 8))
-        
-        
+                    format(posXConc, digits = 3, width = 5), format(binomIntConc$mean, 
+                                                                    digits = 3), format(quantConc[2], digits = 3, 
+                                                                                        width = 7), format(quantConc[8], digits = 3, 
+                                                                                                           width = 7), "  |  ", format(xFlux[iBoot], 
+                                                                                                                                       digits = 4, width = 8), format(posXFlux, 
+                                                                                                                                                                      digits = 3, width = 5), format(binomIntFlux$mean, 
+                                                                                                                                                                                                     digits = 3, width = 7), format(quantFlux[2], 
+                                                                                                                                                                                                                                    digits = 4, width = 8), format(quantFlux[8], 
+                                                                                                                                                                                                                                                                   digits = 4, width = 8))
         if (!saveOutput) {
           cat("\n", prints)
-        } else {
+        }
+        else {
           message(" ", paste(prints, collapse = " "))
         }
-        
-        test1 <- as.numeric(belowConc + aboveConc + midConc > 0.5 & 
-                              belowFlux + aboveFlux + midFlux > 0.5 & 
+        test1 <- as.numeric(belowConc + aboveConc + midConc > 
+                              0.5 & belowFlux + aboveFlux + midFlux > 0.5 & 
                               iBoot >= bootBreak & iBoot > 30)
-        test2 <- as.numeric(midConc > 0.5 & 
-                              midFlux > 0.5 & 
-                              iBoot >= bootBreak &
-                              iBoot <= 30) 
-    
-        if (test1 + test2 > 0.5){
+        test2 <- as.numeric(midConc > 0.5 & midFlux > 
+                              0.5 & iBoot >= bootBreak & iBoot <= 30)
+        if (test1 + test2 > 0.5) {
           break
         }
-      } else {
-        if(saveOutput) { sink() }
+      }
+      else {
+        if (saveOutput) {
+          sink()
+        }
         stop(possibleError3, "/n", possibleError4)
       }
     }
-    
     rejectC <- lowConc * highConc > 0
     rejectF <- lowFlux * highFlux > 0
     cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
@@ -383,14 +380,13 @@ wBT<-function(eList,caseSetUp,
         fquantConc[2], fquantConc[8])
     lowC <- quantConc[2]
     upC <- quantConc[8]
-    cat("\n also 95% CIs", fquantConc[1], fquantConc[9], "\n and 50% CIs", 
-        fquantConc[4], fquantConc[6])
+    cat("\n also 95% CIs", fquantConc[1], fquantConc[9], 
+        "\n and 50% CIs", fquantConc[4], fquantConc[6])
     lowC50 <- quantConc[4]
     upC50 <- quantConc[6]
     lowC95 <- quantConc[1]
     upC95 <- quantConc[9]
-    p <- binomIntConc$mean
-    pValC <- 2 * (min(p, (1 - p)))
+    pValC <- pVal(xConc)
     cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                             digits = 2, width = 9))
     if (posXConc == 0 | posXConc == iBoot) 
@@ -407,14 +403,14 @@ wBT<-function(eList,caseSetUp,
         fquantFlux[2], fquantFlux[8])
     lowF <- quantFlux[2]
     upF <- quantFlux[8]
-    cat("\n also 95% CIs", fquantFlux[1], fquantFlux[9], "\n and 50% CIs", 
-        fquantFlux[4], fquantFlux[6])
+    cat("\n also 95% CIs", fquantFlux[1], fquantFlux[9], 
+        "\n and 50% CIs", fquantFlux[4], fquantFlux[6])
     lowF50 <- quantFlux[4]
     upF50 <- quantFlux[6]
     lowF95 <- quantFlux[1]
     upF95 <- quantFlux[9]
     p <- binomIntFlux$mean
-    pValF <- 2 * (min(p, (1 - p)))
+    pValF <- pVal(xFlux)
     cat("\n approximate two-sided p-value for Flux", format(pValF, 
                                                             digits = 2, width = 9))
     if (posXFlux == 0 | posXFlux == iBoot) 
@@ -422,12 +418,12 @@ wBT<-function(eList,caseSetUp,
     likeFUp <- (posXFlux + 0.5)/(iBoot + 1)
     likeFDown <- 1 - likeFUp
     cat("\n Likelihood that Flow Normalized Flux is trending up =", 
-        format(likeFUp, digits = 3), " is trending down=", format(likeFDown, 
-                                                                  digits = 3))
-    bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, lowC50, 
-                          upC50, lowC95, upC95, likeCUp, likeCDown, rejectF, pValF, 
-                          estF, lowF, upF, lowF50, upF50, lowF95, upF95, likeFUp, 
-                          likeFDown, baseConc, baseFlux, iBoot)
+        format(likeFUp, digits = 3), " is trending down=", 
+        format(likeFDown, digits = 3))
+    bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, 
+                          lowC50, upC50, lowC95, upC95, likeCUp, likeCDown, 
+                          rejectF, pValF, estF, lowF, upF, lowF50, upF50, lowF95, 
+                          upF95, likeFUp, likeFDown, baseConc, baseFlux, iBoot)
     likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
     wordsOut <- wordLike(likeList)
     cat("\n\n", format(wordsOut[1], width = 30), "\n", format(wordsOut[3], 
@@ -438,8 +434,8 @@ wBT<-function(eList,caseSetUp,
     xFlux <- xFlux[1:iBoot]
     pConc <- pConc[1:iBoot]
     pFlux <- pFlux[1:iBoot]
-    eBoot <- list(bootOut = bootOut, wordsOut = wordsOut, xConc = xConc, 
-                  xFlux = xFlux, pConc = pConc, pFlux = pFlux)
+    eBoot <- list(bootOut = bootOut, wordsOut = wordsOut, 
+                  xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux)
     if (saveOutput) {
       sink()
       message("\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ? ", 
@@ -465,16 +461,17 @@ wBT<-function(eList,caseSetUp,
               format(pValF, digits = 2, width = 9))
       if (posXFlux == 0 | posXFlux == iBoot) 
         message("* Note p-value should be considered to be < stated value")
-        message("  Likelihood that Flow Normalized Flux is trending up = ", 
-                format(likeFUp, digits = 3), " is trending down= ", 
-                format(likeFDown, digits = 3))
-        message("\n ", format(wordsOut[1], width = 30), "\n ", 
-                format(wordsOut[3], width = 30))
-        message(" ", format(wordsOut[2], width = 30), "\n ", 
-                format(wordsOut[4], width = 30))
+      message("  Likelihood that Flow Normalized Flux is trending up = ", 
+              format(likeFUp, digits = 3), " is trending down= ", 
+              format(likeFDown, digits = 3))
+      message("\n ", format(wordsOut[1], width = 30), "\n ", 
+              format(wordsOut[3], width = 30))
+      message(" ", format(wordsOut[2], width = 30), "\n ", 
+              format(wordsOut[4], width = 30))
     }
-    return(eBoot)	
-  } else {
+    return(eBoot)
+  }
+  else {
     stop(possibleError1, "/n", possibleError2)
   }
 }
@@ -825,4 +822,35 @@ wordLike <- function(likeList){
 	return(wordLikeFour)
 }
 
+#' pVal
+#'
+#' Computes the two-sided p value for the null hypothesis
+#'
+#' @param s slope values from the bootstrap (already flipped)
+#' @export
+#' @examples
+#' s <- c(0.01, 0.5, 0.55, 0.99)
+#' pValue <- pVal(s)
+pVal <- function(s){
+  # this function computes the two-sided p value for the null hypothesis
+  # s are the slope values from the bootstrap (already flipped)
+  s <- na.omit(s)
+  s <- sort(s)
+  m <- length(s)
+  xvec <- ifelse(s>0,1,0)
+  x <- sum(xvec)
+  #  kn is the order statistic of the largest negative
+  #  kp is the order statistic of the smallest positive
+  kp <- m - x + 1
+  kn <- kp - 1
+  # this if statement looks out for the case of all plus slopes or all minus slopes
+  # it computes the special case p value for these
+  # note that when it gets reported, it should be as "less than" the reported value
+  pval <- if(x == 0 | x == m) 2 / (m + 1) else {
+    b1 <- (kn - kp) / (s[kn] - s[kp])
+    k0 <- kp - (b1 * s[kp])
+    p <- k0 / (m + 1)
+    2 * (min(p,1-p))}
+  return(pval)	
+}
 

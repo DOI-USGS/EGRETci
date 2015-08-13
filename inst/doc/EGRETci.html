@@ -53,7 +53,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">Introduction to EGRET Confidence Intervals</h1>
 <h4 class="author"><em>Robert M. Hirsch, Laura A. De Cicco</em></h4>
-<h4 class="date"><em>11 August, 2015</em></h4>
+<h4 class="date"><em>13 August, 2015</em></h4>
 </div>
 
 <div id="TOC">
@@ -66,6 +66,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </ul></li>
 <li><a href="#confidence-bands">Confidence Bands</a><ul>
 <li><a href="#introduction-1">Introduction</a></li>
+<li><a href="#preliminary-steps">Preliminary Steps</a></li>
 <li><a href="#simple-workflow">Simple Workflow</a></li>
 <li><a href="#parallel-computing">Parallel Computing</a></li>
 <li><a href="#ci-result-plots">CI Result Plots</a></li>
@@ -75,12 +76,11 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The package <strong>EGRETci</strong> encompasses the various approaches to uncertainty estimation associated with WRTDS trend analysis implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in a manuscript <em>A bootstrap method for estimating uncertainty of water quality trends</em> by Hirsch, Archfield, and De Cicco (the manuscript is currently accepted to Environmental Modelling &amp; Software and will be publicly available soon, email <a href="mailto:rhirsch@usgs.gov">rhirsch@usgs.gov</a> for access in the interim).</p>
-<p>The <strong>EGRETci</strong> package is designed for interactive or batch use. Instructions for both are included here in the vignette. The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS. Users should consult the <strong>EGRET</strong> vignette for more background on those issues.</p>
+<p>This package <strong>EGRETci</strong> implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in the <em>A bootstrap method for estimating uncertainty of water quality trends</em> by Hirsch, Archfield, and De Cicco which has been accepted for publication in the journal Environmental Modelling and Software. As soon as it is published on line (late summer to early fall, 2015) the paper will be available at the EGRET web page at <a href="https://github.com/USGS-R/EGRET/wiki" class="uri">https://github.com/USGS-R/EGRET/wiki</a>. The <strong>EGRETci</strong> package is designed for interactive or batch use. Instructions for both are included here in the vignette. The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS. Users should consult the <strong>EGRET</strong> vignette for more background on those issues.</p>
 <p>The <strong>EGRETci</strong> package is designed to carry out three specific types of tasks.</p>
 <ol style="list-style-type: decimal">
-<li><p>Evaluate a water quality trend over a specific span of years and produce a variety of tabular results. This is done with a short workflow involving the functions: <code>setForBoot</code> and <code>wBT</code>. The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot. The contents of eBoot are described below.</p></li>
-<li><p>Plot histograms of values for the trend magnitudes, expressed in percent, for flow-normalized concentration and flow-normalized flux. This is done with the function <code>plotHistogramTrend</code>. It depends on outputs contained in eBoot. Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period). Such analyses would require a small amount of script writing by the user.</p></li>
+<li><p>Evaluate a water quality trend over a specific span of years and produce a variety of tabular results. This is done with a short workflow involving the functions: <code>trendSetUp</code> and <code>wBT</code>. The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot. The contents of eBoot are described below.</p></li>
+<li><p>Plot histograms of values for the trend magnitudes, expressed in percent change over the specified period, for flow-normalized concentration and flow-normalized flux. This is done with the function <code>plotHistogramTrend</code>. It depends on outputs contained in eBoot. Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period). Such analyses would require a small amount of script writing by the user.</p></li>
 <li><p>Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux. This is done using a function called <code>ciCalculations</code> and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (<code>plotConcHistBoot</code>, and <code>plotFluxHistBoot</code>).</p></li>
 </ol>
 <div id="required-data-frames" class="section level2">
@@ -103,7 +103,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <tr class="even">
 <td align="left"></td>
 <td align="left">pValC</td>
-<td align="left">p-value for no trend in concentration</td>
+<td align="left">two-sided p-value for no trend in concentration</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
@@ -112,12 +112,12 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="left">lowC</td>
+<td align="left">lowC90</td>
 <td align="left">Lower confidence limit (90%) on concentration trend</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="left">upC</td>
+<td align="left">upC90</td>
 <td align="left">Upper confidence limit (90%) on concentration trend</td>
 </tr>
 <tr class="even">
@@ -158,7 +158,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <tr class="odd">
 <td align="left"></td>
 <td align="left">pValF</td>
-<td align="left">p-value for no trend in flux</td>
+<td align="left">two-sided p-value for no trend in flux</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
@@ -167,12 +167,12 @@ code > span.er { color: #ff0000; font-weight: bold; }
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="left">lowF</td>
+<td align="left">lowF90</td>
 <td align="left">Lower confidence limit (90%) on flux trend</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
-<td align="left">upF</td>
+<td align="left">upF90</td>
 <td align="left">Upper confidence limit (90%) on flux trend</td>
 </tr>
 <tr class="odd">
@@ -238,12 +238,12 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <tr class="odd">
 <td align="left">pConc</td>
 <td align="left"></td>
-<td align="left">a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change</td>
+<td align="left">a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change</td>
 </tr>
 <tr class="even">
 <td align="left">pFlux</td>
 <td align="left"></td>
-<td align="left">a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate expressed as % change</td>
+<td align="left">a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change</td>
 </tr>
 </tbody>
 </table>
@@ -301,7 +301,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <p>The WBT (WRTDS Bootstrap Test) can be run interactively or in batch.</p>
 <p>Regardless of which approach is used, if the user wishes to use any non-default values of the parameters for model estimation or period of analysis these need to be set up before running the code. For example:</p>
 <p>If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the <code>setPA</code> function. For example if we want to do the analysis for the three months starting with April, the command would be <code>eList &lt;- setPA(eList, paStart = 4, paLong = 3)</code>.</p>
-<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code>).</p>
+<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code> in the <strong>EGRET</strong> package).</p>
 <p>Once all of the parameters have been set (which requires no action by the user if the defaults are to be used) the set of commands for interactive processing would be this (using the example data set Choptank_eList):</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(EGRET)
 <span class="kw">library</span>(EGRETci)
@@ -316,7 +316,9 @@ eBoot &lt;-<span class="st"> </span><span class="kw">wBT</span>(eList,caseSetUp,
 <span class="kw">saveEGRETci</span>(eList, eBoot, caseSetUp)</code></pre>
 <p>Two sets of outputs are created, a text file which documents the results of the WBT, and an RData file (created by the <code>saveEGRETci</code> function) that saves the relevant results as data frames for use in the <code>plotHistogramTrend</code> function (described below) or other user-specified post-processing functions.</p>
 <p>The output in <code>outputText.txt</code> looks like this:</p>
-<pre><code> Choptank River    Inorganic nitrogen (nitrate and nitrite)
+<pre><code>
+
+ Choptank River    Inorganic nitrogen (nitrate and nitrite)
 
  Water Year
 
@@ -330,19 +332,19 @@ eBoot &lt;-<span class="st"> </span><span class="kw">wBT</span>(eList,caseSetUp,
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
  best estimate is   0.444 mg/L
-  Lower and Upper 90% CIs    0.337    0.569
- also 95% CIs    0.305    0.581 
- and 50% CIs    0.391    0.476
- approximate two-sided p-value for Conc     0.025
+  Lower and Upper 90% CIs    0.308    0.506
+ also 95% CIs    0.201    0.512 
+ and 50% CIs    0.397    0.472
+ approximate two-sided p-value for Conc      0.05
 * Note p-value should be considered to be &lt; stated value
  Likelihood that Flow Normalized Concentration is trending up =      0.988  is trending down =     0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  best estimate is  0.03593 10^6 kg/year
-  Lower and Upper 90% CIs   0.0180   0.0463
- also 95% CIs   0.0172   0.0476 
- and 50% CIs   0.0301   0.0387
- approximate two-sided p-value for Flux     0.025
+  Lower and Upper 90% CIs   0.0211   0.0452
+ also 95% CIs   0.0197   0.0456 
+ and 50% CIs   0.0309   0.0390
+ approximate two-sided p-value for Flux      0.05
 * Note p-value should be considered to be &lt; stated value
  Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
 
@@ -350,7 +352,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  Upward trend in flux is highly likely
  Downward trend in concentration is highly unlikely 
  Downward trend in flux is highly unlikely</code></pre>
-<p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50 (and all other smoothing parameters at their default values), run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minimum of 39 replicates, and a block length of 200. The script would be:</p>
+<p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50, and all other smoothing parameters at their default values. And we want to run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minumum of 39 replicates, and a block length of 200. The script would be:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(EGRET)
 <span class="kw">library</span>(EGRETci)
 eList &lt;-<span class="st"> </span>Choptank_eList
@@ -368,8 +370,8 @@ eBoot &lt;-<span class="st"> </span><span class="kw">wBT</span>(eList, caseSetUp
 <p>This will result in the creation of the text file called <code>outputText.txt</code>, and an RData file called <code>output.RData</code>. The RData file will contain the objects <code>caseSetUp, bootOut, wordsOut, xConc, xFlux, and INFO</code>. Both files will be located in the working directory.</p>
 <div id="histograms" class="section level2">
 <h2>Histograms</h2>
-<p>These functions plot histograms of all of the trend slopes from the full set of replicates created by <code>wBT</code>. These slopes are stored in the eBoot list. The first example workflow can be used to plot the two histograms: one for trends in Flow Normalized Concentration and one for Flow Normalized Flux.</p>
-<p>A comment about the final argument in these functions: The default is <code>xSeq = seq(-100,100,10)</code>. This means that the bins for the histogram will run from -100 to +100 in steps of 10 (the units are percentage change). This will almost certainly be too broad a set of bins, but the first run, with the xSeq left at its devault values (meaning that you can just leave it out of the argument list) will give you an idea of the true range that you need to consider. Then, run it again with a much tighter range that still includes all of the replicate trends. For example, suppose we see that the replicates seen in the first plot run tell us this: the lowest value is between -30 and -20 and the highest value is between 40 and 50, then we give the command again we should say <code>xSeq = seq(-30,50,10)</code>. If it turns out that all the values are much closer to zero we might use something like <code>xSeq = seq(-15,5,5)</code> so the bins are a width of 5 rather than 10. It is also a good idea to have the full width of the histogram include zero. For example, in the case where the values were all in the range of +20 to +70, you might use something like <code>xSeq = seq(0,70,10)</code>.</p>
+<p>The function <code>plotHistogramTrend</code> plots a histogram of all of the trend magnitudes (expressed as percentage change over the period) from the full set of replicates created by running <code>wBT</code>. The function will plot either Flow-Normalized Concentration trends or Flow-Normalized Flux trends. The trend magnitudes for all the replicates are stored in the eBoot list. The first example workflow can be used to plot the two histograms: one for trends in Flow Normalized Concentration and one for Flow Normalized Flux.</p>
+<p>A comment about the final argument in these functions: The default is <code>xSeq = seq(-100,100,10)</code>. This means that the bins for the histogram will run from -100 to +100 in steps of 10 (the units are percentage change). This will almost certainly be too broad a set of bins, but the first run, with the xSeq left at its devault values (meaning that you can just leave it out of the argument list) will give you an idea of the true range that you need to consider. Then, run it again with a much tighter range that still includes all of the replicate trends. For example, suppose we see that the replicates seen in the first plot run tell us this: the lowest value is between -30 and -20 and the highest value is between 40 and 50, then when we give the command again we should say <code>xSeq = seq(-30,50,10)</code>. If it turns out that all the values are much closer to zero we might use something like <code>xSeq = seq(-15,5,5)</code> so the bins are a width of 5 rather than 10. It is also a good idea to have the full width of the histogram include zero. For example, in the case where the values were all in the range of +20 to +70, you might use something like <code>xSeq = seq(0,70,10)</code>. Note that if the desired output histogram needs to be smoother, then the original <code>wBT</code> run needs to set <code>bootBreak</code> to a larger value such as 100 or 200. The larger <code>bootBreak</code> is, the smoother the histogram will be.</p>
 <p>Here is an example workflow where the analyst has already determined what a good xSeq argument might be.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(EGRET)
 <span class="kw">library</span>(EGRETci)
@@ -403,11 +405,15 @@ caseSetUp &lt;-<span class="st"> </span>Choptank_caseSetUp
 <h1>Confidence Bands</h1>
 <div id="introduction-1" class="section level2">
 <h2>Introduction</h2>
-<p>There are two versions of the workflow for confidence bands, the first just uses a single computer core which means it takes a long time to run (jobs can take an hour or more), but it is simple to run. It uses the function <code>ciCalculations</code> and can be run interactively or in batch. Two scripts for that are provided below. It is best done in the Terminal or some other window, rather than in the console. If run in the console it will make it impossible for other work in R to take place while the job is running. The second way it can be done is using parallel computing in R. A script for that purpose is provided. It does require three extra packages be installed (<strong>foreach</strong>, <strong>doParallel</strong>, and <strong>iterators</strong>). It is also best to run this in the Terminal, because if it is run in the console, no other R work can be done while it is running.</p>
-<p>Regardless of the way that the computations are done, they will result in the creation of a small data frame called CIAnnualResults. In either case it is imperative that the standard WRTDS model be fitted first (using regular <strong>EGRET</strong> code) to provide a baseline for the confidence bands. The code and the workflows shown assure that this will be done, you don’t need to do anything to make that happen.</p>
-<p>Regardless of the approach being taken to the computations, the user needs to set up any non-default values of the parameters for model estimation and period of analysis. For example:</p>
+<p>The purpose here is to produce a graphic that looks just like those produced by <code>plotConcHist</code> or <code>plotFluxHist</code> but with the addition of confidence bands around the flow-normalized histories. There are two versions of the workflow for confidence bands, the first just uses a single computer core which means it takes a long time to run (jobs can take an hour or more), but it is simple to run. It uses the function <code>ciCalculations</code> and can be run interactively or in batch. Two scripts for that are provided below. It is best done in the Terminal or some other window, rather than in the console. If run in the console it will make it impossible for other work in R to take place while the job is running. The second way it can be done is using parallel computing in R. A script for that purpose is provided. It does require three extra packages be installed (<strong>foreach</strong>, <strong>doParallel</strong>, and <strong>iterators</strong>). It is also best to run this in the Terminal, because if it is run in the console, no other R work can be done while it is running.</p>
+</div>
+<div id="preliminary-steps" class="section level2">
+<h2>Preliminary Steps</h2>
+<p>Regardless of the approach (single core or parallel) being taken to the computations, the user needs to set up any non-default values of the parameters for model estimation and period of analysis. For example:</p>
 <p>If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the <code>setPA</code> function. For example if we want to do the analysis for the three months starting with April, the command would be <code>eList &lt;- setPA(eList, paStart = 4, paLong = 3)</code>.</p>
-<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code>).</p>
+<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and EdgeAdjust (see help page for <code>modelEstimation</code>).</p>
+<p>It is imperative that the standard WRTDS trend analysis be run prior to running the code for the confidence bands. If the user has made changes in smoothing parameters or modified the data in any way since the last time <code>modelEstimation</code> was run, the standard running of <code>modelEstimation</code> must be done and the output saved as <code>eList</code>. The commands would be:</p>
+<pre class="sourceCode r"><code class="sourceCode r">eList &lt;-<span class="st"> </span><span class="kw">modelEstimation</span>(eList)</code></pre>
 </div>
 <div id="simple-workflow" class="section level2">
 <h2>Simple Workflow</h2>
@@ -422,7 +428,7 @@ CIAnnualResults &lt;-<span class="st"> </span><span class="kw">ciCalculations</s
 <span class="kw">save</span>(eList,CIAnnualResults, <span class="dt">file=</span><span class="st">&quot;CIAnnualResults.RData&quot;</span>)</code></pre>
 <p>To run the <code>ciCalculations</code> function in batch mode, the only difference is that additional arguments are specified in the call to the function. For example the call to <code>ciCalculations</code> might read as follows:</p>
 <pre class="sourceCode r"><code class="sourceCode r">CIAnnualResults &lt;-<span class="st"> </span><span class="kw">ciCalculations</span>(eList, <span class="dt">nBoot =</span> <span class="dv">100</span>, <span class="dt">blockLength =</span> <span class="dv">200</span>, <span class="dt">widthCI =</span> <span class="dv">90</span>)</code></pre>
-<p>as long as all required arguments (nBoot, blockLength, and widthCI) are specified there will be no interaction needed.</p>
+<p>As long as all required arguments (nBoot, blockLength, and widthCI) are specified there will be no interaction needed.</p>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2>Parallel Computing</h2>

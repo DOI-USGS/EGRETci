@@ -1,0 +1,15 @@
+citHeader("To cite EGRET in publications, please use:")
+
+bibentry(bibtype = "InBook",
+ author = personList(
+              as.person("Robert M. Hirsch"),
+              as.person("Stacey A. Archfield")
+              as.person("Laura A. De Cicco")),
+  title = "A bootstrap method for estimating uncertainty of water quality trends",
+  publisher = "Journal of Environmental Modelling and Software",
+  year = 2015,
+  textVersion = "Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
+   A bootstrap method for estimating uncertainty of water quality trends.  
+   Accepted for publication: Journal of Environmental Modelling and Software."
+)
+

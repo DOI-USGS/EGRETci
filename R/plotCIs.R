@@ -9,7 +9,7 @@
 #' it will accept any additional arguments that are listed for the EGRET function 
 #' \code{\link[EGRET]{plotConcHist}}.
 #'
-#' @param eList named list from EGRET package after running modelEstimation
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param CIAnnualResults data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)
 #' @param yearStart numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
@@ -90,7 +90,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' for flow-normalized flux. In addition to the arguments listed below, it will accept any 
 #' additional arguments that are listed for the EGRET function \code{\link[EGRET]{plotFluxHist}}.
 #'
-#' @param eList named list
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param CIAnnualResults data frame from ciBands (needs nBoot, probs, and blockLength attributes)
 #' @param yearStart numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
 #' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)
@@ -182,7 +182,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #'
 #' saveCB
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @export
 #' @examples
 #' library(EGRET)
@@ -201,7 +201,7 @@ saveCB<-function(eList){
 #'
 #' bootAnnual One bootstrap run.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
 #' @export
 #' @importFrom EGRET as.egret
@@ -247,7 +247,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' and Flow-Normalized Flux for a WRTDS model.  
 #'
 #' @param repAnnualResults named list returned from bootstrapping process
-#' @param eList named list
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param probs vector high and low confidence interval percentages
 #' @export
 #' @importFrom EGRET setupYears
@@ -393,7 +393,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10),
 #'
 #' Interactive function to calculate WRTDS confidence bands
 #'
-#' @param eList named list
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
 #' @importFrom EGRET modelEstimation

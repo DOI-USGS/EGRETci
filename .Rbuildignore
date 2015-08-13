@@ -1,4 +1,6 @@
 vignettes/figure
+output.txt
+output.RData
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$

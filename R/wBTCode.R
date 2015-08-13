@@ -12,9 +12,9 @@
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#' Collection of functions to evaluate uncertainty of results from water quality 
-#' analysis using the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an 
-#' add-on to the EGRET package that performs the WRTDS analysis.
+#' Collection of functions to evaluate uncertainty of results from water quality analysis using 
+#' the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an add-on 
+#' to the EGRET package that performs the WRTDS analysis.
 #'
 #' @name EGRETci-package
 #' @docType package

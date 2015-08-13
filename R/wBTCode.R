@@ -656,13 +656,8 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' eList <- Choptank_eList
 #' 
 #' twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
-#' 
-#' eList <- setPA(eList, paStart=11, paLong=3)
-#' 
-#' twoResultsWinter <- makeTwoYearsResults(eList, 1985, 2005)
-#' 
 makeTwoYearsResults <- function(eList,year1,year2){
-# note this thing only works if the pa is water year
+
   paStart <- eList$INFO[,"paStart"]
   paLong <- eList$INFO[,"paLong"]
 	returnDaily <- estDailyFromSurfaces(eList)

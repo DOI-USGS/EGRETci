@@ -1,8 +1,3 @@
-.onAttach <- function(libname, pkgname) {
-  packageStartupMessage("This information is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The information has not received final approval by the U.S. Geological Survey (USGS) and is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the information. Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.")
-}
-
-
 #' EGRETci package for confidence interval analysis
 #'
 #' \tabular{ll}{
@@ -17,8 +12,8 @@
 #' LazyLoad: \tab yes\cr
 #' }
 #'
-#' Collection of functions to do WRTDS and flowHistory analysis,
-#'  and produce graphs and tables of data and results from these analyses.
+#' Collection of functions to do WRTDS and flowHistory analysis, and produce graphs and tables of data and results from these analysesevaluate uncertainty of results from water quality analysis using the WRTDS (Weighted Regressions on Time Discharge and Season) method.  
+#' This package is an add-on to the EGRET package that performs the WRTDS analysis.
 #'
 #' @name EGRETci-package
 #' @docType package
@@ -26,6 +21,9 @@
 #' @references Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
 #' (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
 #' chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
+#' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
+#' A bootstrap method for estimating uncertainty of water quality trends.  
+#' Accepted for publication: Journal of Environmental Modelling and Software.
 #' @keywords water-quality graphics streamflow statistics 
 NULL
 
@@ -176,6 +174,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @importFrom EGRET as.egret
 #' @importFrom binom binom.bayes
+#' @importFrom stats quantile
 #' @export
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
 #' @examples
@@ -641,7 +640,7 @@ makeCombo <- function (surfaces1,surfaces2) {
 
 #' makeTwoYearsResults
 #'
-#' makeTwoYearsResults
+#' In bootstrap process computes the results for the initial year and second year.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param year1 integer. Initial year of a 2-year trend comparison.
@@ -680,7 +679,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 	return(twoYearsResults)
 }
 
-#' setForBoot
+#' Allows user to set window parameters for the WRTDS model prior to running the bootstrap procedure
 #'
 #' Adds window parameters to INFO file in eList.
 #'
@@ -789,7 +788,7 @@ blockSample <- function(localSample, blockLength){
   return(newSample)
 }
 
-#' wordLike
+#' Assigns the narrative descriptors to the likelihood of change that is calculated by WBT
 #'
 #' Function called in \code{\link{wBT}} to convert numeric likelihood percentages to useful text.
 #'
@@ -828,6 +827,7 @@ wordLike <- function(likeList){
 #'
 #' @param s slope values from the bootstrap (already flipped)
 #' @export
+#' @importFrom stats na.omit
 #' @examples
 #' s <- c(0.01, 0.5, 0.55, 0.99)
 #' pValue <- pVal(s)

@@ -14,7 +14,8 @@ ciBands(eList, repAnnualResults, probs = c(0.05, 0.95))
 \item{probs}{vector high and low confidence interval percentages}
 }
 \description{
-ciBands
+Computes confidence intervals for Flow-Normalized Concentration
+and Flow-Normalized Flux for a WRTDS model.
 }
 \examples{
 library(EGRET)

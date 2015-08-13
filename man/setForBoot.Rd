@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{setForBoot}
 \alias{setForBoot}
-\title{setForBoot}
+\title{Allows user to set window parameters for the WRTDS model prior to running the bootstrap procedure}
 \usage{
 setForBoot(eList, caseSetUp, windowY = 7, windowQ = 2, windowS = 0.5,
   edgeAdjust = TRUE)

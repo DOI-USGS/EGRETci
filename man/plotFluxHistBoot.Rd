@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCIs.R
 \name{plotFluxHistBoot}
 \alias{plotFluxHistBoot}
-\title{plotFluxHistBoot}
+\title{Graph of annual flux, flow normalized flux, and confidence bands for flow normalized flux}
 \usage{
 plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
   plotFlowNorm = TRUE, fluxUnit = 9, fluxMax = NA, col.pred = "green",
@@ -32,7 +32,11 @@ plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 \item{\dots}{graphical parameters}
 }
 \description{
-plotFluxHistBoot
+Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named list eList),
+and the data frame CIAnnualResults (produced by EGRETci package using scripts described in
+the vignette) to produce a graph of annual flux, flow normalized flux, and confidence bands
+for flow-normalized flux. In addition to the arguments listed below, it will accept any
+additional arguments that are listed for the EGRET function \code{\link[EGRET]{plotFluxHist}}.
 }
 \examples{
 library(EGRET)

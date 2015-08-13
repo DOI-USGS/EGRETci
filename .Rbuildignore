@@ -1,5 +1,5 @@
 vignettes/figure
-output.txt
+outputText.txt
 output.RData
 ^.*\.Rproj$
 ^\.Rproj\.user$

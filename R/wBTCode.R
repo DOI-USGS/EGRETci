@@ -202,9 +202,9 @@ wBT<-function(eList,caseSetUp,
     return(out)
   }
   bootOut <- as.data.frame(matrix(ncol = 25, nrow = 1))
-  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC", 
-                         "upC", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
-                         "likeCDown", "rejectF", "pValF", "estF", "lowF", "upF", 
+  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC90", 
+                         "upC90", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
+                         "likeCDown", "rejectF", "pValF", "estF", "lowF90", "upF90", 
                          "lowF50", "upF50", "lowF95", "upF95", "likeFUp", "likeFDown", 
                          "baseConc", "baseFlux", "iBoot")
   year1 <- caseSetUp$year1
@@ -261,12 +261,7 @@ wBT<-function(eList,caseSetUp,
         " mg/L")
     cat("\n WRTDS estimated flux change is        ", ffc, 
         " 10^6 kg/yr")
-    cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
-    cat("\n nPos is cumulative number of positive trends")
-    cat("\n post_p is posterior mean estimate of probability of a positive trend")
-    cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
-    cat("\n\n      rep              Concentration             |              Flux")
-    cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
+
     if (saveOutput) {
       message("\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
       message("\n", periodName)
@@ -339,21 +334,27 @@ wBT<-function(eList,caseSetUp,
         highFlux <- quantFlux[8]
         prints <- c(format(iBoot, digits = 3, width = 7), 
                     format(xConc[iBoot], digits = 3, width = 7), 
-                    format(posXConc, digits = 3, width = 5), format(binomIntConc$mean, 
-                                                                    digits = 3), format(quantConc[2], digits = 3, 
-                                                                                        width = 7), format(quantConc[8], digits = 3, 
-                                                                                                           width = 7), "  |  ", format(xFlux[iBoot], 
-                                                                                                                                       digits = 4, width = 8), format(posXFlux, 
-                                                                                                                                                                      digits = 3, width = 5), format(binomIntFlux$mean, 
-                                                                                                                                                                                                     digits = 3, width = 7), format(quantFlux[2], 
-                                                                                                                                                                                                                                    digits = 4, width = 8), format(quantFlux[8], 
-                                                                                                                                                                                                                                                                   digits = 4, width = 8))
+                    format(posXConc, digits = 3, width = 5), 
+                    format(binomIntConc$mean,digits = 3), 
+                    format(quantConc[2], digits = 3, width = 7), 
+                    format(quantConc[8], digits = 3, width = 7), "  |  ", 
+                    format(xFlux[iBoot], digits = 4, width = 8), 
+                    format(posXFlux, digits = 3, width = 5), 
+                    format(binomIntFlux$mean, digits = 3, width = 7), 
+                    format(quantFlux[2], digits = 4, width = 8), 
+                    format(quantFlux[8], digits = 4, width = 8))
         if (!saveOutput) {
+          cat("\n value is bootstrap replicate result (deltack or deltafk in paper)")
+          cat("\n nPos is cumulative number of positive trends")
+          cat("\n post_p is posterior mean estimate of probability of a positive trend")
+          cat("\n Lower and Upper are estimates of the 90% CI values for magnitude of trend")
+          cat("\n\n      rep              Concentration             |              Flux")
+          cat("\n          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
           cat("\n", prints)
-        }
-        else {
+        } else {
           message(" ", paste(prints, collapse = " "))
         }
+        
         test1 <- as.numeric(belowConc + aboveConc + midConc > 
                               0.5 & belowFlux + aboveFlux + midFlux > 0.5 & 
                               iBoot >= bootBreak & iBoot > 30)
@@ -655,13 +656,8 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' eList <- Choptank_eList
 #' 
 #' twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
-#' 
-#' eList <- setPA(eList, paStart=11, paLong=3)
-#' 
-#' twoResultsWinter <- makeTwoYearsResults(eList, 1985, 2005)
-#' 
 makeTwoYearsResults <- function(eList,year1,year2){
-# note this thing only works if the pa is water year
+
   paStart <- eList$INFO[,"paStart"]
   paLong <- eList$INFO[,"paLong"]
 	returnDaily <- estDailyFromSurfaces(eList)

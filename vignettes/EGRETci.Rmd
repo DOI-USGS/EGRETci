@@ -41,12 +41,12 @@ This package **EGRETci** implements a set of approaches to the analysis of uncer
 The following table provides definitions of the four data frames that constitute the named list **eBoot**
 
 |Data Frame |Column | Definition |
-|:----|:----|:----|
+|:---------|:----|:----|
 |bootOut|  rejectC  |Reject Ho, (no trend in concentration), TRUE or FALSE |  
 || pValC | two-sided p-value for no trend in concentration | 
 || estC | standard WRTDS estimate of change from starting year to ending year in mg/L | 
-|| lowC | Lower confidence limit (90%) on concentration trend | 
-|| upC | Upper confidence limit (90%) on concentration trend | 
+|| lowC90 | Lower confidence limit (90%) on concentration trend | 
+|| upC90 | Upper confidence limit (90%) on concentration trend | 
 || lowC50 | Lower confidence limit (50%) on concentration trend | 
 || upC50 | Upper confidence limit (50%) on concentration trend |
 || lowC95 | Lower confidence limit (95%) on concentration trend | 
@@ -56,8 +56,8 @@ The following table provides definitions of the four data frames that constitute
 || rejectF | Reject Ho, (no trend in flux), TRUE or FALSE | 
 || pValF | two-sided p-value for no trend in flux |
 || estF | estimate of change from starting year to ending year, in 10^6^ kg/yr |
-|| lowF | Lower confidence limit (90%) on flux trend |
-|| upF | Upper confidence limit (90%) on flux trend |
+|| lowF90 | Lower confidence limit (90%) on flux trend |
+|| upF90 | Upper confidence limit (90%) on flux trend |
 || lowF50 | Lower confidence limit (50%) on flux trend |
 || upF50 | Upper confidence limit (50%) on flux trend |
 || lowF95 | Lower confidence limit (95%) on flux trend |
@@ -70,8 +70,8 @@ The following table provides definitions of the four data frames that constitute
 |wordsOut | | a vector of four character variables (self explanatory) |
 |xConc | | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) |
 |xFlux | | a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10^6^ kg/yr) |
-|pConc |  | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
-|pFlux |  | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
+|pConc | | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
+|pFlux | | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
 
 
 
@@ -122,6 +122,8 @@ Two sets of outputs are created, a text file which documents the results of the 
 
 The output in `outputText.txt` looks like this:
 ```
+
+
  Choptank River    Inorganic nitrogen (nitrate and nitrite)
 
  Water Year
@@ -136,19 +138,19 @@ The output in `outputText.txt` looks like this:
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
  best estimate is   0.444 mg/L
-  Lower and Upper 90% CIs    0.337    0.569
- also 95% CIs    0.305    0.581 
- and 50% CIs    0.391    0.476
- approximate two-sided p-value for Conc     0.025
+  Lower and Upper 90% CIs    0.308    0.506
+ also 95% CIs    0.201    0.512 
+ and 50% CIs    0.397    0.472
+ approximate two-sided p-value for Conc      0.05
 * Note p-value should be considered to be < stated value
  Likelihood that Flow Normalized Concentration is trending up =      0.988  is trending down =     0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  best estimate is  0.03593 10^6 kg/year
-  Lower and Upper 90% CIs   0.0180   0.0463
- also 95% CIs   0.0172   0.0476 
- and 50% CIs   0.0301   0.0387
- approximate two-sided p-value for Flux     0.025
+  Lower and Upper 90% CIs   0.0211   0.0452
+ also 95% CIs   0.0197   0.0456 
+ and 50% CIs   0.0309   0.0390
+ approximate two-sided p-value for Flux      0.05
 * Note p-value should be considered to be < stated value
  Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
 
@@ -247,7 +249,7 @@ eList <- modelEstimation(eList)
 
 ## Simple Workflow
 
-This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package.
+This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:
 
 ```{r, eval=FALSE}
 library(EGRET)

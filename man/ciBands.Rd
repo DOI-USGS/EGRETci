@@ -7,7 +7,7 @@
 ciBands(eList, repAnnualResults, probs = c(0.05, 0.95))
 }
 \arguments{
-\item{eList}{named list}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{repAnnualResults}{named list returned from bootstrapping process}
 

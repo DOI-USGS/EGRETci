@@ -24,10 +24,6 @@ library(EGRET)
 eList <- Choptank_eList
 
 twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
-
-eList <- setPA(eList, paStart=11, paLong=3)
-
-twoResultsWinter <- makeTwoYearsResults(eList, 1985, 2005)
 }
 \keyword{WRTDS}
 \keyword{flow}

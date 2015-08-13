@@ -65,6 +65,9 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux=TRUE,
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 
+## ---- eval=FALSE, echo=TRUE-------------------------------
+#  eList <- modelEstimation(eList)
+
 ## ---- eval=FALSE------------------------------------------
 #  library(EGRET)
 #  library(EGRETci)

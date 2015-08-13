@@ -177,26 +177,6 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
 }
 
-
-#' saveCB
-#'
-#' saveCB
-#'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @export
-#' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \dontrun{
-#' saveCB(eList)
-#' }
-saveCB<-function(eList){ 
-  INFO <-eList$INFO
-  saveName <- paste0(INFO$staAbbrev,".",INFO$constitAbbrev,".CB.RData")
-  save.image(file = saveName)
-  message("Saved to: ",getwd(),"/",saveName)
-}
-
 #' bootAnnual
 #'
 #' bootAnnual One bootstrap run.

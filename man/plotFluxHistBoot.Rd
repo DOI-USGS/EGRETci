@@ -9,7 +9,7 @@ plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
   printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
-\item{eList}{named list}
+\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{CIAnnualResults}{data frame from ciBands (needs nBoot, probs, and blockLength attributes)}
 

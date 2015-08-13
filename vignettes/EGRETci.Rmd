@@ -122,6 +122,8 @@ Two sets of outputs are created, a text file which documents the results of the 
 
 The output in `outputText.txt` looks like this:
 ```
+
+
  Choptank River    Inorganic nitrogen (nitrate and nitrite)
 
  Water Year
@@ -133,28 +135,21 @@ The output in `outputText.txt` looks like this:
 
  WRTDS estimated concentration change is   0.444  mg/L
  WRTDS estimated flux change is          0.03593  10^6 kg/yr
- value is bootstrap replicate result (deltack or deltafk in paper)
- nPos is cumulative number of positive trends
- post_p is posterior mean estimate of probability of a positive trend
- Lower and Upper are estimates of the 90% CI values for magnitude of trend
-
-      rep              Concentration             |              Flux
-          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
  best estimate is   0.444 mg/L
-  Lower and Upper 90% CIs    0.337    0.569
- also 95% CIs    0.305    0.581 
- and 50% CIs    0.391    0.476
+  Lower and Upper 90% CIs    0.308    0.506
+ also 95% CIs    0.201    0.512 
+ and 50% CIs    0.397    0.472
  approximate two-sided p-value for Conc      0.05
 * Note p-value should be considered to be < stated value
  Likelihood that Flow Normalized Concentration is trending up =      0.988  is trending down =     0.0125
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  best estimate is  0.03593 10^6 kg/year
-  Lower and Upper 90% CIs   0.0180   0.0463
- also 95% CIs   0.0172   0.0476 
- and 50% CIs   0.0301   0.0387
+  Lower and Upper 90% CIs   0.0211   0.0452
+ also 95% CIs   0.0197   0.0456 
+ and 50% CIs   0.0309   0.0390
  approximate two-sided p-value for Flux      0.05
 * Note p-value should be considered to be < stated value
  Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125

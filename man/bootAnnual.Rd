@@ -12,7 +12,7 @@ bootAnnual(eList, blockLength = 200)
 \item{blockLength}{integer suggested value is 200}
 }
 \description{
-bootAnnual One bootstrap run.
+One bootstrap run.
 }
 \examples{
 library(EGRET)

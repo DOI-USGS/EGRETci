@@ -31,7 +31,7 @@ and the third argument should probably be 5 or 10.  Finally, it is good to have 
 \item{\dots}{base R graphical parameters that can be passed to the hist function}
 }
 \description{
-plotHistogramTrend
+Histogram of trend.
 }
 \examples{
 library(EGRET)

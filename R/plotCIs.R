@@ -179,7 +179,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 
 #' bootAnnual
 #'
-#' bootAnnual One bootstrap run.
+#' One bootstrap run.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
@@ -303,7 +303,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
 #' plotHistogramTrend
 #'
-#' plotHistogramTrend
+#' Histogram of trend.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.

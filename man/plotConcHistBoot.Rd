@@ -31,13 +31,13 @@ plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 \item{\dots}{graphical parameters}
 }
 \description{
-Uses the output of modelEstimation in the EGRET package (results in the named
+Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named
 list eList), and the data frame CIAnnualResults (produced by EGRETci package
 using scripts described in the vignette) to produce a graph of annual
 concentration, flow normalized concentration, and confidence bands for
 flow-normalized concentrations.  In addition to the arguments listed below,
 it will accept any additional arguments that are listed for the EGRET function
-plotConcHist.
+\code{\link[EGRET]{plotConcHist}}.
 }
 \examples{
 library(EGRET)

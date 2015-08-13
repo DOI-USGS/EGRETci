@@ -14,7 +14,9 @@ Depends:
 Imports:
     EGRET (>= 2.1.1),
     binom,
-    lubridate
+    lubridate,
+    stats,
+    graphics
 Suggests:
     knitr,
     testthat,

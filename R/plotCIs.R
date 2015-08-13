@@ -1,13 +1,13 @@
 #' Graph of annual concentration, flow normalized concentration, 
 #' and confidence bands for flow normalized concentrations
 #' 
-#' Uses the output of modelEstimation in the EGRET package (results in the named 
+#' Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 
 #' list eList), and the data frame CIAnnualResults (produced by EGRETci package 
 #' using scripts described in the vignette) to produce a graph of annual 
 #' concentration, flow normalized concentration, and confidence bands for 
 #' flow-normalized concentrations.  In addition to the arguments listed below, 
 #' it will accept any additional arguments that are listed for the EGRET function 
-#' plotConcHist.
+#' \code{\link[EGRET]{plotConcHist}}.
 #'
 #' @param eList named list from EGRET package after running modelEstimation
 #' @param CIAnnualResults data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)
@@ -23,6 +23,7 @@
 #' @importFrom EGRET setupYears
 #' @importFrom EGRET setSeasonLabel
 #' @importFrom EGRET plotConcHist
+#' @importFrom graphics lines
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -81,9 +82,13 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   
 }
 
-#' plotFluxHistBoot
+#' Graph of annual flux, flow normalized flux, and confidence bands for flow normalized flux
 #'
-#' plotFluxHistBoot
+#' Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named list eList), 
+#' and the data frame CIAnnualResults (produced by EGRETci package using scripts described in 
+#' the vignette) to produce a graph of annual flux, flow normalized flux, and confidence bands 
+#' for flow-normalized flux. In addition to the arguments listed below, it will accept any 
+#' additional arguments that are listed for the EGRET function \code{\link[EGRET]{plotFluxHist}}.
 #'
 #' @param eList named list
 #' @param CIAnnualResults data frame from ciBands (needs nBoot, probs, and blockLength attributes)
@@ -101,6 +106,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @importFrom EGRET setSeasonLabel
 #' @importFrom EGRET plotFluxHist
 #' @importFrom EGRET fluxConst
+#' @importFrom graphics lines
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList 
@@ -237,13 +243,15 @@ bootAnnual <- function(eList, blockLength=200){
 
 #' ciBands
 #'
-#' ciBands
+#' Computes confidence intervals for Flow-Normalized Concentration 
+#' and Flow-Normalized Flux for a WRTDS model.  
 #'
 #' @param repAnnualResults named list returned from bootstrapping process
 #' @param eList named list
 #' @param probs vector high and low confidence interval percentages
 #' @export
 #' @importFrom EGRET setupYears
+#' @importFrom stats quantile
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -330,6 +338,10 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param col.fill character fill color
 #' @param \dots base R graphical parameters that can be passed to the hist function
 #' @export
+#' @importFrom graphics hist
+#' @importFrom graphics abline
+#' @importFrom graphics box
+#' @importFrom graphics axis
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList

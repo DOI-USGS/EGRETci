@@ -53,7 +53,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="header">
 <h1 class="title">Introduction to EGRET Confidence Intervals</h1>
 <h4 class="author"><em>Robert M. Hirsch, Laura A. De Cicco</em></h4>
-<h4 class="date"><em>30 July, 2015</em></h4>
+<h4 class="date"><em>11 August, 2015</em></h4>
 </div>
 
 <div id="TOC">
@@ -75,7 +75,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The package <strong>EGRETci</strong> encompasses the various approaches to uncertainty estimation associated with WRTDS trend analysis implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in a manuscript <em>A bootstrap method for estimating uncertainty of water quality trends</em> by Hirsch, Archfield, and De Cicco (the manuscript is currently accepted to Environmental Modelling &amp; Software and will be publically available soon, email <a href="mailto:rhirsch@usgs.gov">rhirsch@usgs.gov</a> for access in the interium).</p>
+<p>The package <strong>EGRETci</strong> encompasses the various approaches to uncertainty estimation associated with WRTDS trend analysis implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in a manuscript <em>A bootstrap method for estimating uncertainty of water quality trends</em> by Hirsch, Archfield, and De Cicco (the manuscript is currently accepted to Environmental Modelling &amp; Software and will be publicly available soon, email <a href="mailto:rhirsch@usgs.gov">rhirsch@usgs.gov</a> for access in the interim).</p>
 <p>The <strong>EGRETci</strong> package is designed for interactive or batch use. Instructions for both are included here in the vignette. The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS. Users should consult the <strong>EGRET</strong> vignette for more background on those issues.</p>
 <p>The <strong>EGRETci</strong> package is designed to carry out three specific types of tasks.</p>
 <ol style="list-style-type: decimal">
@@ -350,7 +350,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  Upward trend in flux is highly likely
  Downward trend in concentration is highly unlikely 
  Downward trend in flux is highly unlikely</code></pre>
-<p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50 (and all other smoothing parameters at their default values), run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minumum of 39 replicates, and a block length of 200. The script would be:</p>
+<p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50 (and all other smoothing parameters at their default values), run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minimum of 39 replicates, and a block length of 200. The script would be:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(EGRET)
 <span class="kw">library</span>(EGRETci)
 eList &lt;-<span class="st"> </span>Choptank_eList
@@ -407,7 +407,7 @@ caseSetUp &lt;-<span class="st"> </span>Choptank_caseSetUp
 <p>Regardless of the way that the computations are done, they will result in the creation of a small data frame called CIAnnualResults. In either case it is imperative that the standard WRTDS model be fitted first (using regular <strong>EGRET</strong> code) to provide a baseline for the confidence bands. The code and the workflows shown assure that this will be done, you don’t need to do anything to make that happen.</p>
 <p>Regardless of the approach being taken to the computations, the user needs to set up any non-default values of the parameters for model estimation and period of analysis. For example:</p>
 <p>If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the <code>setPA</code> function. For example if we want to do the analysis for the three months starting with April, the command would be <code>eList &lt;- setPA(eList, paStart = 4, paLong = 3)</code>.</p>
-<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and EdgeAdjust (see help page for <code>modelEstimation</code>).</p>
+<p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code>).</p>
 </div>
 <div id="simple-workflow" class="section level2">
 <h2>Simple Workflow</h2>
@@ -426,7 +426,7 @@ CIAnnualResults &lt;-<span class="st"> </span><span class="kw">ciCalculations</s
 </div>
 <div id="parallel-computing" class="section level2">
 <h2>Parallel Computing</h2>
-<p>Taking advantage of the foreach package to do parallel computing:</p>
+<p>Taking advantage of the <strong>foreach</strong> package to do parallel computing:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(foreach)
 <span class="kw">library</span>(doParallel)
 <span class="kw">library</span>(iterators)

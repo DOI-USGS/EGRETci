@@ -1,6 +1,8 @@
 # EGRETci
 
-Initial code for studying EGRET confidence intervals.
+A bootstrap method for estimating uncertainty of water quality trends
+
+See: [http://authors.elsevier.com/sd/article/S1364815215300220](http://authors.elsevier.com/sd/article/S1364815215300220) for more details
 
 Disclaimer
 ----------

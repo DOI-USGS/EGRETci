@@ -666,13 +666,15 @@ makeTwoYearsResults <- function(eList,year1,year2){
 	bootAnnRes<- setupYears(localDaily=returnDaily, 
                                  paStart=paStart, 
                                  paLong=paLong)
-	AnnBase <- bootAnnRes[1,1]
-	index1 <- year1 - trunc(AnnBase) + 1
-	index2 <- year2 - trunc(AnnBase) + 1
-	twoYearsResults <- c(bootAnnRes$FNConc[index1],
-                       bootAnnRes$FNConc[index2],
-                       bootAnnRes$FNFlux[index1],
-                       bootAnnRes$FNFlux[index2])
+	twoYearsResults <- c(bootAnnRes$FNConc[!is.na(bootAnnRes$FNConc)],
+	                     bootAnnRes$FNFlux[!is.na(bootAnnRes$FNFlux)])
+# 	AnnBase <- bootAnnRes[1,1]
+# 	index1 <- year1 - trunc(AnnBase) + 1
+# 	index2 <- year2 - trunc(AnnBase) + 1
+# 	twoYearsResults <- c(bootAnnRes$FNConc[index1],
+#                        bootAnnRes$FNConc[index2],
+#                        bootAnnRes$FNFlux[index1],
+#                        bootAnnRes$FNFlux[index2])
 	return(twoYearsResults)
 }
 

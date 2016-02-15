@@ -1,17 +1,20 @@
 Package: EGRETci
 Type: Package
 Title: Exploration and Graphics for RivEr Trends (EGRET) Confidence Intervals
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c( person("Robert", "Hirsch", role = c("aut"),
     email = "rhirsch@usgs.gov"),
     person("Laura", "DeCicco", role = c("aut","cre"),
     email = "ldecicco@usgs.gov"))
-Description:  Collection of functions to evaluate uncertainty of results from water quality analysis using the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an add-on to the EGRET package that performs the WRTDS analysis.
+Description: Collection of functions to evaluate uncertainty of results from
+    water quality analysis using the Weighted Regressions on Time Discharge and
+    Season (WRTDS) method. This package is an add-on to the EGRET package that
+    performs the WRTDS analysis.
 License: CC0
 Depends:
     R (>= 3.0)
 Imports:
-    EGRET (>= 2.1.1),
+    EGRET,
     binom,
     lubridate,
     stats,
@@ -34,3 +37,4 @@ Copyright: This software is in the public domain because it contains materials
     the United States Department of Interior. For more information, see the
     official USGS copyright policy at
     http://www.usgs.gov/visual-id/credit_usgs.html#copyright
+RoxygenNote: 5.0.1

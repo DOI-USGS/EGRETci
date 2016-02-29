@@ -11,7 +11,6 @@
 #' http://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
 #' LazyLoad: \tab yes\cr
 #' }
-#'
 #' Collection of functions to evaluate uncertainty of results from water quality analysis using 
 #' the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an add-on 
 #' to the EGRET package that performs the WRTDS analysis.
@@ -311,20 +310,16 @@ wBT<-function(eList,caseSetUp,
                              1, posXConc)
         binomIntConc <- binom::binom.bayes(posXConc, 
                                            iBoot, confStop, "central")
-        belowConc <- ifelse(binomIntConc$upper < 0.05, 
-                            1, 0)
-        aboveConc <- ifelse(binomIntConc$lower > 0.95, 
-                            1, 0)
+        belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)
+        aboveConc <- ifelse(binomIntConc$lower > 0.95, 1, 0)
         midConc <- ifelse(binomIntConc$lower > 0.05 & 
                             binomIntConc$upper < 0.95, 1, 0)
         posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 
                              1, posXFlux)
         binomIntFlux <- binom::binom.bayes(posXFlux, 
                                            iBoot, confStop, "central")
-        belowFlux <- ifelse(binomIntFlux$upper < 0.05, 
-                            1, 0)
-        aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 
-                            1, 0)
+        belowFlux <- ifelse(binomIntFlux$upper < 0.05, 1, 0)
+        aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 1, 0)
         midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
                             binomIntFlux$upper < 0.95, 1, 0)
         quantConc <- quantile(xConc[1:iBoot], prob, type = 6)
@@ -511,8 +506,9 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   }
   
   originalColumns <- names(localSample)
-  minNumObs <- min(c(localINFO$minNumObs, length(localSample$ConcLow)), na.rm=TRUE)
   minNumUncen <- min(c(localINFO$minNumUncen, sum(localSample$Uncen)), na.rm=TRUE)
+  minNumObs <- min(c(localINFO$minNumObs, length(localSample$ConcLow)), na.rm=TRUE)
+  # minNumUncen <- min(c(localINFO$minNumUncen, 0.5), na.rm=TRUE)
   bottomLogQ <- localINFO$bottomLogQ
   stepLogQ <- localINFO$stepLogQ
   topLogQ<-bottomLogQ + 13 * stepLogQ
@@ -659,8 +655,8 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
 makeTwoYearsResults <- function(eList,year1,year2){
 
-  paStart <- eList$INFO[,"paStart"]
-  paLong <- eList$INFO[,"paLong"]
+  paStart <- eList$INFO$paStart
+  paLong <- eList$INFO$paLong
 	returnDaily <- estDailyFromSurfaces(eList)
   
 	bootAnnRes<- setupYears(localDaily=returnDaily, 
@@ -731,6 +727,7 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	  localINFO$minNumObs <- min(100, numSamples - 20)
 	}
 	if (is.null(localINFO$minNumUncen)) {
+	  # localINFO$minNumUncen <- 0.5
 	  localINFO$minNumUncen <- min(100, numSamples - 20)
 	}
   

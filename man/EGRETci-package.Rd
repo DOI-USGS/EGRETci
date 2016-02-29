@@ -16,8 +16,6 @@ official USGS copyright policy at
 http://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
 LazyLoad: \tab yes\cr
 }
-}
-\details{
 Collection of functions to evaluate uncertainty of results from water quality analysis using 
 the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an add-on 
 to the EGRET package that performs the WRTDS analysis.

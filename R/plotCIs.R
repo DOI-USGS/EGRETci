@@ -179,7 +179,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 
 #' bootAnnual
 #'
-#' bootAnnual One bootstrap run.
+#' One bootstrap run.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
@@ -210,7 +210,13 @@ bootAnnual <- function(eList, blockLength=200){
   
   bootSample <- blockSample(Sample, blockLength)
   eListBoot <- as.egret(INFO,Daily,bootSample,NA)
-  surfaces1<-estSurfaces(eListBoot)
+  surfaces1<-estSurfaces(eListBoot, 
+                         windowY = eList$INFO$windowY, 
+                         windowQ = eList$INFO$windowQ, 
+                         windowS = eList$INFO$windowS,
+                         minNumObs = eList$INFO$minNumObs, 
+                         minNumUncen = eList$INFO$minNumUncen, 
+                         edgeAdjust = eList$INFO$edgeAdjust)
   eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1<-estDailyFromSurfaces(eListBoot)
   annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
@@ -284,8 +290,8 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   names(CIAnnualResults) <- c("Year","FNConcLow","FNConcHigh","FNFluxLow","FNFluxHigh")
   
   for(iYear in 1:numYears) {
-    quantConc <- quantile(manyAnnualResults[iYear,1,1:nBoot],prob=probs,type=6)
-    quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6)
+    quantConc <- quantile(manyAnnualResults[iYear,1,1:nBoot],prob=probs,type=6,na.rm = TRUE)
+    quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6,na.rm = TRUE)
     
     CIAnnualResults$Year[iYear] <- AnnualResults$DecYear[iYear]
     CIAnnualResults$FNConcLow[iYear] <- exp(quantConc[1])
@@ -303,7 +309,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
 #' plotHistogramTrend
 #'
-#' plotHistogramTrend
+#' Histogram of trend.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
@@ -417,7 +423,11 @@ ciCalculations <- function (eList,...){
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
   cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
-  eList <- modelEstimation(eList)
+  eList <- modelEstimation(eList, windowY = eList$INFO$windowY, 
+                           windowQ = eList$INFO$windowQ, 
+                           windowS = eList$INFO$windowS, 
+                           minNumObs = eList$INFO$minNumObs, 
+                           minNumUncen = eList$INFO$minNumUncen) 
   
   for(n in 1:nBoot){
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength)

@@ -210,7 +210,13 @@ bootAnnual <- function(eList, blockLength=200){
   
   bootSample <- blockSample(Sample, blockLength)
   eListBoot <- as.egret(INFO,Daily,bootSample,NA)
-  surfaces1<-estSurfaces(eListBoot)
+  surfaces1<-estSurfaces(eListBoot, 
+                         windowY = eList$INFO$windowY, 
+                         windowQ = eList$INFO$windowQ, 
+                         windowS = eList$INFO$windowS,
+                         minNumObs = eList$INFO$minNumObs, 
+                         minNumUncen = eList$INFO$minNumUncen, 
+                         edgeAdjust = eList$INFO$edgeAdjust)
   eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1<-estDailyFromSurfaces(eListBoot)
   annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
@@ -284,8 +290,8 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   names(CIAnnualResults) <- c("Year","FNConcLow","FNConcHigh","FNFluxLow","FNFluxHigh")
   
   for(iYear in 1:numYears) {
-    quantConc <- quantile(manyAnnualResults[iYear,1,1:nBoot],prob=probs,type=6)
-    quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6)
+    quantConc <- quantile(manyAnnualResults[iYear,1,1:nBoot],prob=probs,type=6,na.rm = TRUE)
+    quantFlux <- quantile(manyAnnualResults[iYear,2,1:nBoot],prob=probs,type=6,na.rm = TRUE)
     
     CIAnnualResults$Year[iYear] <- AnnualResults$DecYear[iYear]
     CIAnnualResults$FNConcLow[iYear] <- exp(quantConc[1])
@@ -417,7 +423,11 @@ ciCalculations <- function (eList,...){
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
   cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
-  eList <- modelEstimation(eList)
+  eList <- modelEstimation(eList, windowY = eList$INFO$windowY, 
+                           windowQ = eList$INFO$windowQ, 
+                           windowS = eList$INFO$windowS, 
+                           minNumObs = eList$INFO$minNumObs, 
+                           minNumUncen = eList$INFO$minNumUncen) 
   
   for(n in 1:nBoot){
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength)

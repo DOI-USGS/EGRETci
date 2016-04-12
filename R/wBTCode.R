@@ -810,7 +810,7 @@ wordLike <- function(likeList){
                   "very likely",
                   "highly likely")
   
-	breaks<-c(0,0.05,0.1,0.33,0.66,0.9,0.95,1)
+	breaks <- c(0, 0.05, 0.1, 0.33, 0.67, 0.9, 0.95, 1)
   
 	levelLike <- cut(likeList,breaks=breaks,labels=FALSE)
 	wordLikeFour <- paste(firstPart,secondPart[levelLike])

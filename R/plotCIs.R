@@ -198,6 +198,11 @@ bootAnnual <- function(eList, blockLength=200){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
+  
+  if(is.null(INFO$edgeAdjust)){
+    INFO$edgeAdjust <- FALSE
+  }
+  
   paStart <- 10
   paLong <- 12
   
@@ -216,7 +221,7 @@ bootAnnual <- function(eList, blockLength=200){
                          windowS = eList$INFO$windowS,
                          minNumObs = eList$INFO$minNumObs, 
                          minNumUncen = eList$INFO$minNumUncen, 
-                         edgeAdjust = eList$INFO$edgeAdjust)
+                         edgeAdjust = eListBoot$INFO$edgeAdjust)
   eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1<-estDailyFromSurfaces(eListBoot)
   annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
@@ -246,7 +251,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' \dontrun{
 #' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
-#' for(n = 1:nBoot){
+#' for(n in 1:nBoot){
 #'    annualResults <- bootAnnual(eList, blockLength) 
 #'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
 #' }
@@ -272,7 +277,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   if(!is.null(INFO$paStart)){
     paStart <- INFO$paStart
   }
-  
+
   AnnualResults <- setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   
   nBoot <- length(repAnnualResults)

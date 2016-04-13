@@ -47,21 +47,37 @@ eList <- Choptank_eList # Example data from EGRET package
 eBoot <- Choptank_eBoot
 caseSetUp <- Choptank_caseSetUp
 
-#Concentration:
+#Concentration an initial run:
 plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE, xSeq = seq(-20,60,5))
+                   flux=FALSE)
 
-#Flux
+#Flux an initial run:
 plotHistogramTrend(eList, eBoot, caseSetUp,
-                   flux=TRUE, xSeq = seq(-20,60,5))
+                   flux=TRUE)
 
 
 ## ---- histExampleCombo, fig.width=7, fig.height=4---------
 par(mfrow=c(1,2))
-plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE,
-                   printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
-plotHistogramTrend(eList, eBoot, caseSetUp, flux=TRUE,
-                   printTitle=FALSE, ylim=c(0,0.07), xSeq=seq(-10,70,10))
+#Concentration, presentation version:
+plotHistogramTrend(eList, eBoot, caseSetUp,  
+                   flux=FALSE, xMin = -5, xMax = 65, xStep = 5)
+
+#Flux, presentation version:
+plotHistogramTrend(eList, eBoot, caseSetUp,
+                   flux=TRUE, xMin = -5, xMax = 55, xStep = 5)
+# To return to figures printing in 1 row, 1 columns:
+par(mfrow=c(1,1))                   
+
+## ---- histExampleCombo2, fig.width=7, fig.height=10-------
+par(mfrow=c(2,1))
+#Concentration, presentation version:
+plotHistogramTrend(eList, eBoot, caseSetUp,  
+                   flux=FALSE, xMin = -5, xMax = 65, xStep = 5)
+
+#Flux, presentation version:
+plotHistogramTrend(eList, eBoot, caseSetUp,
+                  flux=TRUE, xMin = -5, xMax = 65, xStep = 5,
+                  printTitle = FALSE)
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 

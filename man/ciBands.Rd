@@ -25,7 +25,7 @@ blockLength <- 200
 \dontrun{
 
 repAnnualResults <- vector(mode = "list", length = nBoot)
-for(n = 1:nBoot){
+for(n in 1:nBoot){
    annualResults <- bootAnnual(eList, blockLength) 
    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
 }

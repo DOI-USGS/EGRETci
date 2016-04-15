@@ -23,6 +23,7 @@
 #' @importFrom EGRET setupYears
 #' @importFrom EGRET setSeasonLabel
 #' @importFrom EGRET plotConcHist
+#' @importFrom graphics title
 #' @importFrom graphics lines
 #' @examples
 #' library(EGRET)
@@ -107,6 +108,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @importFrom EGRET plotFluxHist
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines
+#' @importFrom graphics title
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList 

@@ -322,10 +322,10 @@ wBT<-function(eList,caseSetUp,
         aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 1, 0)
         midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
                             binomIntFlux$upper < 0.95, 1, 0)
-        quantConc <- quantile(xConc[1:iBoot], prob, type = 6)
+        quantConc <- quantile(xConc[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowConc <- quantConc[2]
         highConc <- quantConc[8]
-        quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6)
+        quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowFlux <- quantFlux[2]
         highFlux <- quantFlux[8]
         prints <- c(format(iBoot, digits = 3, width = 7), 

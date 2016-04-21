@@ -41,7 +41,7 @@ This package **EGRETci** implements a set of approaches to the analysis of uncer
 The following table provides definitions of the four data frames that constitute the named list **eBoot**
 
 |Data Frame |Column | Definition |
-|:---------|:----|:----|
+|:---------|:------------|:---------------------------------------|
 |bootOut|  rejectC  |Reject Ho, (no trend in concentration), TRUE or FALSE |  
 || pValC | two-sided p-value for no trend in concentration | 
 || estC | standard WRTDS estimate of change from starting year to ending year in mg/L | 
@@ -78,7 +78,7 @@ The following table provides definitions of the four data frames that constitute
 There is also a data frame called caseSetUp (created with the `trendSetUp` function), which contains a number of important parameters that define the way that the test was implemented.  They are presented here.
 
 |Column |Definition |
-|:----|:----|
+|:-------|:--------------------------------------------------|
 |year1 | the water year that is the start of the trend period (an integer) | 
 |yearData1 | the water year that is the start of the data set (an integer) | 
 |year2 | the water year that is the end of the trend period (an integer) |

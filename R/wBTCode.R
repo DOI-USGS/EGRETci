@@ -350,7 +350,7 @@ wBT<-function(eList,caseSetUp,
                               iBoot >= bootBreak & iBoot > 30)
         test2 <- as.numeric(midConc > 0.5 & midFlux > 
                               0.5 & iBoot >= bootBreak & iBoot <= 30)
-        if (test1 + test2 > 0.5) {
+        if (!is.na(test1) && !is.na(test2) && test1 + test2 > 0.5) {
           break
         }
       } else {

@@ -42,6 +42,8 @@ paStart <- 10
 paLong <- 3
 paIndexLate <- paVector(year, paStart, paLong, vectorYear)
 endOfYear <- vectorYear[paIndexLate]
+paCalendarYear <- paVector(year, 1, 12, vectorYear)
+calYear <- vectorYear[paCalendarYear]
 }
 \keyword{WRTDS}
 \keyword{flow}

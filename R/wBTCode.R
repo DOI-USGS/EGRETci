@@ -251,8 +251,17 @@ wBT<-function(eList,caseSetUp,
     }
     cat("\n\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
     cat("\n\n", periodName)
-    cat("\n\n  Bootstrap process, for change from Water Year", 
-        year1, "to Water Year", year2)
+    if(eList$INFO$paStart == 1 & eList$INFO$paLong == 12){
+      cat("\n\n  Bootstrap process, for change from Calendar Year", 
+          year1, "to ", year2)      
+    } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
+      cat("\n\n  Bootstrap process, for change from Water Year", 
+          year1, "to Water Year", year2)       
+    } else {
+      cat("\n\n  Bootstrap process, for change from ", 
+          year1, "to ", year2, ":",periodName) 
+    }
+
     cat("\n                   data set runs from Water Year", 
         yearData1, "to Water Year", yearData2)
     cat("\n  Bootstrap block length in days", blockLength)
@@ -265,10 +274,18 @@ wBT<-function(eList,caseSetUp,
     if (saveOutput) {
       message("\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
       message("\n", periodName)
-      message("\n  Bootstrap process, for change from Water Year ", 
-              year1, " to Water Year ", year2)
-      message("                   data set runs from WaterYear ", 
-              yearData1, " to Water Year ", yearData2)
+      if(eList$INFO$paStart == 1 & eList$INFO$paLong == 12){
+        message("\n  Bootstrap process, for change from Calendar Year", 
+            year1, "to ", year2)      
+      } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
+        message("\n  Bootstrap process, for change from Water Year", 
+            year1, "to Water Year", year2)       
+      } else {
+        message("\n  Bootstrap process, for change from ", 
+            year1, "to ", year2, ":",periodName) 
+      }
+      message("                   data set runs from ", 
+              yearData1, " to Year ", yearData2)
       message("  Bootstrap block length in days ", blockLength)
       message("  bootBreak is ", bootBreak, "  confStop is ", 
               confStop)

@@ -549,7 +549,9 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   for(iQ in 1:14) {
     for(iY in 1:length(vectorIndex)){ 
       k<-(iY-1)*14+iQ
-      surfaces[iQ,vectorIndex[iY],]<-resultSurvReg[k,]
+      if(k <= dim(resultSurvReg)[1]){
+        surfaces[iQ,vectorIndex[iY],]<-resultSurvReg[k,]
+      }
     }
   }
   
@@ -589,6 +591,8 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 #' paLong <- 3
 #' paIndexLate <- paVector(year, paStart, paLong, vectorYear)
 #' endOfYear <- vectorYear[paIndexLate]
+#' paCalendarYear <- paVector(year, 1, 12, vectorYear)
+#' calYear <- vectorYear[paCalendarYear]
 paVector <- function(year,paStart,paLong, vectorYear){
   
   if (paStart + paLong > 13){

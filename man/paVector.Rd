@@ -27,7 +27,7 @@ Creates paVector. This is the index of which years are in the proper period of r
 year <- 2000
 paStart <- 10
 paLong <- 12
-vectorYear <- c(seq(1999,2001,0.1))
+vectorYear <- c(seq(1999,2001,0.0833))
 paIndexWaterYear <- paVector(year, paStart, paLong, vectorYear)
 requestedYears <- vectorYear[paIndexWaterYear]
 paStart <- 11

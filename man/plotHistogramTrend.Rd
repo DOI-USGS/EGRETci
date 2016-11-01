@@ -4,9 +4,9 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eList, eBoot, caseSetUp, xSeq = seq(-100, 100, 10),
-  flux = TRUE, printTitle = TRUE, cex.main = 1.1, col.fill = "grey",
-  ...)
+plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
+  xMax = NA, xStep = NA, printTitle = TRUE, cex.main = 1.1,
+  cex.axis = 1.1, cex.lab = 1.1, col.fill = "grey", ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -15,16 +15,21 @@ plotHistogramTrend(eList, eBoot, caseSetUp, xSeq = seq(-100, 100, 10),
 
 \item{caseSetUp}{data frame. Returned from \code{\link{trendSetUp}}.}
 
-\item{xSeq}{vector defaults to seq(-100,100,10). It is recommended to try the default
-first. The first argument in the seq function needs to be lower than the minimum value, the second argument 
-needs to be higher than the highest value, both should probably be multiples of 10 or 20, 
-and the third argument should probably be 5 or 10.  Finally, it is good to have the first and second arguments straddle zero.}
-
 \item{flux}{logical if TRUE, plots flux results, if FALSE plots concentration}
+
+\item{xMin}{minimum bin value, it is good to have the xMin and xMax arguments straddle zero.}
+
+\item{xMax}{maximum bin value}
+
+\item{xStep}{step size, should probably be multiples of 10 or 20}
 
 \item{printTitle}{logical if TRUE, includes title}
 
 \item{cex.main}{numeric title font size}
+
+\item{cex.axis}{numeric axis font size}
+
+\item{cex.lab}{numeric label font size}
 
 \item{col.fill}{character fill color}
 

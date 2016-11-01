@@ -294,22 +294,16 @@ wBT<-function(eList,caseSetUp,
       if (!inherits(possibleError3, "error") & !inherits(possibleError4, 
                                                          "error")) {
         combo <- makeCombo(surfaces1, surfaces2)
-        eListBoot <- as.egret(localINFO, localDaily, 
-                              bootSample, combo)
-        res <- makeTwoYearsResults(eListBoot, year1, 
-                                   year2)
-        xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - 
-                                                res[1])
-        xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - 
-                                                 res[3]) * 0.00036525)
+        eListBoot <- as.egret(localINFO, localDaily, bootSample, combo)
+        res <- makeTwoYearsResults(eListBoot, year1, year2)
+        xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
+        xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - res[3]) * 0.00036525)
         LConc <- (2 * LConcDiff) - (log(res[2]) - log(res[1]))
         pConc[iBoot] <- (100 * exp(LConc)) - 100
         LFlux <- (2 * LFluxDiff) - (log(res[4]) - log(res[3]))
         pFlux[iBoot] <- (100 * exp(LFlux)) - 100
-        posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 
-                             1, posXConc)
-        binomIntConc <- binom::binom.bayes(posXConc, 
-                                           iBoot, confStop, "central")
+        posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 1, posXConc)
+        binomIntConc <- binom::binom.bayes(posXConc, iBoot, confStop, "central")
         belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)
         aboveConc <- ifelse(binomIntConc$lower > 0.95, 1, 0)
         midConc <- ifelse(binomIntConc$lower > 0.05 & 
@@ -322,10 +316,10 @@ wBT<-function(eList,caseSetUp,
         aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 1, 0)
         midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
                             binomIntFlux$upper < 0.95, 1, 0)
-        quantConc <- quantile(xConc[1:iBoot], prob, type = 6)
+        quantConc <- quantile(xConc[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowConc <- quantConc[2]
         highConc <- quantConc[8]
-        quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6)
+        quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowFlux <- quantFlux[2]
         highFlux <- quantFlux[8]
         prints <- c(format(iBoot, digits = 3, width = 7), 
@@ -356,11 +350,10 @@ wBT<-function(eList,caseSetUp,
                               iBoot >= bootBreak & iBoot > 30)
         test2 <- as.numeric(midConc > 0.5 & midFlux > 
                               0.5 & iBoot >= bootBreak & iBoot <= 30)
-        if (test1 + test2 > 0.5) {
+        if (!is.na(test1) && !is.na(test2) && test1 + test2 > 0.5) {
           break
         }
-      }
-      else {
+      } else {
         if (saveOutput) {
           sink()
         }
@@ -385,8 +378,9 @@ wBT<-function(eList,caseSetUp,
     pValC <- pVal(xConc)
     cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                             digits = 2, width = 9))
-    if (posXConc == 0 | posXConc == iBoot) 
-      cat("\n* Note p-value should be considered to be < stated value")
+    if (!is.na(posXConc) && ( posXConc == 0 | posXConc == iBoot) ){
+        cat("\n* Note p-value should be considered to be < stated value")
+    }
     likeCUp <- (posXConc + 0.5)/(iBoot + 1)
     likeCDown <- 1 - likeCUp
     cat("\n Likelihood that Flow Normalized Concentration is trending up =", 
@@ -409,8 +403,10 @@ wBT<-function(eList,caseSetUp,
     pValF <- pVal(xFlux)
     cat("\n approximate two-sided p-value for Flux", format(pValF, 
                                                             digits = 2, width = 9))
-    if (posXFlux == 0 | posXFlux == iBoot) 
+    if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == iBoot)) {
       cat("\n* Note p-value should be considered to be < stated value")
+    }
+      
     likeFUp <- (posXFlux + 0.5)/(iBoot + 1)
     likeFDown <- 1 - likeFUp
     cat("\n Likelihood that Flow Normalized Flux is trending up =", 
@@ -440,8 +436,11 @@ wBT<-function(eList,caseSetUp,
               fquantConc[2], " ", fquantConc[8])
       message("  also 95% CIs", fquantConc[1], " ", fquantConc[9], 
               "\n and 50% CIs ", fquantConc[4], " ", fquantConc[6])
-      if (posXConc == 0 | posXConc == iBoot) 
+      
+      if (!is.na(posXConc) && (posXConc == 0 | posXConc == iBoot)) {
         message("* Note p-value should be considered to be < stated value")
+      }
+        
       message("  approximate two-sided p-value for Conc ", 
               format(pValC, digits = 2, width = 9))
       message("  Likelihood that Flow Normalized Concentration is trending up = ", 
@@ -455,8 +454,11 @@ wBT<-function(eList,caseSetUp,
               "\n and 50% CIs ", fquantFlux[4], " ", fquantFlux[6])
       message("  approximate two-sided p-value for Flux ", 
               format(pValF, digits = 2, width = 9))
-      if (posXFlux == 0 | posXFlux == iBoot) 
+      
+      if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == iBoot)){
         message("* Note p-value should be considered to be < stated value")
+      } 
+        
       message("  Likelihood that Flow Normalized Flux is trending up = ", 
               format(likeFUp, digits = 3), " is trending down= ", 
               format(likeFDown, digits = 3))
@@ -466,8 +468,7 @@ wBT<-function(eList,caseSetUp,
               format(wordsOut[4], width = 30))
     }
     return(eBoot)
-  }
-  else {
+  } else {
     stop(possibleError1, "/n", possibleError2)
   }
 }
@@ -530,6 +531,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
   # Tack on one data point on either side
   vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
+  # vectorIndex <- c(vectorIndex,vectorIndex[length(vectorIndex)]+1)
   
   vectorYear <- vectorYear[vectorIndex]
   nVectorYear<-length(vectorYear)
@@ -576,7 +578,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 #' year <- 2000
 #' paStart <- 10
 #' paLong <- 12
-#' vectorYear <- c(seq(1999,2001,0.1))
+#' vectorYear <- c(seq(1999,2001,0.0833))
 #' paIndexWaterYear <- paVector(year, paStart, paLong, vectorYear)
 #' requestedYears <- vectorYear[paIndexWaterYear]
 #' paStart <- 11
@@ -814,7 +816,7 @@ wordLike <- function(likeList){
                   "very likely",
                   "highly likely")
   
-	breaks<-c(0,0.05,0.1,0.33,0.66,0.9,0.95,1)
+	breaks <- c(0, 0.05, 0.1, 0.33, 0.67, 0.9, 0.95, 1)
   
 	levelLike <- cut(likeList,breaks=breaks,labels=FALSE)
 	wordLikeFour <- paste(firstPart,secondPart[levelLike])

@@ -23,6 +23,7 @@
 #' @importFrom EGRET setupYears
 #' @importFrom EGRET setSeasonLabel
 #' @importFrom EGRET plotConcHist
+#' @importFrom graphics title
 #' @importFrom graphics lines
 #' @examples
 #' library(EGRET)
@@ -107,6 +108,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @importFrom EGRET plotFluxHist
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines
+#' @importFrom graphics title
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList 
@@ -198,6 +200,11 @@ bootAnnual <- function(eList, blockLength=200){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
+  
+  if(is.null(INFO$edgeAdjust)){
+    INFO$edgeAdjust <- FALSE
+  }
+  
   paStart <- 10
   paLong <- 12
   
@@ -216,7 +223,7 @@ bootAnnual <- function(eList, blockLength=200){
                          windowS = eList$INFO$windowS,
                          minNumObs = eList$INFO$minNumObs, 
                          minNumUncen = eList$INFO$minNumUncen, 
-                         edgeAdjust = eList$INFO$edgeAdjust)
+                         edgeAdjust = eListBoot$INFO$edgeAdjust)
   eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1<-estDailyFromSurfaces(eListBoot)
   annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
@@ -246,7 +253,7 @@ bootAnnual <- function(eList, blockLength=200){
 #' \dontrun{
 #' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
-#' for(n = 1:nBoot){
+#' for(n in 1:nBoot){
 #'    annualResults <- bootAnnual(eList, blockLength) 
 #'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
 #' }
@@ -272,7 +279,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
   if(!is.null(INFO$paStart)){
     paStart <- INFO$paStart
   }
-  
+
   AnnualResults <- setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   
   nBoot <- length(repAnnualResults)
@@ -314,13 +321,14 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
-#' @param xSeq vector defaults to seq(-100,100,10). It is recommended to try the default
-#' first. The first argument in the seq function needs to be lower than the minimum value, the second argument 
-#' needs to be higher than the highest value, both should probably be multiples of 10 or 20, 
-#' and the third argument should probably be 5 or 10.  Finally, it is good to have the first and second arguments straddle zero. 
 #' @param flux logical if TRUE, plots flux results, if FALSE plots concentration
+#' @param xMin minimum bin value, it is good to have the xMin and xMax arguments straddle zero. 
+#' @param xMax maximum bin value
+#' @param xStep step size, should probably be multiples of 10 or 20
 #' @param printTitle logical if TRUE, includes title
 #' @param cex.main numeric title font size
+#' @param cex.axis numeric axis font size
+#' @param cex.lab numeric label font size
 #' @param col.fill character fill color
 #' @param \dots base R graphical parameters that can be passed to the hist function
 #' @export
@@ -343,8 +351,9 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' plotHistogramTrend(eList, eBoot, caseSetUp, 
 #'                    flux=TRUE, xSeq = seq(-20,60,5))
 #' }
-plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10), 
-                                flux=TRUE, printTitle=TRUE, cex.main=1.1, col.fill="grey",...){
+plotHistogramTrend <- function (eList, eBoot, caseSetUp, 
+                                flux = TRUE, xMin = NA, xMax = NA, xStep = NA,
+                                printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
   periodName <- setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
@@ -360,17 +369,25 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp, xSeq=seq(-100,100,10),
     titleWord <- "Concentration"
   }
   
-  titleToPrint <- ifelse(printTitle, 
-                         paste("Histogram of trend in", 
-                               eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                               caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
-                               periodName), "")
-  hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", tcl = 0.5, 
+  titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                           eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                           caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
+                                           periodName), "")
+  minReps <- min(reps,na.rm = TRUE)
+  maxReps <- max(reps,na.rm = TRUE)
+  xMin <- if(is.na(xMin)) min(-10,minReps) else xMin
+  xMax <- if(is.na(xMax)) max(10,maxReps) else xMax
+  xStep <- if(is.na(xStep)) (xMax-xMin) / 10 else xStep
+  xSeq <- seq(xMin,xMax,xStep)
+  hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
-       cex.main = cex.main, ...)
+       cex.main = cex.main, cex.lab = cex.lab, ...)
   abline(v = change, lwd = 3, lty = 2)
   abline(v = 0, lwd = 3)
   box()
+  axis(1, tcl = 0.5, labels = TRUE, cex.axis = cex.axis)
+  axis(2, tcl = 0.5, labels = TRUE, las = 1, cex.axis = cex.axis)
+  title(ylab = "Density", line = 4.5, cex.lab = cex.lab)
   axis(3, tcl = 0.5, labels = FALSE)
   axis(4, tcl = 0.5, labels = FALSE)
 }

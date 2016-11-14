@@ -253,13 +253,13 @@ wBT<-function(eList,caseSetUp,
     cat("\n\n", periodName)
     if(eList$INFO$paStart == 1 & eList$INFO$paLong == 12){
       cat("\n\n  Bootstrap process, for change from Calendar Year", 
-          year1, "to ", year2)      
+          year1, " to ", year2)      
     } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
       cat("\n\n  Bootstrap process, for change from Water Year", 
-          year1, "to Water Year", year2)       
+          year1, " to Water Year", year2)       
     } else {
       cat("\n\n  Bootstrap process, for change from ", 
-          year1, "to ", year2, ":",periodName) 
+          year1, " to ", year2, ":",periodName) 
     }
 
     cat("\n                   data set runs from Water Year", 
@@ -276,13 +276,13 @@ wBT<-function(eList,caseSetUp,
       message("\n", periodName)
       if(eList$INFO$paStart == 1 & eList$INFO$paLong == 12){
         message("\n  Bootstrap process, for change from Calendar Year", 
-            year1, "to ", year2)      
+            year1, " to ", year2)      
       } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
         message("\n  Bootstrap process, for change from Water Year", 
-            year1, "to Water Year", year2)       
+            year1, " to Water Year", year2)       
       } else {
         message("\n  Bootstrap process, for change from ", 
-            year1, "to ", year2, ":",periodName) 
+            year1, " to ", year2, ":",periodName) 
       }
       message("                   data set runs from ", 
               yearData1, " to Year ", yearData2)

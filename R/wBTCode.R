@@ -549,6 +549,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   # Tack on one data point on either side
   vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
   # vectorIndex <- c(vectorIndex,vectorIndex[length(vectorIndex)]+1)
+  vectorIndex <- vectorIndex[vectorIndex != 0]
   
   vectorYear <- vectorYear[vectorIndex]
   nVectorYear<-length(vectorYear)

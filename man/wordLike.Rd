@@ -21,4 +21,3 @@ Function called in \code{\link{wBT}} to convert numeric likelihood percentages t
 likeList <- c(0.01, 0.5, 0.55, 0.99)
 Trends <- wordLike(likeList)
 }
-

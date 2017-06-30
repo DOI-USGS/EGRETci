@@ -2,9 +2,9 @@
 % Please edit documentation in R/ciData.R
 \docType{data}
 \name{Choptank_eBoot}
-\alias{Choptank_CIAnnualResults}
-\alias{Choptank_caseSetUp}
 \alias{Choptank_eBoot}
+\alias{Choptank_caseSetUp}
+\alias{Choptank_CIAnnualResults}
 \alias{Choptank_repAnnual}
 \title{Example eBoot}
 \description{
@@ -14,4 +14,3 @@ Data is a named list of the Daily, Sample, INFO dataframes, and xConc, and xFlux
 \keyword{data}
 \keyword{quality}
 \keyword{water}
-

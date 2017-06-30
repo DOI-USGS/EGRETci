@@ -30,4 +30,3 @@ saveEGRETci(eList, eBoot, caseSetUp)
 \seealso{
 \code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
 }
-

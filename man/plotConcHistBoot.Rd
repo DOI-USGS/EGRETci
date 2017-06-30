@@ -50,4 +50,3 @@ CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 plotConcHistBoot(eList, CIAnnualResults)
 }
 }
-

@@ -20,9 +20,6 @@ Collection of functions to evaluate uncertainty of results from water quality an
 the Weighted Regressions on Time Discharge and Season (WRTDS) method. This package is an add-on 
 to the EGRET package that performs the WRTDS analysis.
 }
-\author{
-Robert M. Hirsch \email{rhirsch@usgs.gov}, Laura De Cicco \email{ldecicco@usgs.gov}
-}
 \references{
 Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
 (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
@@ -32,8 +29,10 @@ Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015,
 A bootstrap method for estimating uncertainty of water quality trends.  
 Accepted for publication: Journal of Environmental Modelling and Software.
 }
+\author{
+Robert M. Hirsch \email{rhirsch@usgs.gov}, Laura De Cicco \email{ldecicco@usgs.gov}
+}
 \keyword{graphics}
 \keyword{statistics}
 \keyword{streamflow}
 \keyword{water-quality}
-

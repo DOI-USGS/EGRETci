@@ -49,4 +49,3 @@ CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 }
 }
-

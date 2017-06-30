@@ -16,4 +16,3 @@ Computes the two-sided p value for the null hypothesis
 s <- c(0.01, 0.5, 0.55, 0.99)
 pValue <- pVal(s)
 }
-

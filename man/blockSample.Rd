@@ -25,4 +25,3 @@ bsReturn <- blockSample(Sample, 25)
 }
 \keyword{WRTDS}
 \keyword{flow}
-

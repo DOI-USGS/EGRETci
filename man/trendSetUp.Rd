@@ -45,4 +45,3 @@ caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
 }
 \keyword{WRTDS}
 \keyword{flow}
-

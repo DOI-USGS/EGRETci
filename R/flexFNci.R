@@ -15,7 +15,7 @@
 #' rs0cy <- 1985
 #' rs1cy <- 2000
 #' \dontrun{
-#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy)
+#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=20)
 #' }
 flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100, 
                      repSeed = 38772){
@@ -234,7 +234,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   cat("\n\n deltaFD in kg/km^2/yr\n")
   print(quantile(zFD,probs = c(0.05, 0.95), type = 6))
   CIFD <- quantile(zFD,probs = c(0.05, 0.95), type = 6)
-  flexBoot <- list(dfStart = dfStart, dfEnd = dfEnd, INFO = INFO, rs0cy = rs0cy, rs1cy = rs1cy,
+  flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
                    windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
                    minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
                    paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed,

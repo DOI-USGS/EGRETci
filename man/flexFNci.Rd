@@ -27,6 +27,6 @@ eList <- Choptank_eList
 rs0cy <- 1985
 rs1cy <- 2000
 \dontrun{
-flexFNlist <- flexFNci(eList, rs0cy, rs1cy)
+flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=5)
 }
 }

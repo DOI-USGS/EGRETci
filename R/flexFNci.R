@@ -8,6 +8,10 @@
 #' When we want water years, these are set to the year prior to the desired water year
 #' @param rs1cy is the calendar year that we want to be the second period for RS
 #' @param repSeed setSeed value
+#' @importFrom EGRET getInfo
+#' @importFrom EGRET getDaily
+#' @importFrom EGRET getSample
+#' @importFrom EGRET setUpEstimation
 #' @export
 #' @examples 
 #' library(EGRET)
@@ -65,7 +69,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   q0StartMonthSeqTemp <- p0StartMonthSeq - (half * 12)
   q0StartMonthSeq <- max(fullStart,q0StartMonthSeqTemp)
   q0EndMonthSeq <- q0StartMonthSeq + (windowFlex * 12) - 1
-  q0Daily <- subset(eList$Daily,MonthSeq >= q0StartMonthSeq & MonthSeq <= q0EndMonthSeq)
+  q0Daily <- Daily[Daily$MonthSeq >= q0StartMonthSeq & Daily$MonthSeq <= q0EndMonthSeq,]
   # now do it again for the later period
   p1StartMonth <- p0StartMonth
   p1StartYear <- rs1cy
@@ -74,7 +78,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   q1StartMonthSeqTempB <- fullEnd - (windowFlex * 12) + 1 # start based on end 
   q1StartMonthSeq <- min(q1StartMonthSeqTempA, q1StartMonthSeqTempB)
   q1EndMonthSeq <- q1StartMonthSeq + (windowFlex * 12) - 1
-  q1Daily <- subset(eList$Daily,MonthSeq >= q1StartMonthSeq & MonthSeq <= q1EndMonthSeq)
+  q1Daily <- Daily[Daily$MonthSeq >= q1StartMonthSeq & Daily$MonthSeq <= q1EndMonthSeq,]
   # done with creating the two flow-normalizing Daily data frames
   # next we estimate the suface for the two calendar years that contain the first
   # period
@@ -90,7 +94,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   localINFO$stepYear <- 1/16
   p0SurfaceStartDate <- paste(p0StartYear,"-01-01",sep = "")
   p0SurfaceEndDate <- paste(p0StartYear + 2, "-01-01", sep = "")
-  rawDaily0 <- subset(eList$Daily, Date >= p0SurfaceStartDate & Date < p0SurfaceEndDate)
+  rawDaily0 <- Daily[Daily$Date >= p0SurfaceStartDate & Daily$Date < p0SurfaceEndDate,]
   eList0 <- as.egret(localINFO0, rawDaily0, localSample)
   eList0 <- setUpEstimation(eList0, windowY = windowY, windowQ = windowQ, windowS = windowS,
                             minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =
@@ -105,7 +109,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   localINFO1$bottomYear <- p1StartYear
   p1SurfaceStartDate <- paste(p1StartYear,"-01-01",sep = "")
   p1SurfaceEndDate <- paste(p1StartYear + 2, "-01-01", sep = "")
-  rawDaily1 <- subset(eList$Daily, Date >= p1SurfaceStartDate & Date < p1SurfaceEndDate)
+  rawDaily1 <- Daily[Daily$Date >= p1SurfaceStartDate & Daily$Date < p1SurfaceEndDate,]
   eList1 <- as.egret(localINFO1, rawDaily1, localSample)
   eList1 <- setUpEstimation(eList1, windowY = windowY, windowQ = windowQ, windowS = windowS,
                             minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =

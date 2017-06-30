@@ -21,4 +21,3 @@ eList <- Choptank_eList
 annualResults <- bootAnnual(eList)
 }
 }
-

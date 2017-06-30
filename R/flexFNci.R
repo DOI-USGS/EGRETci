@@ -15,7 +15,7 @@
 #' rs0cy <- 1985
 #' rs1cy <- 2000
 #' \dontrun{
-#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=20)
+#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=5)
 #' }
 flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100, 
                      repSeed = 38772){
@@ -243,7 +243,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
                    z01 = z01, z10 = z10, z11 = z11, zBoth = zBoth,
                    zRS = zRS, zFD = zFD, CIBoth = CIBoth, CIRS = CIRS,
                    CIFD = CIFD, pctChange = pctChange, nPos = nPos,
-                   site = site, siteName = siteName, abbrevS = INFO$staAbbrev,
+                   site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
                    abbrevC = INFO$constitAbbrev)
   # fileName <- paste(siteName,".",shortConstit,".RData",sep="")
   # save(flexBoot, file = fileName)

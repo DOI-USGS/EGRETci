@@ -54,4 +54,3 @@ plotHistogramTrend(eList, eBoot, caseSetUp,
                    flux=TRUE, xSeq = seq(-20,60,5))
 }
 }
-

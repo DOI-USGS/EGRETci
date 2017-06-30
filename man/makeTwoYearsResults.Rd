@@ -27,4 +27,3 @@ twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
 }
 \keyword{WRTDS}
 \keyword{flow}
-

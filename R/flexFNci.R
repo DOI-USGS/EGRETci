@@ -67,11 +67,18 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
   paStart <- p0StartMonth
   paLong <- 12
   nPlus1 <- nBoot + 1
+  
   # note the z vectors have units of kg/day
   z00 <- rep(NA,nPlus1)
   z10 <- rep(NA,nPlus1)
   z01 <- rep(NA,nPlus1)
   z11 <- rep(NA,nPlus1)
+  
+  # the c vectors need to think about units!
+  c00 <- rep(NA,nPlus1)
+  c10 <- rep(NA,nPlus1)
+  c01 <- rep(NA,nPlus1)
+  c11 <- rep(NA,nPlus1)
   
   # p1 is the first period of the surfaces
   # next we get the period for flow normalization
@@ -137,6 +144,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
   bootAnnRes0 <- setupYears(localDaily = returnDaily0, paStart = paStart, paLong = paLong)
   bootAnnRes0 <- na.omit(bootAnnRes0)
   z00[nPlus1] <- bootAnnRes0$FNFlux[1]
+  c00[nPlus1] <- bootAnnRes0$FNConc[1]
   #
   # now do results for RS1 and FD1
   eList1 <- as.egret(eList1$INFO, q1Daily, localSample, surfaces1)
@@ -144,6 +152,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
   bootAnnRes1 <- setupYears(localDaily = returnDaily1, paStart = paStart, paLong = paLong)
   bootAnnRes1 <- na.omit(bootAnnRes1)
   z11[nPlus1] <- bootAnnRes1$FNFlux[1]
+  c11[nPlus1] <- bootAnnRes1$FNConc[1]
   #
   # now do results for RS0 and FD1
   eList01 <- as.egret(eList1$INFO, q1Daily, localSample, surfaces0)
@@ -151,6 +160,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
   bootAnnRes01 <- setupYears(localDaily = returnDaily01, paStart = paStart, paLong = paLong)
   bootAnnRes01 <- na.omit(bootAnnRes01)
   z01[nPlus1] <- bootAnnRes01$FNFlux[1]
+  c01[nPlus1] <- bootAnnRes01$FNConc[1]
   #
   #  finally do the results for RS1 and FD0
   eList10 <- as.egret(eList0$INFO, q0Daily, localSample, surfaces1)
@@ -158,12 +168,19 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
   bootAnnRes10 <- setupYears(localDaily = returnDaily10, paStart = paStart, paLong = paLong)
   bootAnnRes10 <- na.omit(bootAnnRes10)
   z10[nPlus1] <- bootAnnRes10$FNFlux[1]
+  c10[nPlus1] <- bootAnnRes10$FNConc[1]
   #
   # summary of the changes before bootstrap
   zs00 <- z00[nPlus1]
   zs01 <- z01[nPlus1]
   zs10 <- z10[nPlus1]
   zs11 <- z11[nPlus1]
+  
+  cs00 <- c00[nPlus1]
+  cs01 <- c01[nPlus1]
+  cs10 <- c10[nPlus1]
+  cs11 <- c11[nPlus1]
+  
   area <- eList$INFO$drainSqKm
   yieldDelta <- (zs11 - zs00) * 365.25 / area
   RSpart <- 0.5 * (zs10 - zs00 + zs11 - zs01) * 365.25 / area
@@ -220,7 +237,11 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
     z11 <- sapply(Z00s, function(x) x[["z11"]])
     z01 <- sapply(Z00s, function(x) x[["z01"]])
     z10 <- sapply(Z00s, function(x) x[["z10"]])
-
+    
+    c00 <- sapply(Z00s, function(x) x[["c00"]])
+    c11 <- sapply(Z00s, function(x) x[["c11"]])
+    c01 <- sapply(Z00s, function(x) x[["c01"]])
+    c10 <- sapply(Z00s, function(x) x[["c10"]])
     
   } else {
     
@@ -238,6 +259,11 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
       z11[iBoot] <- z00s[["z11"]]
       z01[iBoot] <- z00s[["z01"]]
       z10[iBoot] <- z00s[["z10"]]
+      
+      c00[iBoot] <- z00s[["c00"]]
+      c11[iBoot] <- z00s[["c11"]]
+      c01[iBoot] <- z00s[["c01"]]
+      c10[iBoot] <- z00s[["c10"]]
       cat("\n boot rep ",iBoot," done   ")
       cat(z00[iBoot],z11[iBoot],z01[iBoot],z10[iBoot])
     }
@@ -280,6 +306,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
                    z01 = z01, z10 = z10, z11 = z11, zBoth = zBoth,
                    zRS = zRS, zFD = zFD, CIBoth = CIBoth, CIRS = CIRS,
                    CIFD = CIFD, pctChange = pctChange, nPos = nPos,
+                   c01 = c01, c10 = c10, c11 = c11, c00 = c00,
                    site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
                    abbrevC = INFO$constitAbbrev)
 
@@ -324,6 +351,7 @@ getZ00s <- function(iBoot,localSample,
   bootAnnRes0 <- setupYears(localDaily = returnDaily0, paStart = paStart, paLong = paLong)
   bootAnnRes0 <- na.omit(bootAnnRes0)
   z00 <- bootAnnRes0$FNFlux[1]
+  c00 <- bootAnnRes0$FNConc[1]
   #
   # now do results for RS1 and FD1
   eList1 <- as.egret(eList1$INFO, q1Daily, bootSample, surfaces1)
@@ -331,18 +359,21 @@ getZ00s <- function(iBoot,localSample,
   bootAnnRes1 <- setupYears(localDaily = returnDaily1, paStart = paStart, paLong = paLong)
   bootAnnRes1 <- na.omit(bootAnnRes1)
   z11 <- bootAnnRes1$FNFlux[1]
+  c11 <- bootAnnRes1$FNConc[1]
   # now do the results for RS0 and FD1
   eList01 <- as.egret(eList01$INFO, q1Daily, bootSample, surfaces0)
   returnDaily01 <- estDailyFromSurfaces(eList01)
   bootAnnRes01 <- setupYears(localDaily = returnDaily01, paStart = paStart, paLong = paLong)
   bootAnnRes01 <- na.omit(bootAnnRes01)
   z01 <- bootAnnRes01$FNFlux[1]
+  c01 <- bootAnnRes01$FNConc[1]
   #  finally do the results for RS1 and FD0
   eList10 <- as.egret(eList10$INFO, q0Daily, bootSample, surfaces1)
   returnDaily10 <- estDailyFromSurfaces(eList10)
   bootAnnRes10 <- setupYears(localDaily = returnDaily10, paStart = paStart, paLong = paLong)
   bootAnnRes10 <- na.omit(bootAnnRes10)
   z10 <- bootAnnRes10$FNFlux[1]  
-
-  return(list(z00=z00,z11=z11,z01=z01,z10=z10))
+  c10 <- bootAnnRes10$FNConc[1]  
+  return(list(z00=z00,z11=z11,z01=z01,z10=z10,
+              c00=c00,c11=c11,c01=c01,c10=c10))
 }

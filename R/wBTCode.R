@@ -798,8 +798,8 @@ blockSample <- function(localSample, blockLength){
     randomDate <- sample(possibleStarts, 1)
     blockStart <- max(randomDate,dayOne)
     blockEnd <- min(lastJulian,randomDate+blockLength-1)
-    oneYear <- subset(localSample, localSample$Julian >= blockStart & 
-                        localSample$Julian < blockEnd)
+    oneYear <- localSample[which(localSample$Julian >= blockStart & 
+                        localSample$Julian < blockEnd),]
     newSample <- rbind(oneYear, newSample)
         
   }

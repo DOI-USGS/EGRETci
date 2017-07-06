@@ -7,11 +7,20 @@
 #' @param rs0cy is the calendar year that we want to be the first period for RS. 
 #' When we want water years, these are set to the year prior to the desired water year
 #' @param rs1cy is the calendar year that we want to be the second period for RS
+#' @param blockLength integer size of subset.
 #' @param repSeed setSeed value
+#' @param run.parallel logical to run bootstrapping in parallel or not
+#' @param nCores integer number of cores to use
 #' @importFrom EGRET getInfo
 #' @importFrom EGRET getDaily
 #' @importFrom EGRET getSample
 #' @importFrom EGRET setUpEstimation
+#' @importFrom parallel detectCores
+#' @importFrom foreach foreach
+#' @importFrom foreach %dopar%
+#' @importFrom snow makeSOCKcluster
+#' @importFrom snow stopCluster
+#' @importFrom doSNOW registerDoSNOW
 #' @export
 #' @examples 
 #' library(EGRET)
@@ -19,10 +28,16 @@
 #' rs0cy <- 1985
 #' rs1cy <- 2000
 #' \dontrun{
-#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=5)
+#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=14)
+#' flexFNlist_2 <- flexFNci(eList, rs0cy, rs1cy, nBoot=14, run.parallel = FALSE)
 #' }
-flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100, 
-                     repSeed = 38772){
+flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
+                     nBoot = 100, blockLength = 200,
+                     repSeed = 1000){
+
+  if(is.null(nCores)){
+    nCores <- detectCores() - 1
+  }
   
   Daily <- getDaily(eList)
   Sample <- getSample(eList)
@@ -40,7 +55,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   windowY <- INFO$windowY#7
   windowQ <- INFO$windowQ#2
   windowS <- INFO$windowS#0.5
-  edgeAdjust <- FALSE
+  edgeAdjust <- FALSE#there
   
   nDaysFull <- length(eList$Daily$MonthSeq)
   fullStart <- eList$Daily$MonthSeq[1]
@@ -57,9 +72,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   z10 <- rep(NA,nPlus1)
   z01 <- rep(NA,nPlus1)
   z11 <- rep(NA,nPlus1)
-  blockLength <- 200
   
-  set.seed(repSeed)
   # p1 is the first period of the surfaces
   # next we get the period for flow normalization
   windowFlex <- 15
@@ -92,8 +105,8 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   localINFO0$nVectorYear <- 33 # this is 33 because it is 2 years of 16 slices, plus 1
   localINFO0$bottomYear <- p0StartYear
   localINFO$stepYear <- 1/16
-  p0SurfaceStartDate <- paste(p0StartYear,"-01-01",sep = "")
-  p0SurfaceEndDate <- paste(p0StartYear + 2, "-01-01", sep = "")
+  p0SurfaceStartDate <- paste0(p0StartYear,"-01-01")
+  p0SurfaceEndDate <- paste0(p0StartYear + 2, "-01-01")
   rawDaily0 <- Daily[Daily$Date >= p0SurfaceStartDate & Daily$Date < p0SurfaceEndDate,]
   eList0 <- as.egret(localINFO0, rawDaily0, localSample)
   eList0 <- setUpEstimation(eList0, windowY = windowY, windowQ = windowQ, windowS = windowS,
@@ -131,12 +144,14 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
   bootAnnRes1 <- setupYears(localDaily = returnDaily1, paStart = paStart, paLong = paLong)
   bootAnnRes1 <- na.omit(bootAnnRes1)
   z11[nPlus1] <- bootAnnRes1$FNFlux[1]
+  #
   # now do results for RS0 and FD1
   eList01 <- as.egret(eList1$INFO, q1Daily, localSample, surfaces0)
   returnDaily01 <- estDailyFromSurfaces(eList01)
   bootAnnRes01 <- setupYears(localDaily = returnDaily01, paStart = paStart, paLong = paLong)
   bootAnnRes01 <- na.omit(bootAnnRes01)
   z01[nPlus1] <- bootAnnRes01$FNFlux[1]
+  #
   #  finally do the results for RS1 and FD0
   eList10 <- as.egret(eList0$INFO, q0Daily, localSample, surfaces1)
   returnDaily10 <- estDailyFromSurfaces(eList10)
@@ -158,71 +173,89 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
       "\n yield change due to change in response surface",RSpart,
       "\n yield change due to change in flow distribution", FDpart,
       "\n percentage change in yield", pctChange)
+
+
+  localINFO0$bottomLogQ <- bottomLogQ
+  localINFO0$stepLogQ <- stepLogQ
+  localINFO1$bottomLogQ <- bottomLogQ
+  localINFO1$stepLogQ <- stepLogQ
   #
-  # now the bootstrap replicates
-  #bootReps <- as.data.frame(matrix(ncol = 4, nrow = nBoot))
-  #colnames(bootReps) <- c("Conc1","Conc2","Flux1","Flux2")
-  for(iBoot in 1: nBoot) {
-    bootSample <- blockSample(localSample = localSample, blockLength = blockLength)
-    # first period
-    eList0 <- as.egret(localINFO0, rawDaily0, bootSample)
-    eList0 <- setUpEstimation(eList0, windowY = windowY, windowQ = windowQ, windowS = windowS,
-                              minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =
-                                edgeAdjust, verbose = FALSE)
-    eList0$INFO$bottomLogQ <- bottomLogQ
-    eList0$INFO$stepLogQ <- stepLogQ
-    surfaces0 <- estSurfaces(eList0, windowY=7, windowQ=2, windowS=0.5, minNumObs=minNumObs,
-                                    minNumUncen=minNumUncen, edgeAdjust=edgeAdjust, verbose = FALSE)
-    # now the surface for the later period, RS1
-    # we also set up the second FD period, FD1
-    eList1 <- as.egret(localINFO1, rawDaily1, bootSample)
-    eList1 <- setUpEstimation(eList1, windowY = windowY, windowQ = windowQ, windowS = windowS,
-                              minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =
-                                edgeAdjust, verbose = FALSE)
-    eList1$INFO$bottomLogQ <- bottomLogQ
-    eList1$INFO$stepLogQ <- stepLogQ
-    surfaces1 <- estSurfaces(eList1, windowY=7, windowQ=2, windowS=0.5, minNumObs=minNumObs,
-                                    minNumUncen=minNumUncen, edgeAdjust=edgeAdjust, verbose = FALSE)
-    # now do the estimation for RS0 and FD0
-    eList0 <- as.egret(eList0$INFO, q0Daily, bootSample, surfaces0)
-    returnDaily0 <- estDailyFromSurfaces(eList0)
-    bootAnnRes0 <- setupYears(localDaily = returnDaily0, paStart = paStart, paLong = paLong)
-    bootAnnRes0 <- na.omit(bootAnnRes0)
-    z00[iBoot] <- bootAnnRes0$FNFlux[1]
-    #
-    # now do results for RS1 and FD1
-    eList1 <- as.egret(eList1$INFO, q1Daily, bootSample, surfaces1)
-    returnDaily1 <- estDailyFromSurfaces(eList1)
-    bootAnnRes1 <- setupYears(localDaily = returnDaily1, paStart = paStart, paLong = paLong)
-    bootAnnRes1 <- na.omit(bootAnnRes1)
-    z11[iBoot] <- bootAnnRes1$FNFlux[1]
-    # now do the results for RS0 and FD1
-    eList01 <- as.egret(eList01$INFO, q1Daily, bootSample, surfaces0)
-    returnDaily01 <- estDailyFromSurfaces(eList01)
-    bootAnnRes01 <- setupYears(localDaily = returnDaily01, paStart = paStart, paLong = paLong)
-    bootAnnRes01 <- na.omit(bootAnnRes01)
-    z01[iBoot] <- bootAnnRes01$FNFlux[1]
-    #  finally do the results for RS1 and FD0
-    eList10 <- as.egret(eList10$INFO, q0Daily, bootSample, surfaces1)
-    returnDaily10 <- estDailyFromSurfaces(eList10)
-    bootAnnRes10 <- setupYears(localDaily = returnDaily10, paStart = paStart, paLong = paLong)
-    bootAnnRes10 <- na.omit(bootAnnRes10)
-    z10[iBoot] <- bootAnnRes10$FNFlux[1]  
-    cat("\n boot rep ",iBoot," done   ")
-    cat(z00[iBoot],z11[iBoot],z01[iBoot],z10[iBoot])
+  # now the bootstrap replicates  
+  if(run.parallel){
+    #Can't quite figure out how to do this.....
+    # if (! getDoParRegistered()) {
+    # 
+    #   cl <- makeSOCKcluster(nCores)
+    #   registerDoSNOW(cl)
+    #   message('Registered doSNOW with ',
+    #           nCores, ' workers')
+    # } else {
+    #   message('Using ', getDoParName(), ' with ',
+    #           getDoParWorkers(), ' workers')
+    #   cl <- NULL
+    # }
+    cl <- makeSOCKcluster(nCores)
+    registerDoSNOW(cl)
+    message('Registered doSNOW with ',nCores, ' workers')
+    progress <- function(n) cat(sprintf("task %d is complete\n", n))
+    opts <- list(progress=progress)
+    
+    Z00s <- foreach(n = 1:nBoot, 
+                     .packages=c('EGRETci','EGRET'),
+                     .options.snow=opts) %dopar% {
+                       zList <- getZ00s(n+repSeed, localSample, 
+                                        rawDaily0, rawDaily1,
+                                        q0Daily, q1Daily,
+                                        localINFO0,localINFO1, 
+                                        paStart,paLong,
+                                        eList01,eList10,
+                                        blockLength, 
+                                        windowY, windowQ, windowS,
+                                        minNumObs, minNumUncen, edgeAdjust)
+                     }
+
+    stopCluster(cl)
+    
+    z00 <- sapply(Z00s, function(x) x[["z00"]])
+    z11 <- sapply(Z00s, function(x) x[["z11"]])
+    z01 <- sapply(Z00s, function(x) x[["z01"]])
+    z10 <- sapply(Z00s, function(x) x[["z10"]])
+
+    
+  } else {
+    
+    for(iBoot in 1:nBoot) {
+      z00s <- getZ00s(iBoot+repSeed,localSample, 
+                      rawDaily0, rawDaily1,
+                      q0Daily, q1Daily,
+                      localINFO0, localINFO1,
+                      paStart,paLong,
+                      eList01,eList10,
+                      blockLength, 
+                      windowY, windowQ, windowS,
+                      minNumObs, minNumUncen, edgeAdjust) 
+      z00[iBoot] <- z00s[["z00"]]
+      z11[iBoot] <- z00s[["z11"]]
+      z01[iBoot] <- z00s[["z01"]]
+      z10[iBoot] <- z00s[["z10"]]
+      cat("\n boot rep ",iBoot," done   ")
+      cat(z00[iBoot],z11[iBoot],z01[iBoot],z10[iBoot])
+    }
   }
-  deltaBoth <- rep(0,nBoot)
-  deltaRS <- rep(0,nBoot)
-  deltaFD <- rep(0,nBoot)
-  for(i in 1:nBoot){
-    deltaBoth[i] <- 2 * (zs11 - zs00) - z11[i] + z00[i]
-    rsPart1 <- 2 * (zs10 - zs00) - z10[i] + z00[i]
-    rsPart2 <- 2 * (zs11 - zs01) - z11[i] + z01[i]
-    deltaRS[i] <- 0.5 * (rsPart1 + rsPart2)
-    fdPart1 <- 2 * (zs01 - zs00) - z01[i] + z00[i]
-    fdPart2 <- 2 * (zs11 - zs10) - z11[i] + z10[i]
-    deltaFD[i] <- 0.5 * (fdPart1 + fdPart2)
-  }
+  
+  deltaBoth <- 2 * (zs11 - zs00) - z11 + z00
+  rsPart1 <- 2 * (zs10 - zs00) - z10 + z00
+  rsPart2 <- 2 * (zs11 - zs01) - z11 + z01
+  deltaRS <- 0.5 * (rsPart1 + rsPart2)
+  fdPart1 <- 2 * (zs01 - zs00) - z01 + z00
+  fdPart2 <- 2 * (zs11 - zs10) - z11 + z10
+  deltaFD <- 0.5 * (fdPart1 + fdPart2)
+  
+  z00[nPlus1] <- bootAnnRes0$FNFlux[1]
+  z11[nPlus1] <- bootAnnRes1$FNFlux[1]
+  z01[nPlus1] <- bootAnnRes01$FNFlux[1]
+  z10[nPlus1] <- bootAnnRes10$FNFlux[1]
+  
   zBoth <- (sort(deltaBoth)) * 365.25 / area
   cat("\n deltaBoth in kg/km^2/yr\n")
   print(quantile(zBoth,probs = c(0.05, 0.95), type = 6))
@@ -249,8 +282,67 @@ flexFNci <- function(eList, rs0cy, rs1cy, nBoot = 100,
                    CIFD = CIFD, pctChange = pctChange, nPos = nPos,
                    site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
                    abbrevC = INFO$constitAbbrev)
-  # fileName <- paste(siteName,".",shortConstit,".RData",sep="")
-  # save(flexBoot, file = fileName)
+
   return(flexBoot)
   
+}
+
+
+#' @keywords internal
+#' @importFrom EGRET as.egret
+getZ00s <- function(iBoot,localSample, 
+                    rawDaily0, rawDaily1,
+                    q0Daily, q1Daily,
+                    localINFO0, localINFO1,
+                    paStart,paLong,
+                    eList01,eList10,
+                    blockLength, 
+                    windowY, windowQ, windowS,
+                    minNumObs, minNumUncen, edgeAdjust){
+  set.seed(iBoot)
+  bootSample <- blockSample(localSample = localSample, blockLength = blockLength)
+  # first period
+  eList0 <- as.egret(localINFO0, rawDaily0, bootSample)
+  eList0 <- setUpEstimation(eList0, windowY = windowY, windowQ = windowQ, windowS = windowS,
+                            minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =
+                              edgeAdjust, verbose = FALSE)
+  
+  surfaces0 <- estSurfaces(eList0, windowY=7, windowQ=2, windowS=0.5, minNumObs=minNumObs,
+                           minNumUncen=minNumUncen, edgeAdjust=edgeAdjust, verbose = FALSE)
+  # now the surface for the later period, RS1
+  # we also set up the second FD period, FD1
+  eList1 <- as.egret(localINFO1, rawDaily1, bootSample)
+  eList1 <- setUpEstimation(eList1, windowY = windowY, windowQ = windowQ, windowS = windowS,
+                            minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust =
+                              edgeAdjust, verbose = FALSE)
+  
+  surfaces1 <- estSurfaces(eList1, windowY=7, windowQ=2, windowS=0.5, minNumObs=minNumObs,
+                           minNumUncen=minNumUncen, edgeAdjust=edgeAdjust, verbose = FALSE)
+  # now do the estimation for RS0 and FD0
+  eList0 <- as.egret(eList0$INFO, q0Daily, bootSample, surfaces0)
+  returnDaily0 <- estDailyFromSurfaces(eList0)
+  bootAnnRes0 <- setupYears(localDaily = returnDaily0, paStart = paStart, paLong = paLong)
+  bootAnnRes0 <- na.omit(bootAnnRes0)
+  z00 <- bootAnnRes0$FNFlux[1]
+  #
+  # now do results for RS1 and FD1
+  eList1 <- as.egret(eList1$INFO, q1Daily, bootSample, surfaces1)
+  returnDaily1 <- estDailyFromSurfaces(eList1)
+  bootAnnRes1 <- setupYears(localDaily = returnDaily1, paStart = paStart, paLong = paLong)
+  bootAnnRes1 <- na.omit(bootAnnRes1)
+  z11 <- bootAnnRes1$FNFlux[1]
+  # now do the results for RS0 and FD1
+  eList01 <- as.egret(eList01$INFO, q1Daily, bootSample, surfaces0)
+  returnDaily01 <- estDailyFromSurfaces(eList01)
+  bootAnnRes01 <- setupYears(localDaily = returnDaily01, paStart = paStart, paLong = paLong)
+  bootAnnRes01 <- na.omit(bootAnnRes01)
+  z01 <- bootAnnRes01$FNFlux[1]
+  #  finally do the results for RS1 and FD0
+  eList10 <- as.egret(eList10$INFO, q0Daily, bootSample, surfaces1)
+  returnDaily10 <- estDailyFromSurfaces(eList10)
+  bootAnnRes10 <- setupYears(localDaily = returnDaily10, paStart = paStart, paLong = paLong)
+  bootAnnRes10 <- na.omit(bootAnnRes10)
+  z10 <- bootAnnRes10$FNFlux[1]  
+
+  return(list(z00=z00,z11=z11,z01=z01,z10=z10))
 }

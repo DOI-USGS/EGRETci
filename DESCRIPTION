@@ -19,15 +19,14 @@ Imports:
     lubridate,
     stats,
     graphics,
-    foreach,
-    doSNOW,
-    snow
+    foreach
 Suggests:
     knitr,
     testthat,
     doParallel,
     iterators,
-    rmarkdown
+    rmarkdown,
+    doParallel
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr

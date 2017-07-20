@@ -4,20 +4,18 @@
 \alias{flexFNci}
 \title{Flexible flow-normalization confidence intervals}
 \usage{
-flexFNci(eList, rs0cy, rs1cy, run.parallel = TRUE, nCores = NULL,
-  nBoot = 100, blockLength = 200, repSeed = 1000)
+flexFNci(eList, rs0cy, rs1cy, run.parallel = TRUE, nBoot = 100,
+  blockLength = 200, repSeed = 1000)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{rs0cy}{is the calendar year that we want to be the first period for RS. 
+\item{rs0cy}{is the calendar year that we want to be the first period for RS - response surface. 
 When we want water years, these are set to the year prior to the desired water year}
 
 \item{rs1cy}{is the calendar year that we want to be the second period for RS}
 
 \item{run.parallel}{logical to run bootstrapping in parallel or not}
-
-\item{nCores}{integer number of cores to use}
 
 \item{nBoot}{integer maximum number of replicates (called Mmax in paper)}
 
@@ -35,6 +33,5 @@ rs0cy <- 1985
 rs1cy <- 2000
 \dontrun{
 flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=14)
-flexFNlist_2 <- flexFNci(eList, rs0cy, rs1cy, nBoot=14, run.parallel = FALSE)
 }
 }

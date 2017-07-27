@@ -21,6 +21,19 @@ test_that("trendSetUp",{
                    confStop = 0.7)
   
   expect_equal(caseSetUp, df)
+  expect_error(  caseSetUp <- trendSetUp(eList, 
+                                         year1=1970, 
+                                         year2=2012, 
+                                         nBoot = 50, 
+                                         bootBreak = 39, 
+                                         blockLength = 200))
+  
+  expect_error(  caseSetUp <- trendSetUp(eList, 
+                                         year1=1980, 
+                                         year2=2013, 
+                                         nBoot = 50, 
+                                         bootBreak = 39, 
+                                         blockLength = 200))
   
 })
 
@@ -68,6 +81,7 @@ test_that("pVal", {
 })
 
 test_that("makeTwoYearsResults", {
+  testthat::skip_on_cran()
   twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
   expect_equal(floor(twoResultsWaterYear[1:2]), c(1,0))
   
@@ -111,6 +125,7 @@ test_that("paVector", {
 })
 
 test_that("estSliceSurfacesSimpleAlt", {
+  testthat::skip_on_cran()
   eList <- Choptank_eList
   
   caseSetUp <- trendSetUp(eList, 
@@ -119,12 +134,17 @@ test_that("estSliceSurfacesSimpleAlt", {
                           nBoot = 50, 
                           bootBreak = 39, 
                           blockLength = 200)
+  eList <- setForBoot(eList,caseSetUp)
+  
   surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
   expect_equal(surfaces[1:14,1,3], as.numeric(rep(NA, 14)))
   expect_equal(surfaces[1,173,1], 0.16541093)
 })
 
 test_that("wBT", {
+  
+  testthat::skip_on_cran()
+  
   eList <- Choptank_eList
   
   caseSetUp <- trendSetUp(eList, 
@@ -133,12 +153,16 @@ test_that("wBT", {
                           nBoot = 5, 
                           bootBreak = 39, 
                           blockLength = 200)
+  eList <- setForBoot(eList,caseSetUp)
   
   eBoot <- wBT(eList,caseSetUp)
+  
   bootOut <- eBoot$bootOut
   expect_true(bootOut$rejectC)
-  expect_equal(signif(bootOut$lowC, digits = 6), 0.264241)
-  expect_equal(signif(bootOut$likeCUp, digits = 5), 0.91667)
+  
+  expect_equal(signif(bootOut$lowC, digits = 6), 0.291567)
+  expect_equal(signif(bootOut$likeCUp, digits = 6), 0.916667)
+  
   expect_true(bootOut$rejectF)
   expect_equal(eBoot$wordsOut, c("Upward trend in concentration is very likely" , 
                                  "Downward trend in concentration is very unlikely",
@@ -146,10 +170,10 @@ test_that("wBT", {
                                  "Downward trend in flux is very unlikely"))
   
   
-  expect_equal(signif(eBoot$xConc, digits = 2), c(0.30,0.33,0.26,0.37,0.32))
-  expect_equal(signif(eBoot$pFlux, digits = 2), c(19,26,19,23,20))
-  expect_equal(signif(eBoot$xFlux, digits = 2), c(0.023,0.030,0.022,0.028,0.023))
-  expect_equal(signif(eBoot$pConc, digits = 2), c(29,32,26,37,31))
+  expect_equal(signif(eBoot$xConc, digits = 2), c(0.35,0.33,0.36,0.35,0.29))
+  expect_equal(signif(eBoot$pFlux, digits = 2), c(31,24,24,25,19))
+  expect_equal(signif(eBoot$xFlux, digits = 2), c(0.035,0.029,0.027,0.030,0.023))
+  expect_equal(signif(eBoot$pConc, digits = 2), c(34,31,37,34,29))
   
 })
 

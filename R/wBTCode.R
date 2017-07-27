@@ -335,6 +335,7 @@ wBT<-function(eList,caseSetUp,
         pConc[iBoot] <- (100 * exp(LConc)) - 100
         LFlux <- (2 * LFluxDiff) - (log(res[4]) - log(res[3]))
         pFlux[iBoot] <- (100 * exp(LFlux)) - 100
+        ####### From here on out, no longer parallizable:
         posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 1, posXConc)
         binomIntConc <- binom::binom.bayes(posXConc, iBoot, confStop, "central")
         belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)

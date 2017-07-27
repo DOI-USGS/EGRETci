@@ -4,7 +4,8 @@
 \alias{wBT}
 \title{Run the WBT (WRTDS Bootstrap Test)}
 \usage{
-wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt", repSeed)
+wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
+  repSeed = 1000)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -15,7 +16,7 @@ wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt", repSeed)
 
 \item{fileName}{character. Name to save the output file if \code{saveOutput=TRUE}.}
 
-\item{repSeed}{setSeed value}
+\item{repSeed}{setSeed value. Defaults to 1000. This is used to make repeatable output.}
 
 \item{run.parallel}{logical to run bootstrapping in parallel or not}
 }

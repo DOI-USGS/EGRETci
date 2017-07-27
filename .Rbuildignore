@@ -1,7 +1,9 @@
 vignettes/figure
+WBT 17July2015.docx
 outputText.txt
 output.RData
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.travis\.yml$
 .travis.yml
+CONDUCT.md

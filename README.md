@@ -34,7 +34,7 @@ We want to encourage a warm, welcoming, and safe environment for contributing to
 
 |Version|Monthly Downloads|Total Downloads|
 |----------|------------|------------|
-|[![CRAN version](http://www.r-pkg.org/badges/version/EGRET)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/EGRETci)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/grand-total/EGRETci)](https://cran.r-project.org/package=EGRETci)|
+|[![CRAN version](http://www.r-pkg.org/badges/version/EGRETci)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/EGRETci)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/grand-total/EGRETci)](https://cran.r-project.org/package=EGRETci)|
 
 ### Research software impact:
 

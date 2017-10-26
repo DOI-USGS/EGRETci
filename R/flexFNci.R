@@ -10,6 +10,7 @@
 #' @param blockLength integer size of subset.
 #' @param repSeed setSeed value
 #' @param run.parallel logical to run bootstrapping in parallel or not
+#' @param runCI logical to run the confident interval calculations or not
 #' @importFrom EGRET getInfo
 #' @importFrom EGRET getDaily
 #' @importFrom EGRET getSample
@@ -28,7 +29,7 @@
 #' }
 flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, 
                      nBoot = 100, blockLength = 200,
-                     repSeed = 1000){
+                     repSeed = 1000, runCI = FALSE){
 
   Daily <- getDaily(eList)
   Sample <- getSample(eList)
@@ -185,106 +186,119 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
   localINFO0$stepLogQ <- stepLogQ
   localINFO1$bottomLogQ <- bottomLogQ
   localINFO1$stepLogQ <- stepLogQ
-  #
-  # now the bootstrap replicates  
-  if(run.parallel ){
-
-    Z00s <- foreach(n = 1:nBoot, 
-                     .packages=c('EGRETci','EGRET')) %dopar% {
-                       zList <- getZ00s(n+repSeed, localSample, 
-                                        rawDaily0, rawDaily1,
-                                        q0Daily, q1Daily,
-                                        localINFO0,localINFO1, 
-                                        paStart,paLong,
-                                        eList01,eList10,
-                                        blockLength, 
-                                        windowY, windowQ, windowS,
-                                        minNumObs, minNumUncen, edgeAdjust)
-                     }
-
-    z00 <- sapply(Z00s, function(x) x[["z00"]])
-    z11 <- sapply(Z00s, function(x) x[["z11"]])
-    z01 <- sapply(Z00s, function(x) x[["z01"]])
-    z10 <- sapply(Z00s, function(x) x[["z10"]])
+  
+  if(runCI) {
+  
+    # now the bootstrap replicates  
+    if(run.parallel ){
+  
+      Z00s <- foreach(n = 1:nBoot, 
+                       .packages=c('EGRETci','EGRET')) %dopar% {
+                         zList <- getZ00s(n+repSeed, localSample, 
+                                          rawDaily0, rawDaily1,
+                                          q0Daily, q1Daily,
+                                          localINFO0,localINFO1, 
+                                          paStart,paLong,
+                                          eList01,eList10,
+                                          blockLength, 
+                                          windowY, windowQ, windowS,
+                                          minNumObs, minNumUncen, edgeAdjust)
+                       }
+  
+      z00 <- sapply(Z00s, function(x) x[["z00"]])
+      z11 <- sapply(Z00s, function(x) x[["z11"]])
+      z01 <- sapply(Z00s, function(x) x[["z01"]])
+      z10 <- sapply(Z00s, function(x) x[["z10"]])
+      
+      c00 <- sapply(Z00s, function(x) x[["c00"]])
+      c11 <- sapply(Z00s, function(x) x[["c11"]])
+      c01 <- sapply(Z00s, function(x) x[["c01"]])
+      c10 <- sapply(Z00s, function(x) x[["c10"]])
+      
+    } else {
+      
+      for(iBoot in 1:nBoot) {
+        z00s <- getZ00s(iBoot+repSeed,localSample, 
+                        rawDaily0, rawDaily1,
+                        q0Daily, q1Daily,
+                        localINFO0, localINFO1,
+                        paStart,paLong,
+                        eList01,eList10,
+                        blockLength, 
+                        windowY, windowQ, windowS,
+                        minNumObs, minNumUncen, edgeAdjust) 
+        z00[iBoot] <- z00s[["z00"]]
+        z11[iBoot] <- z00s[["z11"]]
+        z01[iBoot] <- z00s[["z01"]]
+        z10[iBoot] <- z00s[["z10"]]
+        
+        c00[iBoot] <- z00s[["c00"]]
+        c11[iBoot] <- z00s[["c11"]]
+        c01[iBoot] <- z00s[["c01"]]
+        c10[iBoot] <- z00s[["c10"]]
+        cat("\n boot rep ",iBoot," done   ")
+        cat(z00[iBoot],z11[iBoot],z01[iBoot],z10[iBoot])
+      }
+    }
     
-    c00 <- sapply(Z00s, function(x) x[["c00"]])
-    c11 <- sapply(Z00s, function(x) x[["c11"]])
-    c01 <- sapply(Z00s, function(x) x[["c01"]])
-    c10 <- sapply(Z00s, function(x) x[["c10"]])
+    z00[nPlus1] <- bootAnnRes0$FNFlux[1]
+    z11[nPlus1] <- bootAnnRes1$FNFlux[1]
+    z01[nPlus1] <- bootAnnRes01$FNFlux[1]
+    z10[nPlus1] <- bootAnnRes10$FNFlux[1]
+    c00[nPlus1] <- bootAnnRes0$FNConc[1]
+    c11[nPlus1] <- bootAnnRes1$FNConc[1]
+    c01[nPlus1] <- bootAnnRes01$FNConc[1]
+    c10[nPlus1] <- bootAnnRes10$FNConc[1]
+    
+    deltaBoth <- 2 * (zs11 - zs00) - z11 + z00
+    rsPart1 <- 2 * (zs10 - zs00) - z10 + z00
+    rsPart2 <- 2 * (zs11 - zs01) - z11 + z01
+    deltaRS <- 0.5 * (rsPart1 + rsPart2)
+    fdPart1 <- 2 * (zs01 - zs00) - z01 + z00
+    fdPart2 <- 2 * (zs11 - zs10) - z11 + z10
+    deltaFD <- 0.5 * (fdPart1 + fdPart2)
+    
+    zBoth <- (sort(deltaBoth)) * 365.25 / area
+    cat("\n deltaBoth in kg/km^2/yr\n")
+    print(quantile(zBoth,probs = c(0.05, 0.95), type = 6))
+    CIBoth <- quantile(zBoth,probs = c(0.05, 0.95), type = 6)
+    isPos <- ifelse(zBoth > 0, 1, 0)
+    nPos <- sum(isPos)
+    cat("\n nPos and likeUp", nPos, nPos / nBoot)
+    zRS <- (sort(deltaRS)) * 365.25 / area
+    cat("\n\n deltaRS in kg/km^2/yr\n")
+    print(quantile(zRS,probs = c(0.05, 0.95), type = 6))
+    CIRS <- quantile(zRS,probs = c(0.05, 0.95), type = 6)
+    zFD <- (sort(deltaFD)) * 365.25 / area
+    cat("\n\n deltaFD in kg/km^2/yr\n")
+    print(quantile(zFD,probs = c(0.05, 0.95), type = 6))
+    CIFD <- quantile(zFD,probs = c(0.05, 0.95), type = 6)
+    flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
+                     windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
+                     minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
+                     paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed,
+                     bottomLogQ = bottomLogQ, stepLogQ = stepLogQ, yieldDelta = yieldDelta,
+                     RSpart = RSpart, FDpart = FDpart,  z00 = z00, 
+                     z01 = z01, z10 = z10, z11 = z11, zBoth = zBoth,
+                     zRS = zRS, zFD = zFD, CIBoth = CIBoth, CIRS = CIRS,
+                     CIFD = CIFD, pctChange = pctChange, nPos = nPos,
+                     c01 = c01, c10 = c10, c11 = c11, c00 = c00,
+                     site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
+                     abbrevC = INFO$constitAbbrev)
+  
     
   } else {
-    
-    for(iBoot in 1:nBoot) {
-      z00s <- getZ00s(iBoot+repSeed,localSample, 
-                      rawDaily0, rawDaily1,
-                      q0Daily, q1Daily,
-                      localINFO0, localINFO1,
-                      paStart,paLong,
-                      eList01,eList10,
-                      blockLength, 
-                      windowY, windowQ, windowS,
-                      minNumObs, minNumUncen, edgeAdjust) 
-      z00[iBoot] <- z00s[["z00"]]
-      z11[iBoot] <- z00s[["z11"]]
-      z01[iBoot] <- z00s[["z01"]]
-      z10[iBoot] <- z00s[["z10"]]
-      
-      c00[iBoot] <- z00s[["c00"]]
-      c11[iBoot] <- z00s[["c11"]]
-      c01[iBoot] <- z00s[["c01"]]
-      c10[iBoot] <- z00s[["c10"]]
-      cat("\n boot rep ",iBoot," done   ")
-      cat(z00[iBoot],z11[iBoot],z01[iBoot],z10[iBoot])
-    }
+    flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
+                     windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
+                     minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
+                     paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed,
+                     bottomLogQ = bottomLogQ, stepLogQ = stepLogQ, yieldDelta = yieldDelta,
+                     RSpart = RSpart, FDpart = FDpart,
+                     site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
+                     abbrevC = INFO$constitAbbrev)
   }
   
-  z00[nPlus1] <- bootAnnRes0$FNFlux[1]
-  z11[nPlus1] <- bootAnnRes1$FNFlux[1]
-  z01[nPlus1] <- bootAnnRes01$FNFlux[1]
-  z10[nPlus1] <- bootAnnRes10$FNFlux[1]
-  c00[nPlus1] <- bootAnnRes0$FNConc[1]
-  c11[nPlus1] <- bootAnnRes1$FNConc[1]
-  c01[nPlus1] <- bootAnnRes01$FNConc[1]
-  c10[nPlus1] <- bootAnnRes10$FNConc[1]
-  
-  deltaBoth <- 2 * (zs11 - zs00) - z11 + z00
-  rsPart1 <- 2 * (zs10 - zs00) - z10 + z00
-  rsPart2 <- 2 * (zs11 - zs01) - z11 + z01
-  deltaRS <- 0.5 * (rsPart1 + rsPart2)
-  fdPart1 <- 2 * (zs01 - zs00) - z01 + z00
-  fdPart2 <- 2 * (zs11 - zs10) - z11 + z10
-  deltaFD <- 0.5 * (fdPart1 + fdPart2)
-  
-  zBoth <- (sort(deltaBoth)) * 365.25 / area
-  cat("\n deltaBoth in kg/km^2/yr\n")
-  print(quantile(zBoth,probs = c(0.05, 0.95), type = 6))
-  CIBoth <- quantile(zBoth,probs = c(0.05, 0.95), type = 6)
-  isPos <- ifelse(zBoth > 0, 1, 0)
-  nPos <- sum(isPos)
-  cat("\n nPos and likeUp", nPos, nPos / nBoot)
-  zRS <- (sort(deltaRS)) * 365.25 / area
-  cat("\n\n deltaRS in kg/km^2/yr\n")
-  print(quantile(zRS,probs = c(0.05, 0.95), type = 6))
-  CIRS <- quantile(zRS,probs = c(0.05, 0.95), type = 6)
-  zFD <- (sort(deltaFD)) * 365.25 / area
-  cat("\n\n deltaFD in kg/km^2/yr\n")
-  print(quantile(zFD,probs = c(0.05, 0.95), type = 6))
-  CIFD <- quantile(zFD,probs = c(0.05, 0.95), type = 6)
-  flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
-                   windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
-                   minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
-                   paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed,
-                   bottomLogQ = bottomLogQ, stepLogQ = stepLogQ, yieldDelta = yieldDelta,
-                   RSpart = RSpart, FDpart = FDpart,  z00 = z00, 
-                   z01 = z01, z10 = z10, z11 = z11, zBoth = zBoth,
-                   zRS = zRS, zFD = zFD, CIBoth = CIBoth, CIRS = CIRS,
-                   CIFD = CIFD, pctChange = pctChange, nPos = nPos,
-                   c01 = c01, c10 = c10, c11 = c11, c00 = c00,
-                   site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
-                   abbrevC = INFO$constitAbbrev)
-
   return(flexBoot)
-  
 }
 
 #' @keywords internal

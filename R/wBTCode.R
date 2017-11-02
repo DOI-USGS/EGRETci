@@ -114,6 +114,14 @@ trendSetUp <- function(eList, ...){
   message("blockLength = ",blockLength," this is the number of days in a bootstrap block")
 
   confStop <- 0.7
+  
+  if(year1 < floor(min(eList$Sample$DecYear, na.rm = TRUE))){
+    stop("year1 is less than the first Sample year")
+  }
+  
+  if(year2 > ceiling(max(eList$Sample$DecYear, na.rm = TRUE))){
+    stop("year2 is greater than the last Sample year")
+  }
 
   caseSetUp <- data.frame(year1=year1,
                           yearData1=yearData1,
@@ -171,22 +179,31 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
+#' @param run.parallel logical to run bootstrapping in parallel or not
+#' @param repSeed setSeed value. Defaults to 1000. This is used to make repeatable output.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @importFrom EGRET as.egret
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
+#' @importFrom foreach foreach
+#' @importFrom foreach %dopar%
 #' @export
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' \dontrun{
-#' caseSetUp <- trendSetUp(eList)
+#'   caseSetUp <- trendSetUp(eList,
+#'   year1=1985, 
+#'   year2=2005,
+#'   nBoot = 50, 
+#'   bootBreak = 39,
+#'   blockLength = 200)
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt"){
-
+              saveOutput=TRUE, fileName="temp.txt", repSeed = 1000){
+  
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
   #
@@ -224,10 +241,8 @@ wBT<-function(eList,caseSetUp,
   pFlux <- rep(NA, nBoot)
   posXConc <- 0
   posXFlux <- 0
-  possibleError1 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eList, 
-                                                                    year1), error = function(e) e)
-  possibleError2 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eList, 
-                                                                    year2), error = function(e) e)
+  possibleError1 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eList, year1), error = function(e) e)
+  possibleError2 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eList, year2), error = function(e) e)
   if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
                                                      "error")) {
     combo <- makeCombo(surfaces1, surfaces2)
@@ -261,7 +276,7 @@ wBT<-function(eList,caseSetUp,
       cat("\n\n  Bootstrap process, for change from ", 
           year1, " to ", year2, ":",periodName) 
     }
-
+    
     cat("\n                   data set runs from Water Year", 
         yearData1, "to Water Year", yearData2)
     cat("\n  Bootstrap block length in days", blockLength)
@@ -270,19 +285,19 @@ wBT<-function(eList,caseSetUp,
         " mg/L")
     cat("\n WRTDS estimated flux change is        ", ffc, 
         " 10^6 kg/yr")
-
+    
     if (saveOutput) {
       message("\n", eList$INFO$shortName, "  ", eList$INFO$paramShortName)
       message("\n", periodName)
       if(eList$INFO$paStart == 1 & eList$INFO$paLong == 12){
         message("\n  Bootstrap process, for change from Calendar Year", 
-            year1, " to ", year2)      
+                year1, " to ", year2)      
       } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
         message("\n  Bootstrap process, for change from Water Year", 
-            year1, " to Water Year", year2)       
+                year1, " to Water Year", year2)       
       } else {
         message("\n  Bootstrap process, for change from ", 
-            year1, " to ", year2, ":",periodName) 
+                year1, " to ", year2, ":",periodName) 
       }
       message("                   data set runs from ", 
               yearData1, " to Year ", yearData2)
@@ -300,6 +315,7 @@ wBT<-function(eList,caseSetUp,
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
     for (iBoot in 1:nBoot) {
+      set.seed(seed = repSeed + iBoot)
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength)
       eListBoot <- as.egret(localINFO, localDaily, bootSample, 
@@ -319,6 +335,7 @@ wBT<-function(eList,caseSetUp,
         pConc[iBoot] <- (100 * exp(LConc)) - 100
         LFlux <- (2 * LFluxDiff) - (log(res[4]) - log(res[3]))
         pFlux[iBoot] <- (100 * exp(LFlux)) - 100
+        ####### From here on out, no longer parallizable:
         posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 1, posXConc)
         binomIntConc <- binom::binom.bayes(posXConc, iBoot, confStop, "central")
         belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)
@@ -396,7 +413,7 @@ wBT<-function(eList,caseSetUp,
     cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                             digits = 2, width = 9))
     if (!is.na(posXConc) && ( posXConc == 0 | posXConc == iBoot) ){
-        cat("\n* Note p-value should be considered to be < stated value")
+      cat("\n* Note p-value should be considered to be < stated value")
     }
     likeCUp <- (posXConc + 0.5)/(iBoot + 1)
     likeCDown <- 1 - likeCUp
@@ -423,7 +440,7 @@ wBT<-function(eList,caseSetUp,
     if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == iBoot)) {
       cat("\n* Note p-value should be considered to be < stated value")
     }
-      
+    
     likeFUp <- (posXFlux + 0.5)/(iBoot + 1)
     likeFDown <- 1 - likeFUp
     cat("\n Likelihood that Flow Normalized Flux is trending up =", 
@@ -457,7 +474,7 @@ wBT<-function(eList,caseSetUp,
       if (!is.na(posXConc) && (posXConc == 0 | posXConc == iBoot)) {
         message("* Note p-value should be considered to be < stated value")
       }
-        
+      
       message("  approximate two-sided p-value for Conc ", 
               format(pValC, digits = 2, width = 9))
       message("  Likelihood that Flow Normalized Concentration is trending up = ", 
@@ -475,7 +492,7 @@ wBT<-function(eList,caseSetUp,
       if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == iBoot)){
         message("* Note p-value should be considered to be < stated value")
       } 
-        
+      
       message("  Likelihood that Flow Normalized Flux is trending up = ", 
               format(likeFUp, digits = 3), " is trending down= ", 
               format(likeFDown, digits = 3))
@@ -489,6 +506,9 @@ wBT<-function(eList,caseSetUp,
     stop(possibleError1, "/n", possibleError2)
   }
 }
+  
+
+  
 
 #' surface slice
 #'
@@ -539,16 +559,10 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   vectorYear <-seq(bottomYear,topYear,stepYear)
   surfaces<-array(NA,dim=c(14,length(vectorYear),3))
   
-#   if(is.null(localINFO$paStart) | is.null(localINFO$paLong)){
-#     # Default to water year
-#     localINFO$paStart <- 10
-#     localINFO$paLong <- 12
-#   }
-  
   vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
   # Tack on one data point on either side
   vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
-  # vectorIndex <- c(vectorIndex,vectorIndex[length(vectorIndex)]+1)
+
   vectorIndex <- vectorIndex[vectorIndex != 0]
   
   vectorYear <- vectorYear[vectorIndex]
@@ -560,11 +574,21 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   DecLow <- localINFO$DecLow
   DecHigh <- localINFO$DecHigh
   
-  resultSurvReg <- runSurvReg(estPtYear,estPtLogQ,numDays,
-                                     DecLow,DecHigh, localSample,
-                                     windowY,windowQ,windowS,
-                                     minNumObs,minNumUncen,
-                                     interactive=FALSE,edgeAdjust)
+  if(packageVersion("EGRET") >= "2.6.1"){
+    resultSurvReg <- runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
+                                numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
+                                Sample = localSample,windowY = windowY,windowQ = windowQ,
+                                windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
+                                verbose =FALSE,edgeAdjust = edgeAdjust)
+  } else {
+    message("Consider updating the EGRET package")
+    resultSurvReg <- runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
+                                numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
+                                Sample = localSample,windowY = windowY,windowQ = windowQ,
+                                windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
+                                interactive =  FALSE,edgeAdjust = edgeAdjust)
+  }
+
   
   for(iQ in 1:14) {
     for(iY in 1:length(vectorIndex)){ 
@@ -798,8 +822,8 @@ blockSample <- function(localSample, blockLength){
     randomDate <- sample(possibleStarts, 1)
     blockStart <- max(randomDate,dayOne)
     blockEnd <- min(lastJulian,randomDate+blockLength-1)
-    oneYear <- subset(localSample, localSample$Julian >= blockStart & 
-                        localSample$Julian < blockEnd)
+    oneYear <- localSample[which(localSample$Julian >= blockStart & 
+                        localSample$Julian < blockEnd),]
     newSample <- rbind(oneYear, newSample)
         
   }

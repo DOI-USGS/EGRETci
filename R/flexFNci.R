@@ -25,7 +25,7 @@
 #' rs0cy <- 1985
 #' rs1cy <- 2000
 #' \dontrun{
-#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, nBoot=14)
+#' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, runCI = FALSE)
 #' }
 flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, 
                      nBoot = 100, blockLength = 200,
@@ -180,8 +180,28 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
       "\n yield change due to change in response surface",RSpart,
       "\n yield change due to change in flow distribution", FDpart,
       "\n percentage change in yield", pctChange)
-
-
+###################################
+  cChange <- cs11 - cs00
+  cRSpart <- 0.5 * (cs10 - cs00 + cs11 - cs01)
+  cFDpart <- 0.5 * (cs01 - cs00 + cs11 - cs10)
+  cpctChange <- 100 * (cs11 - cs00)/cs00
+  cat("\n change in conc", cChange, "mg/L", 
+      "\n conc change due to change in response surface", 
+      cRSpart, "\n conc change due to change in flow distribution", 
+      cFDpart, "\n percentage change in conc", cpctChange)
+  
+  zChange <- (zs11 - zs00) * 365.25
+  zRSpart <- 0.5 * (zs10 - zs00 + zs11 - zs01) * 365.25
+  zFDpart <- 0.5 * (zs01 - zs00 + zs11 - zs10) * 365.25
+  zpctChange <- 100 * (zs11 - zs00)/zs00
+  cat("\n change in flux", zChange, "kg/year", 
+      "\n flux change due to change in response surface", 
+      zRSpart, "\n flux change due to change in flow distribution", 
+      zFDpart, "\n percentage change in flux", zpctChange)
+  changes <- data.frame(type=c("conc", "flux"),
+                        change=c(cChange, zChange), pctChange=c(cpctChange, zpctChange),
+                        RSpart=c(cRSpart, zRSpart), FDpart=c(cFDpart, zFDpart))
+#############################################
   localINFO0$bottomLogQ <- bottomLogQ
   localINFO0$stepLogQ <- stepLogQ
   localINFO1$bottomLogQ <- bottomLogQ
@@ -273,6 +293,7 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
     cat("\n\n deltaFD in kg/km^2/yr\n")
     print(quantile(zFD,probs = c(0.05, 0.95), type = 6))
     CIFD <- quantile(zFD,probs = c(0.05, 0.95), type = 6)
+    
     flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
                      windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
                      minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
@@ -288,15 +309,16 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
   
     
   } else {
-    flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy,
-                     windowY = windowY, windowQ = windowQ, windowS = windowS, minNumObs = minNumObs,
-                     minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth,
-                     paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed,
-                     bottomLogQ = bottomLogQ, stepLogQ = stepLogQ, yieldDelta = yieldDelta,
-                     RSpart = RSpart, FDpart = FDpart,
-                     site = eList$INFO$site.no, siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev,
-                     abbrevC = INFO$constitAbbrev)
-  }
+    flexBoot <- list(rs0cy = rs0cy, rs1cy = rs1cy, windowY = windowY, 
+                     windowQ = windowQ, windowS = windowS, minNumObs = minNumObs, 
+                     minNumUncen = minNumUncen, edgeAdjust = edgeAdjust, p0StartMonth = p0StartMonth, 
+                     paLong = paLong, nBoot = nBoot, blockLength = blockLength, repSeed = repSeed, 
+                     bottomLogQ = bottomLogQ, stepLogQ = stepLogQ, cChange = cChange, cRSpart = cRSpart, 
+                     cFDpart = cFDpart, cpctChange = cpctChange, zChange = zChange, zRSpart = zRSpart, 
+                     zFDpart = zFDpart, zpctChange = zpctChange,site = eList$INFO$site.no, 
+                     c11=cs11, c00=cs00, c10=cs10, c01=cs01, z11=zs11, z00=zs00, z10=zs10, z01=zs01, 
+                     siteName = eList$INFO$station.nm, abbrevS = INFO$staAbbrev, abbrevC = INFO$constitAbbrev)
+      }
   
   return(flexBoot)
 }

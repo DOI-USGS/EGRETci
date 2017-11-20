@@ -9,6 +9,7 @@
 #' @param rs1cy is the calendar year that we want to be the second period for RS
 #' @param blockLength integer size of subset.
 #' @param repSeed setSeed value
+#' @param windowFlex interger how big of window
 #' @param run.parallel logical to run bootstrapping in parallel or not
 #' @param runCI logical to run the confident interval calculations or not
 #' @importFrom EGRET getInfo
@@ -27,7 +28,8 @@
 #' \dontrun{
 #' flexFNlist <- flexFNci(eList, rs0cy, rs1cy, runCI = FALSE)
 #' }
-flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE, 
+flexFNci <- function(eList, rs0cy, rs1cy, windowFlex = 15,
+                     run.parallel = TRUE, 
                      nBoot = 100, blockLength = 200,
                      repSeed = 1000, runCI = FALSE){
 
@@ -47,12 +49,10 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
   windowY <- INFO$windowY#7
   windowQ <- INFO$windowQ#2
   windowS <- INFO$windowS#0.5
+  
   edgeAdjust <- FALSE#there's a question about this...
   
-  nDaysFull <- length(eList$Daily$MonthSeq)
-  fullStart <- eList$Daily$MonthSeq[1]
-  fullEnd <- eList$Daily$MonthSeq[nDaysFull]
-  fullLength <- (fullEnd - fullStart + 1) / 12
+  fullLength <- (diff(range(eList$Daily$MonthSeq)) + 1) / 12
   p0StartMonth <- 10
   p0StartYear <- rs0cy
   p0StartMonthSeq <- ((p0StartYear - 1850) * 12) + p0StartMonth
@@ -74,10 +74,12 @@ flexFNci <- function(eList, rs0cy, rs1cy, run.parallel = TRUE,
   
   # p1 is the first period of the surfaces
   # next we get the period for flow normalization
-  windowFlex <- 15
+
   if(fullLength < windowFlex) stop
+  
   half <- (windowFlex - 1) / 2
   half <- trunc(half)
+  
   q0StartMonthSeqTemp <- p0StartMonthSeq - (half * 12)
   q0StartMonthSeq <- max(fullStart,q0StartMonthSeqTemp)
   q0EndMonthSeq <- q0StartMonthSeq + (windowFlex * 12) - 1

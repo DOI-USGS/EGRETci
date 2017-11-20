@@ -48,7 +48,7 @@ test_that("setForBoot", {
   
   expect_gt(ncol(INFO2),ncol(INFO))
   
-  expect_true(all(c("DecLow","DecHigh","numDays") %in% names(INFO2)))
+  expect_true(all(c("DecLow","DecHigh") %in% names(INFO2)))
   
 })
 

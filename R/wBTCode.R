@@ -576,7 +576,7 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   
   if(packageVersion("EGRET") >= "2.6.1"){
     resultSurvReg <- runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
-                                numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
+                                DecLow = DecLow,DecHigh = DecHigh, 
                                 Sample = localSample,windowY = windowY,windowQ = windowQ,
                                 windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
                                 verbose =FALSE,edgeAdjust = edgeAdjust)

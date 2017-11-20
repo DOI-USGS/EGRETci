@@ -1,9 +1,9 @@
 context("Two-year trend")
+library(EGRET)
+eList <- Choptank_eList
 
 test_that("trendSetUp",{
-  library(EGRET)
-  eList <- Choptank_eList
-  
+
   caseSetUp <- trendSetUp(eList, 
                           year1=1990, 
                           year2=2012, 

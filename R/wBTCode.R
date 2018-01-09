@@ -785,13 +785,21 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	}
   
   surfaceIndexParameters <- surfaceIndex(localDaily)
-  localINFO$bottomLogQ <- surfaceIndexParameters[1]
-  localINFO$stepLogQ <- surfaceIndexParameters[2]
-  localINFO$nVectorLogQ <- surfaceIndexParameters[3]
-  localINFO$bottomYear <- surfaceIndexParameters[4]
-  localINFO$stepYear <- surfaceIndexParameters[5]
-  localINFO$nVectorYear <- surfaceIndexParameters[6]
-
+  if(packageVersion("EGRET") > '2.6.1'){
+    localINFO$bottomLogQ<-surfaceIndexParameters[['bottomLogQ']]
+    localINFO$stepLogQ<-surfaceIndexParameters[['stepLogQ']]
+    localINFO$nVectorLogQ<-surfaceIndexParameters[['nVectorLogQ']]
+    localINFO$bottomYear<-surfaceIndexParameters[['bottomYear']]
+    localINFO$stepYear<-surfaceIndexParameters[['stepYear']]
+    localINFO$nVectorYear<-surfaceIndexParameters[['nVectorYear']]
+  } else {
+    localINFO$bottomLogQ <- surfaceIndexParameters[1]
+    localINFO$stepLogQ <- surfaceIndexParameters[2]
+    localINFO$nVectorLogQ <- surfaceIndexParameters[3]
+    localINFO$bottomYear <- surfaceIndexParameters[4]
+    localINFO$stepYear <- surfaceIndexParameters[5]
+    localINFO$nVectorYear <- surfaceIndexParameters[6]
+  }
 
   localINFO$numDays <- numDays
   localINFO$DecLow <- DecLow

@@ -16,7 +16,6 @@ Depends:
 Imports:
     EGRET(>= 2.1.1),
     binom,
-    lubridate,
     stats,
     graphics,
     foreach

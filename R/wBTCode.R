@@ -613,7 +613,6 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
 #' @param paLong integer length of period of analysis
 #' @param vectorYear numeric vector of decimal years
 #' @keywords WRTDS flow
-#' @import lubridate
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -641,22 +640,26 @@ paVector <- function(year,paStart,paLong, vectorYear){
   
   if (paStart + paLong > 13){
     # Crosses January
-    minTime <- ymd(paste(year-1,paStart,1,sep="-"))
-    maxTime <- as.Date(ymd(paste(year,(paStart + paLong - 12),1)))-1
+    minTime <- as.Date(paste(year-1,paStart,1,sep="-"))
+    minYear <- year-1
+    maxTime <- as.Date(paste(year,(paStart + paLong - 12),1,sep="-"))-1
+    maxYear <- year
   } else {
-    minTime <- ymd(paste(year,paStart,1,sep="-"))
+    minTime <- as.Date(paste(year,paStart,1,sep="-"))
+    minYear <- year
+    maxYear <- year
     if(paStart + paLong <= 12){
-      maxTime <- as.Date(ymd(paste(year,(paStart + paLong),1)))-1
+      maxTime <- as.Date(paste(year,(paStart + paLong),1,sep="-"))-1
     } else {
       #Special december issue
-      maxTime <- as.Date(ymd(paste(year,12,31)))
+      maxTime <- as.Date(paste(year,12,31,sep="-"))
     }
     
   }
   
-  minTime <- decimal_date(minTime)
+  minTime <- minYear + as.numeric(as.POSIXct(minTime))/as.numeric(as.POSIXct(paste0(minYear,"-01-01")))
   
-  maxTime <- decimal_date(maxTime)
+  maxTime <- maxYear + as.numeric(as.POSIXct(maxTime))/as.numeric(as.POSIXct(paste0(maxYear,"-01-01")))
   
   vectorIndex <- which(vectorYear >= minTime & vectorYear <= maxTime)
   

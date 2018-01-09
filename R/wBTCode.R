@@ -640,28 +640,30 @@ paVector <- function(year,paStart,paLong, vectorYear){
   
   if (paStart + paLong > 13){
     # Crosses January
-    minTime <- as.Date(paste(year-1,paStart,1,sep="-"))
-    minYear <- year-1
-    maxTime <- as.Date(paste(year,(paStart + paLong - 12),1,sep="-"))-1
-    maxYear <- year
+    minYear_int <- year-1
+    maxTime <- as.POSIXct(as.Date(paste(year,(paStart + paLong - 12),1,sep="-"))-1)
   } else {
-    minTime <- as.Date(paste(year,paStart,1,sep="-"))
-    minYear <- year
-    maxYear <- year
+    minYear_int <- year
     if(paStart + paLong <= 12){
-      maxTime <- as.Date(paste(year,(paStart + paLong),1,sep="-"))-1
+      maxTime <- as.POSIXct(as.Date(paste(year,(paStart + paLong),1,sep="-"))-1)
     } else {
       #Special december issue
-      maxTime <- as.Date(paste(year,12,31,sep="-"))
+      maxTime <- as.POSIXct(as.Date(paste(year,12,31,sep="-")))
     }
-    
   }
   
-  minTime <- minYear + as.numeric(as.POSIXct(minTime))/as.numeric(as.POSIXct(paste0(minYear,"-01-01")))
+  minTime <- as.POSIXct(paste(minYear_int,paStart,1,sep="-"))
+  minYear <- as.POSIXct(paste0(minYear_int,"-01-01 00:00"))
+  endMinYear <- as.POSIXct(paste0(minYear_int,"-12-31 23:59"))
   
-  maxTime <- maxYear + as.numeric(as.POSIXct(maxTime))/as.numeric(as.POSIXct(paste0(maxYear,"-01-01")))
+  maxYear <- as.POSIXct(paste0(year,"-01-01 00:00"))
+  endMaxYear <- as.POSIXct(paste0(year,"-12-31 23:59"))
   
-  vectorIndex <- which(vectorYear >= minTime & vectorYear <= maxTime)
+  minTime_dec <- minYear_int + as.numeric(difftime(minTime, minYear, units = "secs"))/as.numeric(difftime(endMinYear, minYear, units = "secs"))
+
+  maxTime_dec <- year + as.numeric(difftime(maxTime, maxYear, units = "secs"))/as.numeric(difftime(endMaxYear, maxYear, units = "secs"))
+  
+  vectorIndex <- which(vectorYear >= minTime_dec & vectorYear <= maxTime_dec)
   
   return(vectorIndex)
 }

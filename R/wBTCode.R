@@ -97,7 +97,7 @@ trendSetUp <- function(eList, ...){
   if(!is.null(matchReturn$bootBreak)){
     bootBreak <- as.numeric(matchReturn$bootBreak)
   } else {
-    message("Enter Mmin (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
+    message("Enter min (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
     bootBreak <- as.numeric(readline())
   }
 
@@ -519,6 +519,7 @@ wBT<-function(eList,caseSetUp,
 #' @param year integer year to perform WRTDS analysis
 #' @keywords WRTDS flow
 #' @importFrom EGRET runSurvReg
+#' @importFrom utils packageVersion
 #' @return surfaces matrix
 #' @export
 #' @examples

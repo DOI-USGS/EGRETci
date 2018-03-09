@@ -7,7 +7,7 @@
 #' @param pairResults data frame returned from \code{EGRET::runPairs}
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
 #' @param blockLength days, typically 200 is a good choice
-#' @param repSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @export
 #' @examples 
 #' library(EGRET)
@@ -21,7 +21,7 @@
 #' boot_pair_out <- runPairsBoot(eList, pairOut_2)
 #' }
 runPairsBoot <- function(eList, pairResults, 
-                         nBoot=100, repSeed = 494817, 
+                         nBoot=100, startSeed = 494817, 
                          blockLength = 200) {
 
   interactive <- FALSE
@@ -55,8 +55,8 @@ runPairsBoot <- function(eList, pairResults,
   year1 <- attr(pairResults, "yearPair")[["year1"]]
   year2 <- attr(pairResults, "yearPair")[["year2"]]
   
-  startEnd1 <- startEnd(paStart, paLong, year1)
-  startEnd2 <- startEnd(paStart, paLong, year2)
+  startEnd1 <- EGRET::startEnd(paStart, paLong, year1)
+  startEnd2 <- EGRET::startEnd(paStart, paLong, year2)
   
   start1 <- as.Date(startEnd1[["startDate"]])
   end1 <- as.Date(startEnd1[["endDate"]])
@@ -107,7 +107,7 @@ runPairsBoot <- function(eList, pairResults,
   # bootstrap loop starts here
   for (iBoot in 1:nBoot){
     
-    set.seed(seed = repSeed + iBoot)
+    set.seed(seed = startSeed + iBoot)
     
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, NA)
@@ -162,7 +162,7 @@ runPairsBoot <- function(eList, pairResults,
   cat("\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
   periodName <- EGRET::setSeasonLabelByUser(paStart, paLong)
   cat("\n  ", periodName, "\n")
-  if(wall) cat("\n Sample data set was partitioned with a wall at ", as.character(lastDaySample1), "\n\n")
+  if(wall) cat("\n Sample data set was partitioned with a wall at ", as.character(sample1EndDate), "\n\n")
   cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
       words(rejectC))
   fquantConc <- format(quantConc, digits = 3, width = 8)

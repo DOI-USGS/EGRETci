@@ -4,7 +4,7 @@
 \alias{runPairsBoot}
 \title{runPairsBoot}
 \usage{
-runPairsBoot(eList, pairResults, nBoot = 100, repSeed = 494817,
+runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
   blockLength = 200)
 }
 \arguments{
@@ -14,7 +14,7 @@ runPairsBoot(eList, pairResults, nBoot = 100, repSeed = 494817,
 
 \item{nBoot}{the maximum number of bootstrap replicates to be used, typically 100}
 
-\item{repSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
 \item{blockLength}{days, typically 200 is a good choice}
 }

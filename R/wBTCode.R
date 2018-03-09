@@ -179,12 +179,10 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
-#' @param repSeed setSeed value. Defaults to 1000. This is used to make repeatable output.
+#' @param startSeed setSeed value. Defaults to 1000. This is used to make repeatable output.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
-#' @importFrom foreach foreach
-#' @importFrom foreach %dopar%
 #' @export
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
 #' @examples
@@ -200,7 +198,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt", repSeed = 1000){
+              saveOutput=TRUE, fileName="temp.txt", startSeed = 1000){
   
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
@@ -246,7 +244,7 @@ wBT<-function(eList,caseSetUp,
   if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
                                                      "error")) {
     combo <- makeCombo(surfaces1, surfaces2)
-    eListCombo <- as.egret(localINFO, localDaily, localSample, 
+    eListCombo <- EGRET::as.egret(localINFO, localDaily, localSample, 
                            combo)
     res <- makeTwoYearsResults(eListCombo, year1, year2)
     regDeltaConc <- res[2] - res[1]
@@ -315,10 +313,10 @@ wBT<-function(eList,caseSetUp,
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
     for (iBoot in 1:nBoot) {
-      set.seed(seed = repSeed + iBoot)
+      set.seed(seed = startSeed + iBoot)
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength)
-      eListBoot <- as.egret(localINFO, localDaily, bootSample, 
+      eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
                             NA)
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 
                                                                         year1), error = function(e) e)

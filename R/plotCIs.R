@@ -206,7 +206,7 @@ bootAnnual <- function(eList, blockLength=200){
   }
   
   bootSample <- blockSample(Sample, blockLength)
-  eListBoot <- as.egret(INFO,Daily,bootSample,NA)
+  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
   surfaces1 <- EGRET::estSurfaces(eListBoot, 
                          windowY = eList$INFO$windowY, 
@@ -346,7 +346,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
                                 flux = TRUE, xMin = NA, xMax = NA, xStep = NA,
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
-  periodName <- setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
+  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux

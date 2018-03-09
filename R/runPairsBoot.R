@@ -7,6 +7,7 @@
 #' @param pairResults data frame returned from \code{EGRET::runPairs}
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
 #' @param blockLength days, typically 200 is a good choice
+#' @param repSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @export
 #' @examples 
 #' library(EGRET)
@@ -14,13 +15,15 @@
 #' year1 <- 1985
 #' year2 <- 2014
 #' 
+#' \dontrun{
 #' pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
 #' 
+#' boot_pair_out <- runPairsBoot(eList, pairOut_2)
+#' }
 runPairsBoot <- function(eList, pairResults, 
-                         nBoot=100, startSeed = 494817, 
+                         nBoot=100, repSeed = 494817, 
                          blockLength = 200) {
-  set.seed(startSeed)
-  
+
   interactive <- FALSE
   localINFO <- eList$INFO
   localDaily <- eList$Daily
@@ -103,20 +106,23 @@ runPairsBoot <- function(eList, pairResults,
   
   # bootstrap loop starts here
   for (iBoot in 1:nBoot){
+    
+    set.seed(seed = repSeed + iBoot)
+    
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, NA)
     
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &
                             bootSample$Date <= sample1EndDate,]
     
-    possibleError3 <- tryCatch( surfaces1 <- estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,
+    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,
                                                          localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     
     Sample2 <- bootSample[bootSample$Date >= sample2StartDate &
                             bootSample$Date <= sample2EndDate,]
     
-    possibleError4 <- tryCatch( surfaces2 <- estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,
+    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,
                                                          localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     if (!inherits(possibleError3, "error") & 

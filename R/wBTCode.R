@@ -179,10 +179,8 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
-#' @param run.parallel logical to run bootstrapping in parallel or not
 #' @param repSeed setSeed value. Defaults to 1000. This is used to make repeatable output.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
-#' @importFrom EGRET as.egret
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
 #' @importFrom foreach foreach
@@ -232,9 +230,10 @@ wBT<-function(eList,caseSetUp,
   nBoot <- caseSetUp$nBoot
   bootBreak <- caseSetUp$bootBreak
   blockLength <- caseSetUp$blockLength
-  periodName <- setSeasonLabel(data.frame(PeriodStart = localINFO$paStart, 
+  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = localINFO$paStart, 
                                           PeriodLong = localINFO$paLong))
   confStop <- caseSetUp$confStop
+  
   xConc <- rep(NA, nBoot)
   xFlux <- rep(NA, nBoot)
   pConc <- rep(NA, nBoot)
@@ -243,6 +242,7 @@ wBT<-function(eList,caseSetUp,
   posXFlux <- 0
   possibleError1 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eList, year1), error = function(e) e)
   possibleError2 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eList, year2), error = function(e) e)
+  
   if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
                                                      "error")) {
     combo <- makeCombo(surfaces1, surfaces2)
@@ -327,7 +327,7 @@ wBT<-function(eList,caseSetUp,
       if (!inherits(possibleError3, "error") & !inherits(possibleError4, 
                                                          "error")) {
         combo <- makeCombo(surfaces1, surfaces2)
-        eListBoot <- as.egret(localINFO, localDaily, bootSample, combo)
+        eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, combo)
         res <- makeTwoYearsResults(eListBoot, year1, year2)
         xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
         xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - res[3]) * 0.00036525)
@@ -342,20 +342,21 @@ wBT<-function(eList,caseSetUp,
         aboveConc <- ifelse(binomIntConc$lower > 0.95, 1, 0)
         midConc <- ifelse(binomIntConc$lower > 0.05 & 
                             binomIntConc$upper < 0.95, 1, 0)
-        posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 
-                             1, posXFlux)
+        posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 1, posXFlux)
         binomIntFlux <- binom::binom.bayes(posXFlux, 
                                            iBoot, confStop, "central")
         belowFlux <- ifelse(binomIntFlux$upper < 0.05, 1, 0)
         aboveFlux <- ifelse(binomIntFlux$lower > 0.95, 1, 0)
         midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
                             binomIntFlux$upper < 0.95, 1, 0)
+        
         quantConc <- quantile(xConc[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowConc <- quantConc[2]
         highConc <- quantConc[8]
         quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowFlux <- quantFlux[2]
         highFlux <- quantFlux[8]
+        
         prints <- c(format(iBoot, digits = 3, width = 7), 
                     format(xConc[iBoot], digits = 3, width = 7), 
                     format(posXConc, digits = 3, width = 5), 
@@ -518,8 +519,6 @@ wBT<-function(eList,caseSetUp,
 #' after running either \code{\link[EGRET]{modelEstimation}} or \code{\link{setForBoot}}.
 #' @param year integer year to perform WRTDS analysis
 #' @keywords WRTDS flow
-#' @importFrom EGRET runSurvReg
-#' @importFrom utils packageVersion
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -530,7 +529,8 @@ wBT<-function(eList,caseSetUp,
 #' eList <- setForBoot(eList, caseSetUp)
 #' surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
 #' }
-estSliceSurfacesSimpleAlt<-function(eList,year){
+estSliceSurfacesSimpleAlt <- function(eList,year){
+  
   localINFO <- eList$INFO
   localSample <- eList$Sample
   localDaily <- eList$Daily
@@ -547,18 +547,18 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   originalColumns <- names(localSample)
   minNumUncen <- min(c(localINFO$minNumUncen, sum(localSample$Uncen)), na.rm=TRUE)
   minNumObs <- min(c(localINFO$minNumObs, length(localSample$ConcLow)), na.rm=TRUE)
-  # minNumUncen <- min(c(localINFO$minNumUncen, 0.5), na.rm=TRUE)
+  
   bottomLogQ <- localINFO$bottomLogQ
   stepLogQ <- localINFO$stepLogQ
-  topLogQ<-bottomLogQ + 13 * stepLogQ
-  vectorLogQ<-seq(bottomLogQ,topLogQ,stepLogQ)
+  topLogQ <- bottomLogQ + 13 * stepLogQ
+  vectorLogQ <- seq(bottomLogQ,topLogQ,stepLogQ)
   nVectorLogQ <- localINFO$nVectorLogQ
-  stepYear<- localINFO$stepYear
-  bottomYear<-localINFO$bottomYear
+  stepYear <- localINFO$stepYear
+  bottomYear <-localINFO$bottomYear
   nVectorYear <- localINFO$nVectorYear
-  topYear<-bottomYear + (nVectorYear - 1)* stepYear 
+  topYear <- bottomYear + (nVectorYear - 1)* stepYear 
   vectorYear <-seq(bottomYear,topYear,stepYear)
-  surfaces<-array(NA,dim=c(14,length(vectorYear),3))
+  surfaces <- array(NA,dim=c(14,length(vectorYear),3))
   
   vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
   # Tack on one data point on either side
@@ -567,23 +567,23 @@ estSliceSurfacesSimpleAlt<-function(eList,year){
   vectorIndex <- vectorIndex[vectorIndex != 0]
   
   vectorYear <- vectorYear[vectorIndex]
-  nVectorYear<-length(vectorYear)
-  estPtLogQ<-rep(vectorLogQ,nVectorYear)
-  estPtYear<-rep(vectorYear,each=14)
+  nVectorYear <- length(vectorYear)
+  estPtLogQ <- rep(vectorLogQ,nVectorYear)
+  estPtYear <- rep(vectorYear,each=14)
   
   numDays <- localINFO$numDays
   DecLow <- localINFO$DecLow
   DecHigh <- localINFO$DecHigh
   
-  if(packageVersion("EGRET") >= "2.6.1"){
-    resultSurvReg <- runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
+  if(utils::packageVersion("EGRET") >= "2.6.1"){
+    resultSurvReg <- EGRET::runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
                                 DecLow = DecLow,DecHigh = DecHigh, 
                                 Sample = localSample,windowY = windowY,windowQ = windowQ,
                                 windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
                                 verbose =FALSE,edgeAdjust = edgeAdjust)
   } else {
     message("Consider updating the EGRET package")
-    resultSurvReg <- runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
+    resultSurvReg <- EGRET::runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
                                 numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
                                 Sample = localSample,windowY = windowY,windowQ = windowQ,
                                 windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
@@ -698,8 +698,6 @@ makeCombo <- function (surfaces1,surfaces2) {
 #' @param year1 integer. Initial year of a 2-year trend comparison.
 #' @param year2 integer. Second year of a 2-year trend comparison.
 #' @keywords WRTDS flow
-#' @importFrom EGRET estDailyFromSurfaces
-#' @importFrom EGRET setupYears
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -711,20 +709,14 @@ makeTwoYearsResults <- function(eList,year1,year2){
 
   paStart <- eList$INFO$paStart
   paLong <- eList$INFO$paLong
-	returnDaily <- estDailyFromSurfaces(eList)
+	returnDaily <- EGRET::estDailyFromSurfaces(eList)
   
-	bootAnnRes<- setupYears(localDaily=returnDaily, 
+	bootAnnRes<- EGRET::setupYears(localDaily=returnDaily, 
                                  paStart=paStart, 
                                  paLong=paLong)
 	twoYearsResults <- c(bootAnnRes$FNConc[!is.na(bootAnnRes$FNConc)],
 	                     bootAnnRes$FNFlux[!is.na(bootAnnRes$FNFlux)])
-# 	AnnBase <- bootAnnRes[1,1]
-# 	index1 <- year1 - trunc(AnnBase) + 1
-# 	index2 <- year2 - trunc(AnnBase) + 1
-# 	twoYearsResults <- c(bootAnnRes$FNConc[index1],
-#                        bootAnnRes$FNConc[index2],
-#                        bootAnnRes$FNFlux[index1],
-#                        bootAnnRes$FNFlux[index2])
+
 	return(twoYearsResults)
 }
 
@@ -739,7 +731,6 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
 #' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record.  
 #' @keywords WRTDS flow
-#' @importFrom EGRET surfaceIndex
 #' @return surfaces matrix
 #' @export
 #' @examples
@@ -785,14 +776,14 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 	  localINFO$minNumUncen <- min(100, numSamples - 20)
 	}
   
-  surfaceIndexParameters <- surfaceIndex(localDaily)
-  if(packageVersion("EGRET") > '2.6.1'){
-    localINFO$bottomLogQ<-surfaceIndexParameters[['bottomLogQ']]
-    localINFO$stepLogQ<-surfaceIndexParameters[['stepLogQ']]
-    localINFO$nVectorLogQ<-surfaceIndexParameters[['nVectorLogQ']]
-    localINFO$bottomYear<-surfaceIndexParameters[['bottomYear']]
-    localINFO$stepYear<-surfaceIndexParameters[['stepYear']]
-    localINFO$nVectorYear<-surfaceIndexParameters[['nVectorYear']]
+  surfaceIndexParameters <- EGRET::surfaceIndex(localDaily)
+  if(utils::packageVersion("EGRET") > '2.6.1'){
+    localINFO$bottomLogQ <- surfaceIndexParameters[['bottomLogQ']]
+    localINFO$stepLogQ <- surfaceIndexParameters[['stepLogQ']]
+    localINFO$nVectorLogQ <- surfaceIndexParameters[['nVectorLogQ']]
+    localINFO$bottomYear <- surfaceIndexParameters[['bottomYear']]
+    localINFO$stepYear <- surfaceIndexParameters[['stepYear']]
+    localINFO$nVectorYear <- surfaceIndexParameters[['nVectorYear']]
   } else {
     localINFO$bottomLogQ <- surfaceIndexParameters[1]
     localINFO$stepLogQ <- surfaceIndexParameters[2]

@@ -4,7 +4,7 @@
 \alias{runPairsBoot}
 \title{runPairsBoot}
 \usage{
-runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
+runPairsBoot(eList, pairResults, nBoot = 100, repSeed = 494817,
   blockLength = 200)
 }
 \arguments{
@@ -13,6 +13,8 @@ runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
 \item{pairResults}{data frame returned from \code{EGRET::runPairs}}
 
 \item{nBoot}{the maximum number of bootstrap replicates to be used, typically 100}
+
+\item{repSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
 \item{blockLength}{days, typically 200 is a good choice}
 }
@@ -25,6 +27,9 @@ eList <- Choptank_Phos
 year1 <- 1985
 year2 <- 2014
 
+\dontrun{
 pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
 
+boot_pair_out <- runPairsBoot(eList, pairOut_2)
+}
 }

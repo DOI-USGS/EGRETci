@@ -17,8 +17,6 @@ wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
 \item{fileName}{character. Name to save the output file if \code{saveOutput=TRUE}.}
 
 \item{repSeed}{setSeed value. Defaults to 1000. This is used to make repeatable output.}
-
-\item{run.parallel}{logical to run bootstrapping in parallel or not}
 }
 \value{
 eBoot, a named list with bootOut,wordsOut,xConc,xFlux values

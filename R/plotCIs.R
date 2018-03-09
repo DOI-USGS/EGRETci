@@ -20,9 +20,6 @@
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
 #' @export
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET setSeasonLabel
-#' @importFrom EGRET plotConcHist
 #' @importFrom graphics title
 #' @importFrom graphics lines
 #' @examples
@@ -45,9 +42,9 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   
   widthCI <- (max(probs) - min(probs))*100
   
-  localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
+  localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
-  periodName <- setSeasonLabel(localAnnualResults)
+  periodName <- EGRET::setSeasonLabel(localAnnualResults)
   title3 <- paste(widthCI,"% CI on FN Concentration, Replicates =",nBoot,"Block=",blockLength,"days")
 
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
@@ -57,13 +54,13 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
     numYears <- length(localAnnualResults$DecYear)
     yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
     yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
-    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
     
     annConc <- subAnnualResults$Conc
     concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,annConc), na.rm=TRUE)
   }
   
-  plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+  EGRET::plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                col.pred=col.pred, printTitle=FALSE, 
                plotFlowNorm = plotFlowNorm, concMax = concMax, ...)
   if(printTitle) {
@@ -103,9 +100,6 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
 #' @export
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET setSeasonLabel
-#' @importFrom EGRET plotFluxHist
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines
 #' @importFrom graphics title
@@ -131,9 +125,9 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
   widthCI <- (max(probs) - min(probs))*100
   
-  localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
+  localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
-  periodName <- setSeasonLabel(localAnnualResults)
+  periodName <- EGRET::setSeasonLabel(localAnnualResults)
   title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
   
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
@@ -150,14 +144,14 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
     numYears <- length(localAnnualResults$DecYear)
     yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
     yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
-    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
     
-    annFlux<-unitFactorReturn*subAnnualResults$Flux
+    annFlux <- unitFactorReturn*subAnnualResults$Flux
     
     fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,annFlux), na.rm=TRUE)
   }
   
-  plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+  EGRET::plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                fluxUnit=fluxUnit, col.pred=col.pred,fluxMax=fluxMax,
                plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
   if (printTitle) {
@@ -186,10 +180,6 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
 #' @export
-#' @importFrom EGRET as.egret
-#' @importFrom EGRET estSurfaces
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET estDailyFromSurfaces
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -216,17 +206,19 @@ bootAnnual <- function(eList, blockLength=200){
   }
   
   bootSample <- blockSample(Sample, blockLength)
-  eListBoot <- as.egret(INFO,Daily,bootSample,NA)
-  surfaces1<-estSurfaces(eListBoot, 
+  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
+  
+  surfaces1 <- EGRET::estSurfaces(eListBoot, 
                          windowY = eList$INFO$windowY, 
                          windowQ = eList$INFO$windowQ, 
                          windowS = eList$INFO$windowS,
                          minNumObs = eList$INFO$minNumObs, 
                          minNumUncen = eList$INFO$minNumUncen, 
                          edgeAdjust = eListBoot$INFO$edgeAdjust)
-  eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
-  Daily1<-estDailyFromSurfaces(eListBoot)
-  annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
+  
+  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,surfaces1)
+  Daily1 <- EGRET::estDailyFromSurfaces(eListBoot)
+  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   
@@ -243,7 +235,6 @@ bootAnnual <- function(eList, blockLength=200){
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param probs vector high and low confidence interval percentages
 #' @export
-#' @importFrom EGRET setupYears
 #' @importFrom stats quantile
 #' @examples
 #' library(EGRET)
@@ -280,7 +271,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
     paStart <- INFO$paStart
   }
 
-  AnnualResults <- setupYears(eList$Daily, paLong = paLong, paStart=paStart)
+  AnnualResults <- EGRET::setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   
   nBoot <- length(repAnnualResults)
   numYears <- nrow(repAnnualResults[[1]])
@@ -355,7 +346,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
                                 flux = TRUE, xMin = NA, xMax = NA, xStep = NA,
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
-  periodName <- setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
+  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
@@ -399,7 +390,6 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
-#' @importFrom EGRET modelEstimation
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -440,7 +430,7 @@ ciCalculations <- function (eList,...){
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
   cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
-  eList <- modelEstimation(eList, windowY = eList$INFO$windowY, 
+  eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
                            windowQ = eList$INFO$windowQ, 
                            windowS = eList$INFO$windowS, 
                            minNumObs = eList$INFO$minNumObs, 

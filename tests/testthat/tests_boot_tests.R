@@ -1,9 +1,9 @@
 context("Two-year trend")
+library(EGRET)
+eList <- Choptank_eList
 
 test_that("trendSetUp",{
-  library(EGRET)
-  eList <- Choptank_eList
-  
+
   caseSetUp <- trendSetUp(eList, 
                           year1=1990, 
                           year2=2012, 
@@ -48,7 +48,7 @@ test_that("setForBoot", {
   
   expect_gt(ncol(INFO2),ncol(INFO))
   
-  expect_true(all(c("DecLow","DecHigh","numDays") %in% names(INFO2)))
+  expect_true(all(c("DecLow","DecHigh") %in% names(INFO2)))
   
 })
 

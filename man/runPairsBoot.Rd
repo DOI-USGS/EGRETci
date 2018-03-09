@@ -23,7 +23,7 @@ runPairsBoot
 }
 \examples{
 library(EGRET)
-eList <- Choptank_Phos
+eList <- Choptank_eList
 year1 <- 1985
 year2 <- 2014
 

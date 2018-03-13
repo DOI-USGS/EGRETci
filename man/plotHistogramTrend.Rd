@@ -34,6 +34,8 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
 \item{col.fill}{character fill color}
 
 \item{\dots}{base R graphical parameters that can be passed to the hist function}
+
+\item{xSeq}{}
 }
 \description{
 Histogram of trend.
@@ -49,8 +51,17 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE)
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)
 plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE, xSeq = seq(-20,60,5))
+                   flux=FALSE, xMin = -20, xMax = 60, xStep = 5)
 plotHistogramTrend(eList, eBoot, caseSetUp, 
-                   flux=TRUE, xSeq = seq(-20,60,5))
+                   flux=TRUE, xMin = -20, xMax = 60, xStep = 5)
+   
+# Using runPairs:
+year1 <- 1985
+year2 <- 2009          
+pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
+boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 10)
+
+plotHistogramTrend(eList, boot_pair_out,caseSetUp=NA, 
+                   flux=TRUE, xMin = -20, xMax = 60, xStep = 5)          
 }
 }

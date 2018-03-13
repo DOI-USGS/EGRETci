@@ -217,14 +217,43 @@ bootAnnual <- function(eList, blockLength=200){
   bootSample <- blockSample(Sample, blockLength)
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
-  surfaces1 <- EGRET::estSurfaces(eListBoot, 
-                         windowY = eList$INFO$windowY, 
-                         windowQ = eList$INFO$windowQ, 
-                         windowS = eList$INFO$windowS,
-                         minNumObs = eList$INFO$minNumObs, 
-                         minNumUncen = eList$INFO$minNumUncen, 
-                         edgeAdjust = eListBoot$INFO$edgeAdjust)
+  if("segmentInfo" %in% names(attributes(eList$INFO))){
+    #Indicates runSeries was run
+    
+    seriesEList <- EGRET::runSeries(eList = eListBoot,
+                                    windowSide = INFO$windowSide,
+                                    surfaceStart = INFO$surfaceStart,
+                                    surfaceEnd = INFO$surfaceEnd,
+                                    flowBreak = INFO$flowBreak,
+                                    Q1EndDate = INFO$Q1EndDate,
+                                    QStartDate = INFO$QStartDate,
+                                    QEndDate = INFO$QEndDate,
+                                    wall = INFO$wall, 
+                                    oldSurface = FALSE,
+                                    sample1EndDate = INFO$sample1EndDate,
+                                    sampleStartDate = INFO$sampleStartDate,
+                                    sampleEndDate = INFO$sampleEndDate,
+                                    paStart = INFO$paStart,
+                                    paLong = INFO$paLong,
+                                    minNumObs = INFO$minNumObs,
+                                    minNumUncen = INFO$minNumUncen,
+                                    windowY = INFO$windowY,
+                                    windowQ = INFO$windowQ,
+                                    windowS = INFO$windowS,
+                                    edgeAdjust = INFO$edgeAdjust)
+    surfaces1 <- seriesEList$surfaces
+  } else {
+    surfaces1 <- EGRET::estSurfaces(eListBoot, 
+                           windowY = eList$INFO$windowY, 
+                           windowQ = eList$INFO$windowQ, 
+                           windowS = eList$INFO$windowS,
+                           minNumObs = eList$INFO$minNumObs, 
+                           minNumUncen = eList$INFO$minNumUncen, 
+                           edgeAdjust = eListBoot$INFO$edgeAdjust)
+        
+  }
   
+
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,surfaces1)
   Daily1 <- EGRET::estDailyFromSurfaces(eListBoot)
   annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
@@ -432,10 +461,21 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' eList <- Choptank_eList
 #' \dontrun{
 #' CIAnnualResults <- ciCalculations(eList)
+#' 
+#' seriesOut_2 <- runSeries(eList, windowSide = 7)
+#' CIAnnualResults <- ciCalculations(seriesOut_2, 
+#'                      nBoot = 10,
+#'                      blockLength = 200,
+#'                      widthCI = 90)
+#'                      
+#'  plotConcHistBoot(seriesOut_2, CIAnnualResults)
+#' 
 #' }
 ciCalculations <- function (eList,...){
   
   matchReturn <- list(...)
+  
+  INFO <- eList$INFO
   
   if(!is.null(matchReturn$nBoot)){
     nBoot <- matchReturn$nBoot
@@ -466,12 +506,42 @@ ciCalculations <- function (eList,...){
   
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
-  cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
-  eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
-                           windowQ = eList$INFO$windowQ, 
-                           windowS = eList$INFO$windowS, 
-                           minNumObs = eList$INFO$minNumObs, 
-                           minNumUncen = eList$INFO$minNumUncen) 
+  
+  if("segmentInfo" %in% names(attributes(eList$INFO))){
+    #Indicates runSeries was run
+    cat("\nRunning the EGRET standard runSeries first to have that as a baseline for the Confidence Bands")
+    
+    eList <- EGRET::runSeries(eList = eList,
+                                    windowSide = INFO$windowSide,
+                                    surfaceStart = INFO$surfaceStart,
+                                    surfaceEnd = INFO$surfaceEnd,
+                                    flowBreak = INFO$flowBreak,
+                                    Q1EndDate = INFO$Q1EndDate,
+                                    QStartDate = INFO$QStartDate,
+                                    QEndDate = INFO$QEndDate,
+                                    wall = INFO$wall, 
+                                    oldSurface = TRUE,
+                                    sample1EndDate = INFO$sample1EndDate,
+                                    sampleStartDate = INFO$sampleStartDate,
+                                    sampleEndDate = INFO$sampleEndDate,
+                                    paStart = INFO$paStart,
+                                    paLong = INFO$paLong,
+                                    minNumObs = INFO$minNumObs,
+                                    minNumUncen = INFO$minNumUncen,
+                                    windowY = INFO$windowY,
+                                    windowQ = INFO$windowQ,
+                                    windowS = INFO$windowS,
+                                    edgeAdjust = INFO$edgeAdjust)
+  } else {
+    cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
+    
+    eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
+                             windowQ = eList$INFO$windowQ, 
+                             windowS = eList$INFO$windowS, 
+                             minNumObs = eList$INFO$minNumObs, 
+                             minNumUncen = eList$INFO$minNumUncen) 
+       
+  }
   
   for(n in 1:nBoot){
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength)

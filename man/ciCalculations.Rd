@@ -19,5 +19,12 @@ library(EGRET)
 eList <- Choptank_eList
 \dontrun{
 CIAnnualResults <- ciCalculations(eList)
+
+seriesOut_2 <- runSeries(eList, windowSide = 7)
+CIAnnualResults <- ciCalculations(seriesOut_2, 
+                     nBoot = 10,
+                     blockLength = 200,
+                     widthCI = 90)
+
 }
 }

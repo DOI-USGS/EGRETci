@@ -245,5 +245,7 @@ runPairsBoot <- function(eList, pairResults,
   pFlux <- as.numeric(na.omit(pFlux))
   pairsBootOut <- list(bootOut = bootOut, wordsOut = wordsOut, 
                 xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux)
+  attr(pairsBootOut, "year1") <- year1
+  attr(pairsBootOut, "year2") <- year2
   return(pairsBootOut)
 }

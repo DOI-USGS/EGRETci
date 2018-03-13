@@ -13,7 +13,7 @@
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' year1 <- 1985
-#' year2 <- 2014
+#' year2 <- 2009
 #' 
 #' \dontrun{
 #' pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
@@ -54,15 +54,24 @@ runPairsBoot <- function(eList, pairResults,
   paLong <- attr(pairResults, "yearPair")[["paLong"]]
   year1 <- attr(pairResults, "yearPair")[["year1"]]
   year2 <- attr(pairResults, "yearPair")[["year2"]]
-  
+
   startEnd1 <- EGRET::startEnd(paStart, paLong, year1)
   startEnd2 <- EGRET::startEnd(paStart, paLong, year2)
+
   
+  if(startEnd2$startDate > range(eList$Sample$Date)[2]){
+    stop("year2 is outside the Sample range")
+  }
+  
+  if(startEnd1$endDate < range(eList$Sample$Date)[1]){
+    stop("year1 is outside the Sample range")
+  }
+    
   start1 <- as.Date(startEnd1[["startDate"]])
   end1 <- as.Date(startEnd1[["endDate"]])
   start2 <- as.Date(startEnd2[["startDate"]])
   end2 <- as.Date(startEnd2[["endDate"]])
-  
+
   dateInfo <- attr(pairResults, "dateInfo")
   
   sample1StartDate <- attr(pairResults, "SampleBlocks")[["sample1StartDate"]]
@@ -236,5 +245,7 @@ runPairsBoot <- function(eList, pairResults,
   pFlux <- as.numeric(na.omit(pFlux))
   pairsBootOut <- list(bootOut = bootOut, wordsOut = wordsOut, 
                 xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux)
+  attr(pairsBootOut, "year1") <- year1
+  attr(pairsBootOut, "year2") <- year2
   return(pairsBootOut)
 }

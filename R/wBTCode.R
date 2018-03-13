@@ -500,6 +500,8 @@ wBT<-function(eList,caseSetUp,
       message(" ", format(wordsOut[2], width = 30), "\n ", 
               format(wordsOut[4], width = 30))
     }
+    attr(eBoot, "year1") <- year1
+    attr(eBoot, "year2") <- year2
     return(eBoot)
   } else {
     stop(possibleError1, "/n", possibleError2)

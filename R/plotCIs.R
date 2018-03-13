@@ -52,9 +52,16 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   
   if(is.na(concMax)){
     numYears <- length(localAnnualResults$DecYear)
-    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
-    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
+
     subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    
+    if(is.na(yearStart)){
+      yearStart <- min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
+    }
+    
+    if(is.na(yearEnd)){
+      yearEnd <- max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
+    }
     
     annConc <- subAnnualResults$Conc
     concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,annConc), na.rm=TRUE)
@@ -142,8 +149,10 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
   if(is.na(fluxMax)){
     numYears <- length(localAnnualResults$DecYear)
-    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
-    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
+
+    yearStart <- if(is.na(yearStart)) trunc(min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE)) else yearStart
+    yearEnd <- if(is.na(yearEnd)) trunc(max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE))+1 else yearEnd
+    
     subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
     
     annFlux <- unitFactorReturn*subAnnualResults$Flux
@@ -316,6 +325,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param xMin minimum bin value, it is good to have the xMin and xMax arguments straddle zero. 
 #' @param xMax maximum bin value
 #' @param xStep step size, should probably be multiples of 10 or 20
+#' @param xSeq 
 #' @param printTitle logical if TRUE, includes title
 #' @param cex.main numeric title font size
 #' @param cex.axis numeric axis font size
@@ -338,12 +348,21 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
 #' plotHistogramTrend(eList, eBoot, caseSetUp,  
-#'                    flux=FALSE, xSeq = seq(-20,60,5))
+#'                    flux=FALSE, xMin = -20, xMax = 60, xStep = 5)
 #' plotHistogramTrend(eList, eBoot, caseSetUp, 
-#'                    flux=TRUE, xSeq = seq(-20,60,5))
+#'                    flux=TRUE, xMin = -20, xMax = 60, xStep = 5)
+#'    
+#' # Using runPairs:
+#' year1 <- 1985
+#' year2 <- 2009          
+#' pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
+#' boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 10)
+#' 
+#' plotHistogramTrend(eList, boot_pair_out,caseSetUp=NA, 
+#'                    flux=TRUE, xMin = -20, xMax = 60, xStep = 5)          
 #' }
 plotHistogramTrend <- function (eList, eBoot, caseSetUp, 
-                                flux = TRUE, xMin = NA, xMax = NA, xStep = NA,
+                                flux = TRUE, xMin = NA, xMax = NA, xStep = NA, 
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
   periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
@@ -360,9 +379,26 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
     titleWord <- "Concentration"
   }
   
+  if(all(is.na(caseSetUp))){
+    if("year1" %in% names(attributes(eBoot))){
+      year1 <- attr(eBoot, "year1")
+    }
+    if("year2" %in% names(attributes(eBoot))){
+      year2 <- attr(eBoot, "year2")
+    }    
+    
+  } else {
+    year1 <- caseSetUp$year1
+    year2 <- caseSetUp$year2
+  }
+  
+  if(any(is.na(c(year1,year2)))){
+    stop("Provide caseSetUp information")
+  }
+  
   titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
                                            eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                                           caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
+                                           year1, "to", year2, "\n", eList$INFO$shortName, 
                                            periodName), "")
   minReps <- min(reps,na.rm = TRUE)
   maxReps <- max(reps,na.rm = TRUE)
@@ -370,6 +406,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   xMax <- if(is.na(xMax)) max(10,maxReps) else xMax
   xStep <- if(is.na(xStep)) (xMax-xMin) / 10 else xStep
   xSeq <- seq(xMin,xMax,xStep)
+
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, cex.lab = cex.lab, ...)

@@ -188,6 +188,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @export
 #' @examples
 #' library(EGRET)
@@ -195,7 +196,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' \dontrun{
 #' annualResults <- bootAnnual(eList)
 #' }
-bootAnnual <- function(eList, blockLength=200){
+bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
@@ -214,7 +215,7 @@ bootAnnual <- function(eList, blockLength=200){
     paStart <- INFO$paStart
   }
   
-  bootSample <- blockSample(Sample, blockLength)
+  bootSample <- blockSample(Sample, blockLength, startSeed)
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
   if("segmentInfo" %in% names(attributes(eList$INFO))){
@@ -283,8 +284,8 @@ bootAnnual <- function(eList, blockLength=200){
 #' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
 #' for(n in 1:nBoot){
-#'    annualResults <- bootAnnual(eList, blockLength) 
-#'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+#'    annualResults <- bootAnnual(eList, blockLength, startSeed = n) 
+#'    repAnnualResults[[n]] <- annualResults
 #' }
 #' 
 #' CIAnnualResults <- ciBands(eList, repAnnualResults)
@@ -354,7 +355,6 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' @param xMin minimum bin value, it is good to have the xMin and xMax arguments straddle zero. 
 #' @param xMax maximum bin value
 #' @param xStep step size, should probably be multiples of 10 or 20
-#' @param xSeq 
 #' @param printTitle logical if TRUE, includes title
 #' @param cex.main numeric title font size
 #' @param cex.axis numeric axis font size
@@ -454,6 +454,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' Interactive function to calculate WRTDS confidence bands
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
 #' @examples
@@ -471,7 +472,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'  plotConcHistBoot(seriesOut_2, CIAnnualResults)
 #' 
 #' }
-ciCalculations <- function (eList,...){
+ciCalculations <- function (eList, startSeed = 494817,...){
   
   matchReturn <- list(...)
   
@@ -507,7 +508,7 @@ ciCalculations <- function (eList,...){
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
   
-  if("segmentInfo" %in% names(attributes(eList$INFO))){
+  if("runSeries" %in% names(attributes(eList)) & attr(eList, "runSeries")){
     #Indicates runSeries was run
     cat("\nRunning the EGRET standard runSeries first to have that as a baseline for the Confidence Bands")
     
@@ -544,7 +545,7 @@ ciCalculations <- function (eList,...){
   }
   
   for(n in 1:nBoot){
-    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n)
   }
   
   CIAnnualResults <- ciBands(eList, repAnnualResults, probs)

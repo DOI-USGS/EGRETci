@@ -4,10 +4,12 @@
 \alias{ciCalculations}
 \title{ciCalculations}
 \usage{
-ciCalculations(eList, ...)
+ciCalculations(eList, startSeed = 494817, ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
+
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
 \item{\dots}{optionally include nBoot, blockLength, or widthCI}
 }
@@ -25,6 +27,8 @@ CIAnnualResults <- ciCalculations(seriesOut_2,
                      nBoot = 10,
                      blockLength = 200,
                      widthCI = 90)
+                     
+ plotConcHistBoot(seriesOut_2, CIAnnualResults)
 
 }
 }

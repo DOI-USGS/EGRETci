@@ -179,7 +179,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
-#' @param startSeed setSeed value. Defaults to 1000. This is used to make repeatable output.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
@@ -198,7 +198,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt", startSeed = 1000){
+              saveOutput=TRUE, fileName="temp.txt", startSeed = 494817){
   
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
@@ -313,9 +313,10 @@ wBT<-function(eList,caseSetUp,
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
     for (iBoot in 1:nBoot) {
-      set.seed(seed = startSeed + iBoot)
+
       bootSample <- blockSample(localSample = localSample, 
-                                blockLength = blockLength)
+                                blockLength = blockLength,
+                                startSeed = startSeed + iBoot)
       eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
                             NA)
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 
@@ -808,6 +809,7 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 #'
 #' @param localSample Sample data frame
 #' @param blockLength integer size of subset.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @keywords WRTDS flow
 #' @return surfaces matrix
 #' @export
@@ -816,7 +818,12 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 #' eList <- Choptank_eList
 #' Sample <- eList$Sample
 #' bsReturn <- blockSample(Sample, 25)
-blockSample <- function(localSample, blockLength){
+blockSample <- function(localSample, blockLength, startSeed = NA){
+  
+  if(!is.na(startSeed)){
+    set.seed(startSeed)
+  }
+  
   numSamples <- length(localSample$Julian)
   dayOne <- localSample$Julian[1]
   newSample <- data.frame()

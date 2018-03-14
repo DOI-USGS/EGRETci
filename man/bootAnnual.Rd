@@ -4,12 +4,14 @@
 \alias{bootAnnual}
 \title{bootAnnual}
 \usage{
-bootAnnual(eList, blockLength = 200)
+bootAnnual(eList, blockLength = 200, startSeed = 494817)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{blockLength}{integer suggested value is 200}
+
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }
 \description{
 One bootstrap run.

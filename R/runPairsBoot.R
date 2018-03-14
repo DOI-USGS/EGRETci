@@ -115,10 +115,8 @@ runPairsBoot <- function(eList, pairResults,
   
   # bootstrap loop starts here
   for (iBoot in 1:nBoot){
-    
-    set.seed(seed = startSeed + iBoot)
-    
-    bootSample <- blockSample(localSample = localSample, blockLength = blockLength)
+
+    bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, NA)
     
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &

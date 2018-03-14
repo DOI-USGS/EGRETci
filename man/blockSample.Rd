@@ -4,12 +4,14 @@
 \alias{blockSample}
 \title{blockSample}
 \usage{
-blockSample(localSample, blockLength)
+blockSample(localSample, blockLength, startSeed = NA)
 }
 \arguments{
 \item{localSample}{Sample data frame}
 
 \item{blockLength}{integer size of subset.}
+
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }
 \value{
 surfaces matrix

@@ -34,8 +34,6 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
 \item{col.fill}{character fill color}
 
 \item{\dots}{base R graphical parameters that can be passed to the hist function}
-
-\item{xSeq}{}
 }
 \description{
 Histogram of trend.

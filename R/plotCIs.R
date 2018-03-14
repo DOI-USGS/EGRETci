@@ -45,6 +45,11 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
   periodName <- EGRET::setSeasonLabel(localAnnualResults)
+  if("runSeries" %in% names(attributes(eList)) |
+     "segmentInfo" %in% names(attributes(eList$INFO))){
+    periodName <- paste(periodName, "*")
+  }
+  
   title3 <- paste(widthCI,"% CI on FN Concentration, Replicates =",nBoot,"Block=",blockLength,"days")
 
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
@@ -135,6 +140,11 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
   periodName <- EGRET::setSeasonLabel(localAnnualResults)
+  if("runSeries" %in% names(attributes(eList)) |
+     "segmentInfo" %in% names(attributes(eList$INFO))){
+    periodName <- paste(periodName, "*")
+  }
+  
   title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
   
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 

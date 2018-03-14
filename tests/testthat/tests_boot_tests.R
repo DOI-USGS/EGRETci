@@ -160,7 +160,7 @@ test_that("wBT", {
   bootOut <- eBoot$bootOut
   expect_true(bootOut$rejectC)
   
-  expect_equal(signif(bootOut$lowC, digits = 6), 0.291567)
+  expect_equal(signif(bootOut$lowC, digits = 6), 0.298427)
   expect_equal(signif(bootOut$likeCUp, digits = 6), 0.916667)
   
   expect_true(bootOut$rejectF)
@@ -170,10 +170,10 @@ test_that("wBT", {
                                  "Downward trend in flux is very unlikely"))
   
   
-  expect_equal(signif(eBoot$xConc, digits = 2), c(0.35,0.33,0.36,0.35,0.29))
-  expect_equal(signif(eBoot$pFlux, digits = 2), c(31,24,24,25,19))
-  expect_equal(signif(eBoot$xFlux, digits = 2), c(0.035,0.029,0.027,0.030,0.023))
-  expect_equal(signif(eBoot$pConc, digits = 2), c(34,31,37,34,29))
+  expect_equal(signif(eBoot$xConc, digits = 2), c(0.31,0.35,0.30,0.34,0.31))
+  expect_equal(signif(eBoot$pFlux, digits = 2), c(18,30,31,21,18))
+  expect_equal(signif(eBoot$xFlux, digits = 2), c(0.022,0.034,0.034,0.025,0.021))
+  expect_equal(signif(eBoot$pConc, digits = 2), c(30,35,30,33,31))
   
 })
 

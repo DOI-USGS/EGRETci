@@ -252,7 +252,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                                     windowQ = INFO$windowQ,
                                     windowS = INFO$windowS,
                                     edgeAdjust = INFO$edgeAdjust)
-    surfaces1 <- seriesEList$surfaces
+
   } else {
     surfaces1 <- EGRET::estSurfaces(eListBoot, 
                            windowY = eList$INFO$windowY, 
@@ -261,13 +261,11 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                            minNumObs = eList$INFO$minNumObs, 
                            minNumUncen = eList$INFO$minNumUncen, 
                            edgeAdjust = eListBoot$INFO$edgeAdjust)
-        
+    seriesEList <- EGRET::as.egret(INFO, Daily, bootSample, surfaces1)
+    seriesEList <- EGRET::estDailyFromSurfaces(seriesEList)
   }
   
-
-  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,surfaces1)
-  Daily1 <- EGRET::estDailyFromSurfaces(eListBoot)
-  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
+  annualResults1 <- EGRET::setupYears(seriesEList$Daily, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   
@@ -526,7 +524,7 @@ ciCalculations <- function (eList, startSeed = 494817,...){
   
   if("runSeries" %in% names(attributes(eList)) & attr(eList, "runSeries")){
     #Indicates runSeries was run
-    cat("\nRunning the EGRET standard runSeries first to have that as a baseline for the Confidence Bands")
+    cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
     
     eList <- EGRET::runSeries(eList = eList,
                                     windowSide = INFO$windowSide,
@@ -550,7 +548,7 @@ ciCalculations <- function (eList, startSeed = 494817,...){
                                     windowS = INFO$windowS,
                                     edgeAdjust = INFO$edgeAdjust)
   } else {
-    cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
+    cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
     
     eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
                              windowQ = eList$INFO$windowQ, 

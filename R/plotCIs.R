@@ -228,7 +228,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
   bootSample <- blockSample(Sample, blockLength, startSeed)
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
-  if("segmentInfo" %in% names(attributes(eList$INFO))){
+  if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
     #Indicates runSeries was run
     
     seriesEList <- EGRET::runSeries(eList = eListBoot,
@@ -522,7 +522,7 @@ ciCalculations <- function (eList, startSeed = 494817,...){
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
   
-  if("runSeries" %in% names(attributes(eList)) & attr(eList, "runSeries")){
+  if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
     #Indicates runSeries was run
     cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
     

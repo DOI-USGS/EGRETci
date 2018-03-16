@@ -252,7 +252,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                                     windowQ = INFO$windowQ,
                                     windowS = INFO$windowS,
                                     edgeAdjust = INFO$edgeAdjust)
-
+    Daily1 <- seriesEList$Daily
   } else {
     surfaces1 <- EGRET::estSurfaces(eListBoot, 
                            windowY = eList$INFO$windowY, 
@@ -262,7 +262,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                            minNumUncen = eList$INFO$minNumUncen, 
                            edgeAdjust = eListBoot$INFO$edgeAdjust)
     seriesEList <- EGRET::as.egret(INFO, Daily, bootSample, surfaces1)
-    seriesEList <- EGRET::estDailyFromSurfaces(seriesEList)
+    Daily1 <- EGRET::estDailyFromSurfaces(seriesEList)
   }
   
   annualResults1 <- EGRET::setupYears(seriesEList$Daily, paStart=paStart, paLong=paLong)

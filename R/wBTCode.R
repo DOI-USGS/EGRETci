@@ -312,6 +312,7 @@ wBT<-function(eList,caseSetUp,
       message("\n      rep              Concentration             |              Flux")
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
+    nBootGood <- 0
     for (iBoot in 1:nBoot) {
 
       bootSample <- blockSample(localSample = localSample, 
@@ -355,6 +356,8 @@ wBT<-function(eList,caseSetUp,
         quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6, na.rm = TRUE)
         lowFlux <- quantFlux[2]
         highFlux <- quantFlux[8]
+        
+        nBootGood <- nBootGood + 1
         
         prints <- c(format(iBoot, digits = 3, width = 7), 
                     format(xConc[iBoot], digits = 3, width = 7), 
@@ -449,7 +452,8 @@ wBT<-function(eList,caseSetUp,
     bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, 
                           lowC50, upC50, lowC95, upC95, likeCUp, likeCDown, 
                           rejectF, pValF, estF, lowF, upF, lowF50, upF50, lowF95, 
-                          upF95, likeFUp, likeFDown, baseConc, baseFlux, iBoot)
+                          upF95, likeFUp, likeFDown, baseConc, baseFlux, iBoot,
+                          startSeed, nBootGood)
     likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
     wordsOut <- wordLike(likeList)
     cat("\n\n", format(wordsOut[1], width = 30), "\n", format(wordsOut[3], 

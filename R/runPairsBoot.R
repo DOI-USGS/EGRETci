@@ -106,7 +106,7 @@ runPairsBoot <- function(eList, pairResults,
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
   LFluxDiff <- log(pairResults[2,7]) - log(pairResults[2,5])
   fcc <- format(regDeltaConc, digits = 3, width = 7)
-  ffc <- format(regDeltaFlux, digits = 4, width = 8)
+  ffc <- format(regDeltaFlux, digits = 3, width = 8)
   Daily1 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[1]) & localDaily$Date <= 
                          as.Date(dateInfo$flowNormEnd[1]), ]
   Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & localDaily$Date <= 
@@ -114,6 +114,7 @@ runPairsBoot <- function(eList, pairResults,
   # start inserting the setup stuff
   
   # bootstrap loop starts here
+  nBootGood <- 0
   for (iBoot in 1:nBoot){
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
@@ -153,9 +154,10 @@ runPairsBoot <- function(eList, pairResults,
       pFlux[iBoot] <- (100 * exp(LFlux)) - 100
       cat("\n iBoot, xConc and xFlux",iBoot, xConc[iBoot], xFlux[iBoot])
   #  end of bootstrap replicates loop
-     
+      nBootGood <- nBootGood + 1
+    } else {
+      stop(possibleError3, "\n", possibleError4)
     }
-    else {stop(possibleError3, "\n", possibleError4)}
   }
   # now summarize the bootstrap outputs
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
@@ -173,7 +175,7 @@ runPairsBoot <- function(eList, pairResults,
   cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
       words(rejectC))
   fquantConc <- format(quantConc, digits = 3, width = 8)
-  cat("\n best estimate is", fcc, "mg/L\n  Lower and Upper 90% CIs", 
+  cat("\n best estimate of change in concentration is", fcc, "mg/L\n  Lower and Upper 90% CIs", 
       fquantConc[2], fquantConc[8])
   lowC <- quantConc[2]
   upC <- quantConc[8]
@@ -203,7 +205,7 @@ runPairsBoot <- function(eList, pairResults,
   cat("\n\nShould we reject Ho that Flow Normalized Flux Trend = 0 ?", 
       words(rejectF))
   fquantFlux <- format(quantFlux, digits = 3, width = 8)
-  cat("\n best estimate is", ffc, "10^6 kg/year\n  Lower and Upper 90% CIs", 
+  cat("\n best estimate of change in flux is", ffc, "10^6 kg/year\n  Lower and Upper 90% CIs", 
       fquantFlux[2], fquantFlux[8])
   lowF <- quantFlux[2]
   upF <- quantFlux[8]
@@ -232,7 +234,8 @@ runPairsBoot <- function(eList, pairResults,
   bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, 
                         lowC50, upC50, lowC95, upC95, likeCUp, likeCDown, 
                         rejectF, pValF, estF, lowF, upF, lowF50, upF50, lowF95, 
-                        upF95, likeFUp, likeFDown, baseConc, baseFlux, nBoot, startSeed, blockLength)
+                        upF95, likeFUp, likeFDown, baseConc, baseFlux, nBoot, 
+                        startSeed, blockLength, nBootGood)
   likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
   wordsOut <- wordLike(likeList)
   cat("\n\n", format(wordsOut[1], width = 30), "\n", format(wordsOut[3], 
@@ -242,7 +245,8 @@ runPairsBoot <- function(eList, pairResults,
   pConc <- as.numeric(na.omit(pConc))
   pFlux <- as.numeric(na.omit(pFlux))
   pairsBootOut <- list(bootOut = bootOut, wordsOut = wordsOut, 
-                xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux)
+                xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux,
+                startSeed = startSeed)
   attr(pairsBootOut, "year1") <- year1
   attr(pairsBootOut, "year2") <- year2
   return(pairsBootOut)

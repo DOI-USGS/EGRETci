@@ -114,6 +114,7 @@ runPairsBoot <- function(eList, pairResults,
   # start inserting the setup stuff
   
   # bootstrap loop starts here
+  nBootGood <- 0
   for (iBoot in 1:nBoot){
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
@@ -153,9 +154,10 @@ runPairsBoot <- function(eList, pairResults,
       pFlux[iBoot] <- (100 * exp(LFlux)) - 100
       cat("\n iBoot, xConc and xFlux",iBoot, xConc[iBoot], xFlux[iBoot])
   #  end of bootstrap replicates loop
-     
+      nBootGood <- nBootGood + 1
+    } else {
+      stop(possibleError3, "\n", possibleError4)
     }
-    else {stop(possibleError3, "\n", possibleError4)}
   }
   # now summarize the bootstrap outputs
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
@@ -232,7 +234,8 @@ runPairsBoot <- function(eList, pairResults,
   bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, 
                         lowC50, upC50, lowC95, upC95, likeCUp, likeCDown, 
                         rejectF, pValF, estF, lowF, upF, lowF50, upF50, lowF95, 
-                        upF95, likeFUp, likeFDown, baseConc, baseFlux, nBoot, startSeed, blockLength)
+                        upF95, likeFUp, likeFDown, baseConc, baseFlux, nBoot, 
+                        startSeed, blockLength, nBootGood)
   likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
   wordsOut <- wordLike(likeList)
   cat("\n\n", format(wordsOut[1], width = 30), "\n", format(wordsOut[3], 
@@ -242,7 +245,8 @@ runPairsBoot <- function(eList, pairResults,
   pConc <- as.numeric(na.omit(pConc))
   pFlux <- as.numeric(na.omit(pFlux))
   pairsBootOut <- list(bootOut = bootOut, wordsOut = wordsOut, 
-                xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux)
+                xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux,
+                startSeed = startSeed)
   attr(pairsBootOut, "year1") <- year1
   attr(pairsBootOut, "year2") <- year2
   return(pairsBootOut)

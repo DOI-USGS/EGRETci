@@ -199,6 +199,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param verbose logical specifying whether or not to display progress message
 #' @export
 #' @examples
 #' library(EGRET)
@@ -206,7 +207,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' \dontrun{
 #' annualResults <- bootAnnual(eList)
 #' }
-bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
+bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FALSE){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
@@ -251,7 +252,8 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                                     windowY = INFO$windowY,
                                     windowQ = INFO$windowQ,
                                     windowS = INFO$windowS,
-                                    edgeAdjust = INFO$edgeAdjust)
+                                    edgeAdjust = INFO$edgeAdjust,
+                                    verbose = verbose)
     Daily1 <- seriesEList$Daily
   } else {
     surfaces1 <- EGRET::estSurfaces(eListBoot, 
@@ -260,7 +262,8 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817){
                            windowS = eList$INFO$windowS,
                            minNumObs = eList$INFO$minNumObs, 
                            minNumUncen = eList$INFO$minNumUncen, 
-                           edgeAdjust = eListBoot$INFO$edgeAdjust)
+                           edgeAdjust = eListBoot$INFO$edgeAdjust,
+                           verbose = verbose)
     seriesEList <- EGRET::as.egret(INFO, Daily, bootSample, surfaces1)
     Daily1 <- EGRET::estDailyFromSurfaces(seriesEList)
   }
@@ -469,6 +472,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param verbose logical specifying whether or not to display progress message
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
 #' @examples
@@ -486,7 +490,10 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'  plotConcHistBoot(seriesOut_2, CIAnnualResults)
 #' 
 #' }
-ciCalculations <- function (eList, startSeed = 494817,...){
+ciCalculations <- function (eList, 
+                            startSeed = 494817,
+                            verbose = TRUE,
+                            ...){
   
   matchReturn <- list(...)
   
@@ -546,7 +553,7 @@ ciCalculations <- function (eList, startSeed = 494817,...){
                                     windowY = INFO$windowY,
                                     windowQ = INFO$windowQ,
                                     windowS = INFO$windowS,
-                                    edgeAdjust = INFO$edgeAdjust)
+                                    edgeAdjust = INFO$edgeAdjust, verbose = verbose)
   } else {
     cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
     
@@ -554,12 +561,13 @@ ciCalculations <- function (eList, startSeed = 494817,...){
                              windowQ = eList$INFO$windowQ, 
                              windowS = eList$INFO$windowS, 
                              minNumObs = eList$INFO$minNumObs, 
-                             minNumUncen = eList$INFO$minNumUncen) 
+                             minNumUncen = eList$INFO$minNumUncen,
+                             verbose = verbose) 
        
   }
   
   for(n in 1:nBoot){
-    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n)
+    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose)
   }
   
   CIAnnualResults <- ciBands(eList, repAnnualResults, probs)

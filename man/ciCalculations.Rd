@@ -4,12 +4,14 @@
 \alias{ciCalculations}
 \title{ciCalculations}
 \usage{
-ciCalculations(eList, startSeed = 494817, ...)
+ciCalculations(eList, startSeed = 494817, verbose = TRUE, ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
+
+\item{verbose}{logical specifying whether or not to display progress message}
 
 \item{\dots}{optionally include nBoot, blockLength, or widthCI}
 }

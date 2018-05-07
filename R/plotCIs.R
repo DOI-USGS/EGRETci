@@ -528,43 +528,42 @@ ciCalculations <- function (eList,
   
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
-  
-  # if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
-  #   #Indicates runSeries was run
-  #   cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
-  #   
-  #   eList <- EGRET::runSeries(eList = eList,
-  #                                   windowSide = INFO$windowSide,
-  #                                   surfaceStart = INFO$surfaceStart,
-  #                                   surfaceEnd = INFO$surfaceEnd,
-  #                                   flowBreak = INFO$flowBreak,
-  #                                   Q1EndDate = INFO$Q1EndDate,
-  #                                   QStartDate = INFO$QStartDate,
-  #                                   QEndDate = INFO$QEndDate,
-  #                                   wall = INFO$wall, 
-  #                                   oldSurface = TRUE,
-  #                                   sample1EndDate = INFO$sample1EndDate,
-  #                                   sampleStartDate = INFO$sampleStartDate,
-  #                                   sampleEndDate = INFO$sampleEndDate,
-  #                                   paStart = INFO$paStart,
-  #                                   paLong = INFO$paLong,
-  #                                   minNumObs = INFO$minNumObs,
-  #                                   minNumUncen = INFO$minNumUncen,
-  #                                   windowY = INFO$windowY,
-  #                                   windowQ = INFO$windowQ,
-  #                                   windowS = INFO$windowS,
-  #                                   edgeAdjust = INFO$edgeAdjust, verbose = verbose)
-  # } else {
-  #   cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
-  #   
-  #   eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
-  #                            windowQ = eList$INFO$windowQ, 
-  #                            windowS = eList$INFO$windowS, 
-  #                            minNumObs = eList$INFO$minNumObs, 
-  #                            minNumUncen = eList$INFO$minNumUncen,
-  #                            verbose = verbose) 
-  #      
-  # }
+  if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
+    #Indicates runSeries was run
+    cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
+
+    eList <- EGRET::runSeries(eList = eList,
+                                    windowSide = INFO$windowSide,
+                                    surfaceStart = INFO$surfaceStart,
+                                    surfaceEnd = INFO$surfaceEnd,
+                                    flowBreak = INFO$flowBreak,
+                                    Q1EndDate = INFO$Q1EndDate,
+                                    QStartDate = INFO$QStartDate,
+                                    QEndDate = INFO$QEndDate,
+                                    wall = INFO$wall,
+                                    oldSurface = TRUE,
+                                    sample1EndDate = INFO$sample1EndDate,
+                                    sampleStartDate = INFO$sampleStartDate,
+                                    sampleEndDate = INFO$sampleEndDate,
+                                    paStart = INFO$paStart,
+                                    paLong = INFO$paLong,
+                                    minNumObs = INFO$minNumObs,
+                                    minNumUncen = INFO$minNumUncen,
+                                    windowY = INFO$windowY,
+                                    windowQ = INFO$windowQ,
+                                    windowS = INFO$windowS,
+                                    edgeAdjust = INFO$edgeAdjust, verbose = verbose)
+  } else {
+    cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
+
+    eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY,
+                             windowQ = eList$INFO$windowQ,
+                             windowS = eList$INFO$windowS,
+                             minNumObs = eList$INFO$minNumObs,
+                             minNumUncen = eList$INFO$minNumUncen,
+                             verbose = verbose)
+
+  }
   
   for(n in 1:nBoot){
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose)

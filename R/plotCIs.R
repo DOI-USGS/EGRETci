@@ -226,7 +226,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FAL
     paStart <- INFO$paStart
   }
   
-  bootSample <- blockSample(Sample, blockLength, startSeed)
+  bootSample <- blockSample(localSample = Sample, blockLength = blockLength, startSeed = startSeed)
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
   if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
@@ -268,7 +268,7 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FAL
     Daily1 <- EGRET::estDailyFromSurfaces(seriesEList)
   }
   
-  annualResults1 <- EGRET::setupYears(seriesEList$Daily, paStart=paStart, paLong=paLong)
+  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   
@@ -528,11 +528,10 @@ ciCalculations <- function (eList,
   
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
-  
   if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
     #Indicates runSeries was run
     cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
-    
+
     eList <- EGRET::runSeries(eList = eList,
                                     windowSide = INFO$windowSide,
                                     surfaceStart = INFO$surfaceStart,
@@ -541,7 +540,7 @@ ciCalculations <- function (eList,
                                     Q1EndDate = INFO$Q1EndDate,
                                     QStartDate = INFO$QStartDate,
                                     QEndDate = INFO$QEndDate,
-                                    wall = INFO$wall, 
+                                    wall = INFO$wall,
                                     oldSurface = TRUE,
                                     sample1EndDate = INFO$sample1EndDate,
                                     sampleStartDate = INFO$sampleStartDate,
@@ -556,14 +555,14 @@ ciCalculations <- function (eList,
                                     edgeAdjust = INFO$edgeAdjust, verbose = verbose)
   } else {
     cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
-    
-    eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY, 
-                             windowQ = eList$INFO$windowQ, 
-                             windowS = eList$INFO$windowS, 
-                             minNumObs = eList$INFO$minNumObs, 
+
+    eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY,
+                             windowQ = eList$INFO$windowQ,
+                             windowS = eList$INFO$windowS,
+                             minNumObs = eList$INFO$minNumObs,
                              minNumUncen = eList$INFO$minNumUncen,
-                             verbose = verbose) 
-       
+                             verbose = verbose)
+
   }
   
   for(n in 1:nBoot){

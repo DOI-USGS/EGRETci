@@ -17,7 +17,7 @@ makeTwoYearsResults(eList, year1, year2)
 surfaces matrix
 }
 \description{
-In bootstrap process computes the results for the initial year and second year.
+In bootstrap process for pairs analysis computes the results for the year1 and year2.
 }
 \examples{
 library(EGRET)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{saveEGRETci}
 \alias{saveEGRETci}
-\title{Save EGRETci workspace after wBT}
+\title{Save EGRETci workspace after running wBT (the WRTDS bootstrap test)}
 \usage{
 saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 }

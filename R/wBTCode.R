@@ -1,4 +1,7 @@
-#' EGRETci package for confidence interval analysis
+#' EGRETci package for bootstrap hypothesis tests and confidence interval analysis for WRTDS (Weighted 
+#' Regressions on Time, Discharge, and Season) statistical models. This 
+#' package is designed to be used in conjunction with the EGRET package, 
+#' which estimates and describes WRTDS models.
 #'
 #' \tabular{ll}{
 #' Package: \tab EGRETci\cr
@@ -23,7 +26,8 @@
 #' chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
 #' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
 #' A bootstrap method for estimating uncertainty of water quality trends.  
-#' Accepted for publication: Journal of Environmental Modelling and Software.
+#' Environmental Modelling & Software, 73, 148-166. 
+#' \url{https://www.sciencedirect.com/science/article/pii/S1364815215300220}
 #' @keywords water-quality graphics streamflow statistics 
 NULL
 
@@ -37,7 +41,7 @@ NULL
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots  additional arguments to bring in to reduce interactive options 
 #' (year1, year2, nBoot, bootBreak, blockLength)
-#' @keywords WRTDS flow
+#' @keywords WRTDS, water quality
 #' @return caseSetUp data frame with columns year1, yearData1, year2, yearData2, 
 #' numSamples, nBoot, bootBreak, blockLength, confStop. These correspond to:
 #' \tabular{ll}{
@@ -137,7 +141,8 @@ trendSetUp <- function(eList, ...){
   
 }
 
-#' Save EGRETci workspace after wBT
+#' Save EGRETci workspace after running wBT (the WRTDS bootstrap test)
+#'
 #'
 #' Saves critical information in a EGRETci workflow when analyzing trends over a set of two years.
 #'
@@ -697,7 +702,7 @@ makeCombo <- function (surfaces1,surfaces2) {
 
 #' makeTwoYearsResults
 #'
-#' In bootstrap process computes the results for the initial year and second year.
+#' In bootstrap process for pairs analysis computes the results for the year1 and year2.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param year1 integer. Initial year of a 2-year trend comparison.
@@ -809,19 +814,25 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 
 #' blockSample
 #'
-#' Get a subset of the Sample data frame based on the user-specified blockLength.
+#' Get a random subset of the Sample data frame based on the user-specified blockLength 
+#' for use in bootstrap estimation process. The subset is a random subset of blocks of 
+#' data from Sample dataframe.  The subset is based on the random selection (with 
+#' replacement) of starting dates from the full Sample data frame.  The Sample selected 
+#' has the same number of observations as the original Sample (some 
+#' observations are are included once, some included multiple times, and some are not 
+#' included).
 #'
 #' @param localSample Sample data frame
 #' @param blockLength integer size of subset.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @keywords WRTDS flow
-#' @return surfaces matrix
+#' @return newSample data frame in same format as Sample data frame
 #' @export
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' Sample <- eList$Sample
-#' bsReturn <- blockSample(Sample, 25)
+#' bsReturn <- blockSample(Sample, 200)
 blockSample <- function(localSample, blockLength, startSeed = NA){
   
   if(!is.na(startSeed)){
@@ -848,7 +859,7 @@ blockSample <- function(localSample, blockLength, startSeed = NA){
   return(newSample)
 }
 
-#' Assigns the narrative descriptors to the likelihood of change that is calculated by WBT
+#' Assigns the narrative descriptors to the likelihood of change that is calculated by wBT (WRTDS Bootstrap Test)
 #'
 #' Function called in \code{\link{wBT}} to convert numeric likelihood percentages to useful text.
 #'
@@ -883,13 +894,14 @@ wordLike <- function(likeList){
 
 #' pVal
 #'
-#' Computes the two-sided p value for the null hypothesis
+#' Computes the two-sided p value for the null hypothesis, where null 
+#' hypothesis is that the slope is zero, based on binomial distribution
 #'
 #' @param s slope values from the bootstrap (already flipped)
 #' @export
 #' @importFrom stats na.omit
 #' @examples
-#' s <- c(0.01, 0.5, 0.55, 0.99)
+#' s <- c(-1.0, 0, 0.5, 0.55, 3.0)
 #' pValue <- pVal(s)
 pVal <- function(s){
   # this function computes the two-sided p value for the null hypothesis

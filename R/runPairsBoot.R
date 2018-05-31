@@ -117,7 +117,7 @@ runPairsBoot <- function(eList, pairResults,
   
   # bootstrap loop starts here
   nBootGood <- 0
-  for (iBoot in 1:nBoot){
+  for (iBoot in 1:(2*nBoot)){
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, NA)
@@ -157,9 +157,15 @@ runPairsBoot <- function(eList, pairResults,
       cat("\n iBoot, xConc and xFlux",iBoot, xConc[iBoot], xFlux[iBoot])
   #  end of bootstrap replicates loop
       nBootGood <- nBootGood + 1
+      if(nBootGood >= nBoot) {
+        break()
+      }
     } else {
       stop(possibleError3, "\n", possibleError4)
     }
+  }
+  if (iBoot > nBoot){
+    message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
   }
   # now summarize the bootstrap outputs
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)

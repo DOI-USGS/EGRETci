@@ -3,7 +3,10 @@
 \docType{package}
 \name{EGRETci-package}
 \alias{EGRETci-package}
-\title{EGRETci package for confidence interval analysis}
+\title{EGRETci package for bootstrap hypothesis tests and confidence interval analysis for WRTDS (Weighted 
+Regressions on Time, Discharge, and Season) statistical models. This 
+package is designed to be used in conjunction with the EGRET package, 
+which estimates and describes WRTDS models.}
 \description{
 \tabular{ll}{
 Package: \tab EGRETci\cr
@@ -27,7 +30,8 @@ chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
 
 Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
 A bootstrap method for estimating uncertainty of water quality trends.  
-Accepted for publication: Journal of Environmental Modelling and Software.
+Environmental Modelling & Software, 73, 148-166. 
+\url{https://www.sciencedirect.com/science/article/pii/S1364815215300220}
 }
 \author{
 Robert M. Hirsch \email{rhirsch@usgs.gov}, Laura De Cicco \email{ldecicco@usgs.gov}

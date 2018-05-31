@@ -318,7 +318,7 @@ wBT<-function(eList,caseSetUp,
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
     nBootGood <- 0
-    for (iBoot in 1:nBoot) {
+    for (iBoot in 1:2*nBoot) {
 
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength,
@@ -363,7 +363,9 @@ wBT<-function(eList,caseSetUp,
         highFlux <- quantFlux[8]
         
         nBootGood <- nBootGood + 1
-        
+        if(nBootGood >= nBoot) {
+          break()
+        }
         prints <- c(format(iBoot, digits = 3, width = 7), 
                     format(xConc[iBoot], digits = 3, width = 7), 
                     format(posXConc, digits = 3, width = 5), 
@@ -401,6 +403,9 @@ wBT<-function(eList,caseSetUp,
         }
         stop(possibleError3, "/n", possibleError4)
       }
+    }
+    if (iBoot > nBoot){
+      message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
     }
     rejectC <- lowConc * highConc > 0
     rejectF <- lowFlux * highFlux > 0

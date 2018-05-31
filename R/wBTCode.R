@@ -318,7 +318,7 @@ wBT<-function(eList,caseSetUp,
       message("          value     nPos post_p   Lower   Upper  |     value   nPos  post_p    Lower   Upper")
     }
     nBootGood <- 0
-    for (iBoot in 1:2*nBoot) {
+    for (iBoot in 1:(2*nBoot)) {
 
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength,

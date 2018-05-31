@@ -155,7 +155,7 @@ test_that("wBT", {
                           blockLength = 200)
   eList <- setForBoot(eList,caseSetUp)
   
-  eBoot <- wBT(eList,caseSetUp)
+  eBoot <- wBT(eList,caseSetUp,saveOutput = FALSE)
   
   bootOut <- eBoot$bootOut
   expect_true(bootOut$rejectC)

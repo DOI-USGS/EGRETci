@@ -164,7 +164,6 @@ runPairsBoot <- function(eList, pairResults,
         pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
         cat("\n iBoot, xConc and xFlux",nBootGood, xConc[nBootGood], xFlux[nBootGood])
     #  end of bootstrap replicates loop
-        cat(nBootGood, "\n")
         if(nBootGood >= nBoot) {
           break()
         }

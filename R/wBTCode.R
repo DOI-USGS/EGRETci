@@ -431,10 +431,10 @@ wBT<-function(eList,caseSetUp,
     pValC <- pVal(xConc)
     cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                             digits = 2, width = 9))
-    if (!is.na(posXConc) && ( posXConc == 0 | posXConc == iBoot) ){
+    if (!is.na(posXConc) && ( posXConc == 0 | posXConc == nBootGood) ){
       cat("\n* Note p-value should be considered to be < stated value")
     }
-    likeCUp <- (posXConc + 0.5)/(iBoot + 1)
+    likeCUp <- (posXConc + 0.5)/(nBootGood + 1)
     likeCDown <- 1 - likeCUp
     cat("\n Likelihood that Flow Normalized Concentration is trending up =", 
         format(likeCUp, digits = 3, width = 10), " is trending down =", 
@@ -456,11 +456,11 @@ wBT<-function(eList,caseSetUp,
     pValF <- pVal(xFlux)
     cat("\n approximate two-sided p-value for Flux", format(pValF, 
                                                             digits = 2, width = 9))
-    if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == iBoot)) {
+    if (!is.na(posXFlux) && (posXFlux == 0 | posXFlux == nBootGood)) {
       cat("\n* Note p-value should be considered to be < stated value")
     }
     
-    likeFUp <- (posXFlux + 0.5)/(iBoot + 1)
+    likeFUp <- (posXFlux + 0.5)/(nBootGood + 1)
     likeFDown <- 1 - likeFUp
     cat("\n Likelihood that Flow Normalized Flux is trending up =", 
         format(likeFUp, digits = 3), " is trending down=", 

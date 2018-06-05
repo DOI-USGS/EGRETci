@@ -334,20 +334,23 @@ wBT<-function(eList,caseSetUp,
         combo <- makeCombo(surfaces1, surfaces2)
         eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, combo)
         res <- makeTwoYearsResults(eListBoot, year1, year2)
-        xConc[iBoot] <- (2 * regDeltaConc) - (res[2] - res[1])
-        xFlux[iBoot] <- (2 * regDeltaFlux) - ((res[4] - res[3]) * 0.00036525)
+        
+        nBootGood <- nBootGood + 1
+        
+        xConc[nBootGood] <- (2 * regDeltaConc) - (res[2] - res[1])
+        xFlux[nBootGood] <- (2 * regDeltaFlux) - ((res[4] - res[3]) * 0.00036525)
         LConc <- (2 * LConcDiff) - (log(res[2]) - log(res[1]))
-        pConc[iBoot] <- (100 * exp(LConc)) - 100
+        pConc[nBootGood] <- (100 * exp(LConc)) - 100
         LFlux <- (2 * LFluxDiff) - (log(res[4]) - log(res[3]))
-        pFlux[iBoot] <- (100 * exp(LFlux)) - 100
+        pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
         ####### From here on out, no longer parallizable:
-        posXConc <- ifelse(xConc[iBoot] > 0, posXConc + 1, posXConc)
-        binomIntConc <- binom::binom.bayes(posXConc, iBoot, confStop, "central")
+        posXConc <- ifelse(xConc[nBootGood] > 0, posXConc + 1, posXConc)
+        binomIntConc <- binom::binom.bayes(posXConc, nBootGood, confStop, "central")
         belowConc <- ifelse(binomIntConc$upper < 0.05, 1, 0)
         aboveConc <- ifelse(binomIntConc$lower > 0.95, 1, 0)
         midConc <- ifelse(binomIntConc$lower > 0.05 & 
                             binomIntConc$upper < 0.95, 1, 0)
-        posXFlux <- ifelse(xFlux[iBoot] > 0, posXFlux + 1, posXFlux)
+        posXFlux <- ifelse(xFlux[nBootGood] > 0, posXFlux + 1, posXFlux)
         binomIntFlux <- binom::binom.bayes(posXFlux, 
                                            iBoot, confStop, "central")
         belowFlux <- ifelse(binomIntFlux$upper < 0.05, 1, 0)
@@ -355,24 +358,20 @@ wBT<-function(eList,caseSetUp,
         midFlux <- ifelse(binomIntFlux$lower > 0.05 & 
                             binomIntFlux$upper < 0.95, 1, 0)
         
-        quantConc <- quantile(xConc[1:iBoot], prob, type = 6, na.rm = TRUE)
+        quantConc <- quantile(xConc[1:nBootGood], prob, type = 6, na.rm = TRUE)
         lowConc <- quantConc[2]
         highConc <- quantConc[8]
-        quantFlux <- quantile(xFlux[1:iBoot], prob, type = 6, na.rm = TRUE)
+        quantFlux <- quantile(xFlux[1:nBootGood], prob, type = 6, na.rm = TRUE)
         lowFlux <- quantFlux[2]
         highFlux <- quantFlux[8]
         
-        nBootGood <- nBootGood + 1
-        if(nBootGood >= nBoot) {
-          break()
-        }
-        prints <- c(format(iBoot, digits = 3, width = 7), 
-                    format(xConc[iBoot], digits = 3, width = 7), 
+        prints <- c(format(nBootGood, digits = 3, width = 7), 
+                    format(xConc[nBootGood], digits = 3, width = 7), 
                     format(posXConc, digits = 3, width = 5), 
                     format(binomIntConc$mean,digits = 3), 
                     format(quantConc[2], digits = 3, width = 7), 
                     format(quantConc[8], digits = 3, width = 7), "  |  ", 
-                    format(xFlux[iBoot], digits = 4, width = 8), 
+                    format(xFlux[nBootGood], digits = 4, width = 8), 
                     format(posXFlux, digits = 3, width = 5), 
                     format(binomIntFlux$mean, digits = 3, width = 7), 
                     format(quantFlux[2], digits = 4, width = 8), 
@@ -391,11 +390,14 @@ wBT<-function(eList,caseSetUp,
         
         test1 <- as.numeric(belowConc + aboveConc + midConc > 
                               0.5 & belowFlux + aboveFlux + midFlux > 0.5 & 
-                              iBoot >= bootBreak & iBoot > 30)
+                              nBootGood >= bootBreak & iBoot > 30)
         test2 <- as.numeric(midConc > 0.5 & midFlux > 
-                              0.5 & iBoot >= bootBreak & iBoot <= 30)
+                              0.5 & nBootGood >= bootBreak & nBootGood <= 30)
         if (!is.na(test1) && !is.na(test2) && test1 + test2 > 0.5) {
           break
+        }
+        if(nBootGood >= nBoot) {
+          break()
         }
       } else {
         if (saveOutput) {

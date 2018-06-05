@@ -148,15 +148,17 @@ runPairsBoot <- function(eList, pairResults,
       c22 <- mean(annualFlex$FNConc, na.rm = TRUE)
       f22 <- mean(annualFlex$FNFlux, na.rm = TRUE) * 0.00036525
       
-      xConc[iBoot] <- (2 * regDeltaConc) - (c22 - c11)
-      xFlux[iBoot] <- (2 * regDeltaFlux) - (f22 - f11)
-      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
-      pConc[iBoot] <- (100 * exp(LConc)) - 100
-      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
-      pFlux[iBoot] <- (100 * exp(LFlux)) - 100
-      cat("\n iBoot, xConc and xFlux",iBoot, xConc[iBoot], xFlux[iBoot])
-  #  end of bootstrap replicates loop
       nBootGood <- nBootGood + 1
+      
+      xConc[nBootGood] <- (2 * regDeltaConc) - (c22 - c11)
+      xFlux[nBootGood] <- (2 * regDeltaFlux) - (f22 - f11)
+      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
+      pConc[nBootGood] <- (100 * exp(LConc)) - 100
+      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
+      pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
+      cat("\n iBoot, xConc and xFlux",nBootGood, xConc[nBootGood], xFlux[nBootGood])
+  #  end of bootstrap replicates loop
+      
       if(nBootGood >= nBoot) {
         break()
       }

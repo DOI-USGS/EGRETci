@@ -406,9 +406,13 @@ wBT<-function(eList,caseSetUp,
         stop(possibleError3, "/n", possibleError4)
       }
     }
-    if (iBoot > nBoot){
+    
+    if(iBoot == 2*nBoot){
+      message(iBoot, " iterations were run. They only achieved ", nBootGood, " sucessful runs.")
+    } else if (iBoot > nBoot){
       message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
     }
+
     rejectC <- lowConc * highConc > 0
     rejectF <- lowFlux * highFlux > 0
     cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 

@@ -158,7 +158,7 @@ runPairsBoot <- function(eList, pairResults,
       pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
       cat("\n iBoot, xConc and xFlux",nBootGood, xConc[nBootGood], xFlux[nBootGood])
   #  end of bootstrap replicates loop
-      
+      cat(nBootGood, "\n")
       if(nBootGood >= nBoot) {
         break()
       }
@@ -166,7 +166,10 @@ runPairsBoot <- function(eList, pairResults,
       stop(possibleError3, "\n", possibleError4)
     }
   }
-  if (iBoot > nBoot){
+
+  if(iBoot == 2*nBoot){
+    message(iBoot, " iterations were run. They only achieved ", nBootGood, " sucessful runs.")
+  } else if (iBoot > nBoot){
     message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
   }
   # now summarize the bootstrap outputs

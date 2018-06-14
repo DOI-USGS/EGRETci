@@ -85,7 +85,7 @@ runPairsBoot <- function(eList, pairResults,
   minNumUncen <- attr(pairResults, "Other")[["minNumUncen"]]
   windowY <- attr(pairResults, "Other")[["windowY"]]
   windowQ <- attr(pairResults, "Other")[["windowQ"]]
-  windowY <- attr(pairResults, "Other")[["windowY"]]
+  windowS <- attr(pairResults, "Other")[["windowS"]]
   wall <- attr(pairResults, "Other")[["wall"]]
   edgeAdjust <- attr(pairResults, "Other")[["edgeAdjust"]]
   

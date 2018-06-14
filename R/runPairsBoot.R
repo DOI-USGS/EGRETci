@@ -190,6 +190,7 @@ runPairsBoot <- function(eList, pairResults,
   cat("\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
   periodName <- EGRET::setSeasonLabelByUser(paStart, paLong)
   cat("\n  ", periodName, "\n")
+  cat("\n\n Change estimates are for ", year2," minus ", year1)
   if(wall) cat("\n Sample data set was partitioned with a wall at ", as.character(sample1EndDate), "\n\n")
   cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
       words(rejectC))

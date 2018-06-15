@@ -85,7 +85,7 @@ runPairsBoot <- function(eList, pairResults,
   minNumUncen <- attr(pairResults, "Other")[["minNumUncen"]]
   windowY <- attr(pairResults, "Other")[["windowY"]]
   windowQ <- attr(pairResults, "Other")[["windowQ"]]
-  windowY <- attr(pairResults, "Other")[["windowY"]]
+  windowS <- attr(pairResults, "Other")[["windowS"]]
   wall <- attr(pairResults, "Other")[["wall"]]
   edgeAdjust <- attr(pairResults, "Other")[["edgeAdjust"]]
   
@@ -125,14 +125,14 @@ runPairsBoot <- function(eList, pairResults,
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &
                             bootSample$Date <= sample1EndDate,]
     
-    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,
+    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,edgeAdjust = edgeAdjust,
                                                          localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     
     Sample2 <- bootSample[bootSample$Date >= sample2StartDate &
                             bootSample$Date <= sample2EndDate,]
     
-    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,
+    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,edgeAdjust = edgeAdjust,
                                                          localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     if (!inherits(possibleError3, "error") & 
@@ -190,6 +190,7 @@ runPairsBoot <- function(eList, pairResults,
   cat("\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
   periodName <- EGRET::setSeasonLabelByUser(paStart, paLong)
   cat("\n  ", periodName, "\n")
+  cat("\n\n Change estimates are for ", year2," minus ", year1)
   if(wall) cat("\n Sample data set was partitioned with a wall at ", as.character(sample1EndDate), "\n\n")
   cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
       words(rejectC))

@@ -17,9 +17,9 @@
 #' groups_out <- runGroups(eList, windowSide = 7,
 #'                         1980,1995,1996,2010)
 #' 
-#' boot_pair_out <- runGroupsBoot(eList, groups_out)
+#' boot_group_out <- runGroupsBoot(eList, groups_out)
 #' 
-#' plotHistogramTrend(eList, boot_pair_out, caseSetUp=NA)
+#' plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 #' }
 runGroupsBoot <- function (eList, groupResults, nBoot = 100, 
                   startSeed = 494817, blockLength = 200){

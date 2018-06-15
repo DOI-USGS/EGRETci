@@ -1,6 +1,28 @@
+
+#' runGroupsBoot
+#' 
+#' runGroupsBoot
+#' 
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param groupResults data frame returned from \code{EGRET::runGroups}
+#' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
+#' @param blockLength days, typically 200 is a good choice
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @export
+#' @examples 
+#' library(EGRET)
+#' eList <- Choptank_eList
+#' 
+#' \dontrun{
+#' groups_out <- runGroups(eList, windowSide = 7,
+#'                         1980,1995,1996,2010)
+#' 
+#' boot_pair_out <- runGroupsBoot(eList, groups_out)
+#' 
+#' plotHistogramTrend(eList, boot_pair_out, caseSetUp=NA)
+#' }
 runGroupsBoot <- function (eList, groupResults, nBoot = 100, 
-                  startSeed = 494817, blockLength = 200) 
-{
+                  startSeed = 494817, blockLength = 200){
   interactive <- FALSE
   localINFO <- eList$INFO
   localDaily <- eList$Daily
@@ -10,6 +32,7 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   firstDaySample <- localSample$Date[1]
   lastDaySample <- localSample$Date[length(localSample$Date)]
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
+  
   words <- function(z) {
     out <- if (z) 
       "Reject Ho"
@@ -17,11 +40,13 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
     return(out)
   }
   bootOut <- as.data.frame(matrix(ncol = 27, nrow = 1))
+  
   colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC90", 
                          "upC90", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
                          "likeCDown", "rejectF", "pValF", "estF", "lowF90", "upF90", 
                          "lowF50", "upF50", "lowF95", "upF95", "likeFUp", "likeFDown", 
                          "baseConc", "baseFlux", "nBoot", "startSeed", "blockLength")
+  
   paStart <- attr(groupResults, "groupInfo")[["paStart"]]
   paLong <- attr(groupResults, "groupInfo")[["paLong"]]
   group1firstYear <- attr(groupResults, "groupInfo")[["group1firstYear"]]
@@ -48,47 +73,40 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   windowS <- attr(groupResults, "Other")[["windowS"]]
   wall <- attr(groupResults, "Other")[["wall"]]
   edgeAdjust <- attr(groupResults, "Other")[["edgeAdjust"]]
+  
   xConc <- rep(NA, nBoot)
   xFlux <- rep(NA, nBoot)
   pConc <- rep(NA, nBoot)
   pFlux <- rep(NA, nBoot)
+  
   regDeltaConc <- groupResults[1, 7] - groupResults[1, 5]
   estC <- regDeltaConc
   baseConc <- groupResults[1, 5]
   regDeltaConcPct <- (regDeltaConc/baseConc) * 100
-  LConcDiff <- log(groupResults[1, 7]) - log(groupResults[1, 
-                                                        5])
+  LConcDiff <- log(groupResults[1, 7]) - log(groupResults[1, 5])
   regDeltaFlux <- (groupResults[2, 7] - groupResults[2, 5])
   estF <- regDeltaFlux
   baseFlux <- groupResults[2, 5]
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
-  LFluxDiff <- log(groupResults[2, 7]) - log(groupResults[2, 
-                                                        5])
+  LFluxDiff <- log(groupResults[2, 7]) - log(groupResults[2, 5])
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 3, width = 8)
-#  Daily1 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[1]) & 
-#                         localDaily$Date <= as.Date(dateInfo$flowNormEnd[1]), 
-#                       ]
-#  Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & 
-#                         localDaily$Date <= as.Date(dateInfo$flowNormEnd[2]), 
-#                       ]
+                       
   nBootGood <- 0
+  
   for (iBoot in 1:(2 * nBoot)) {
     bootSample <- blockSample(localSample = localSample, 
-                              blockLength = blockLength, startSeed = startSeed + 
-                                iBoot)
-    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
-                                 NA)
+                              blockLength = blockLength, startSeed = startSeed + iBoot)
+    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample,NA)
 # Note to Laura: the function calls below one to stitch and one to estSurfaces
 # should probably have the error handling put back into them (like in runPairsBoot)
-  if(wall) {
-    surfaces <- stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
-                       sample1StartDate = sample1StartDate, sample1EndDate = sample1EndDate,
-                       sample2StartDate = sample2StartDate, sample2EndDate = sample2EndDate,
-                       windowY = windowY, windowQ = windowQ, windowS = windowS,
-                       minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust)
-  }    
-    else {
+    if(wall) {
+      surfaces <- stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
+                         sample1StartDate = sample1StartDate, sample1EndDate = sample1EndDate,
+                         sample2StartDate = sample2StartDate, sample2EndDate = sample2EndDate,
+                         windowY = windowY, windowQ = windowQ, windowS = windowS,
+                         minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust)
+    } else {
       surfaces <- estSurfaces(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
                               windowY = windowY, windowQ = windowQ, windowS = windowS,
                               minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust) 
@@ -98,43 +116,39 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
                        flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
                        flowEndCol = "flowEnd")
     eListOut$INFO$wall <- wall
-      eListOut$INFO$surfaceStart <- surfaceStart
-      eListOut$INFO$surfaceEnd <- surfaceEnd
-      DailyFlex <- eListOut$Daily
-      annFlex <- setupYears(DailyFlex, paLong = paLong, paStart = paStart)
-      annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
-      annFlex1 <- subset(annFlex, DecYear >= group1firstYear & DecYear <= group1lastYear)
-      annFlex2 <- subset(annFlex, DecYear >= group2firstYear & DecYear <= group2lastYear)
-      c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
-      f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
-      c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
-      f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
-      xConc_here <- (2 * regDeltaConc) - (c22 - c11)
-      xFlux_here <- (2 * regDeltaFlux) - (f22 - f11)
-      if (!is.na(xConc_here) & !is.na(xFlux_here)) {
-        nBootGood <- nBootGood + 1
-        xConc[nBootGood] <- xConc_here
-        xFlux[nBootGood] <- xFlux_here
-        LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
-        pConc[nBootGood] <- (100 * exp(LConc)) - 100
-        LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
-        pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
-        cat("\n iBoot, xConc and xFlux", nBootGood, xConc[nBootGood], 
-            xFlux[nBootGood])
-        if (nBootGood >= nBoot) {
-          (break)()
-        }
+    eListOut$INFO$surfaceStart <- surfaceStart
+    eListOut$INFO$surfaceEnd <- surfaceEnd
+    DailyFlex <- eListOut$Daily
+    annFlex <- setupYears(DailyFlex, paLong = paLong, paStart = paStart)
+    annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
+    annFlex1 <- annFlex[annFlex$DecYear >= group1firstYear & annFlex$DecYear <= group1lastYear,]
+    annFlex2 <- annFlex[annFlex$DecYear >= group2firstYear & annFlex$DecYear <= group2lastYear,]
+    c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
+    f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
+    c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
+    f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
+    xConc_here <- (2 * regDeltaConc) - (c22 - c11)
+    xFlux_here <- (2 * regDeltaFlux) - (f22 - f11)
+    if (!is.na(xConc_here) & !is.na(xFlux_here)) {
+      nBootGood <- nBootGood + 1
+      xConc[nBootGood] <- xConc_here
+      xFlux[nBootGood] <- xFlux_here
+      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
+      pConc[nBootGood] <- (100 * exp(LConc)) - 100
+      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
+      pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
+      cat("\n iBoot, xConc and xFlux", nBootGood, xConc[nBootGood], 
+          xFlux[nBootGood])
+      if (nBootGood >= nBoot) {
+        (break)()
       }
     }
-#    else {
-#      stop(possibleError3, "\n", possibleError4)
-#    }
-#  }
+  }
+
   if (iBoot == 2 * nBoot) {
     message(iBoot, " iterations were run. They only achieved ", 
             nBootGood, " sucessful runs.")
-  }
-  else if (iBoot > nBoot) {
+  } else if (iBoot > nBoot) {
     message("It took ", iBoot, " iterations to achieve ", 
             nBoot, " sucessful runs.")
   }

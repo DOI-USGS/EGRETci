@@ -101,25 +101,25 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
 # Note to Laura: the function calls below one to stitch and one to estSurfaces
 # should probably have the error handling put back into them (like in runPairsBoot)
     if(wall) {
-      surfaces <- stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
+      surfaces <- EGRET::stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
                          sample1StartDate = sample1StartDate, sample1EndDate = sample1EndDate,
                          sample2StartDate = sample2StartDate, sample2EndDate = sample2EndDate,
                          windowY = windowY, windowQ = windowQ, windowS = windowS,
                          minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust)
     } else {
-      surfaces <- estSurfaces(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
+      surfaces <- EGRET::estSurfaces(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
                               windowY = windowY, windowQ = windowQ, windowS = windowS,
                               minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust) 
     }
-    eListS <- as.egret(eListBoot$INFO, eListBoot$Daily, eListBoot$Sample, surfaces)
-    eListOut <- flexFN(eListS, dateInfo, flowNormStartCol = "flowNormStart", 
+    eListS <- EGRET::as.egret(eListBoot$INFO, eListBoot$Daily, eListBoot$Sample, surfaces)
+    eListOut <- EGRET::flexFN(eListS, dateInfo, flowNormStartCol = "flowNormStart", 
                        flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
                        flowEndCol = "flowEnd")
     eListOut$INFO$wall <- wall
     eListOut$INFO$surfaceStart <- surfaceStart
     eListOut$INFO$surfaceEnd <- surfaceEnd
     DailyFlex <- eListOut$Daily
-    annFlex <- setupYears(DailyFlex, paLong = paLong, paStart = paStart)
+    annFlex <- EGRET::setupYears(DailyFlex, paLong = paLong, paStart = paStart)
     annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
     annFlex1 <- annFlex[annFlex$DecYear >= group1firstYear & annFlex$DecYear <= group1lastYear,]
     annFlex2 <- annFlex[annFlex$DecYear >= group2firstYear & annFlex$DecYear <= group2lastYear,]

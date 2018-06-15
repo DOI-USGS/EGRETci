@@ -8,3 +8,4 @@ output.RData
 .travis.yml
 CONDUCT.md
 DISCLAIMER.md
+code.json

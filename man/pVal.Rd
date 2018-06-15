@@ -10,9 +10,10 @@ pVal(s)
 \item{s}{slope values from the bootstrap (already flipped)}
 }
 \description{
-Computes the two-sided p value for the null hypothesis
+Computes the two-sided p value for the null hypothesis, where null 
+hypothesis is that the slope is zero, based on binomial distribution
 }
 \examples{
-s <- c(0.01, 0.5, 0.55, 0.99)
+s <- c(-1.0, 0, 0.5, 0.55, 3.0)
 pValue <- pVal(s)
 }

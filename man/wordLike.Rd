@@ -2,7 +2,7 @@
 % Please edit documentation in R/wBTCode.R
 \name{wordLike}
 \alias{wordLike}
-\title{Assigns the narrative descriptors to the likelihood of change that is calculated by WBT}
+\title{Assigns the narrative descriptors to the likelihood of change that is calculated by wBT (WRTDS Bootstrap Test)}
 \usage{
 wordLike(likeList)
 }

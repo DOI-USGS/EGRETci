@@ -125,14 +125,14 @@ runPairsBoot <- function(eList, pairResults,
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &
                             bootSample$Date <= sample1EndDate,]
     
-    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,
+    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,edgeAdjust = edgeAdjust,
                                                          localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     
     Sample2 <- bootSample[bootSample$Date >= sample2StartDate &
                             bootSample$Date <= sample2EndDate,]
     
-    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,
+    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,edgeAdjust = edgeAdjust,
                                                          localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
                                                          verbose = FALSE), error = function(e) e)
     if (!inherits(possibleError3, "error") & 

@@ -408,11 +408,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
   
-  if("runSeries" %in% names(attributes(eList)) |
-     "segmentInfo" %in% names(attributes(eList$INFO))){
+  if(any(c("yearPair","group1firstYear") %in% names(attributes(eBoot))) |  "segmentInfo" %in% names(attributes(eList$INFO))){
     periodName <- paste(periodName, "*")
   }
   
+
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
     reps <- eBoot$pFlux
@@ -425,34 +425,50 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
     titleWord <- "Concentration"
   }
   
-  if(all(is.na(caseSetUp))){
-    if("year1" %in% names(attributes(eBoot))){
-      year1 <- attr(eBoot, "year1")
+  if(!("group2firstYear" %in% names(attributes(eBoot)))){
+    if(all(is.na(caseSetUp))){
+      if("year1" %in% names(attributes(eBoot))){
+        year1 <- attr(eBoot, "year1")
+      }
+      if("year2" %in% names(attributes(eBoot))){
+        year2 <- attr(eBoot, "year2")
+      }    
+      
+    } else {
+      year1 <- caseSetUp$year1
+      year2 <- caseSetUp$year2
     }
-    if("year2" %in% names(attributes(eBoot))){
-      year2 <- attr(eBoot, "year2")
-    }    
     
-  } else {
-    year1 <- caseSetUp$year1
-    year2 <- caseSetUp$year2
-  }
-  
-  if(any(is.na(c(year1,year2)))){
-    stop("Provide caseSetUp information")
-  }
-  
-  titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
-                                           eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                                           year1, "to", year2, "\n", eList$INFO$shortName, 
-                                           periodName), "")
-  minReps <- min(reps,na.rm = TRUE)
-  maxReps <- max(reps,na.rm = TRUE)
-  xMin <- if(is.na(xMin)) min(-10,minReps) else xMin
-  xMax <- if(is.na(xMax)) max(10,maxReps) else xMax
-  xStep <- if(is.na(xStep)) (xMax-xMin) / 10 else xStep
-  xSeq <- seq(xMin,xMax,xStep)
+    if(any(is.na(c(year1,year2)))){
+      stop("Provide caseSetUp information")
+    }
+    
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             year1, "to", year2, "\n", eList$INFO$shortName, 
+                                             periodName), "")
 
+  } else {
+    group1firstYear <- attr(eBoot,"group1firstYear")
+    group1lastYear <- attr(eBoot,"group1lastYear")
+    group2firstYear <- attr(eBoot,"group2firstYear")
+    group2lastYear <- attr(eBoot,"group2lastYear")
+    periodWords <- paste(group2firstYear, "to", group2lastYear,
+                         "minus",group1firstYear, "to",group1lastYear, sep=" ")
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             periodWords, "\n", eList$INFO$shortName, periodName), 
+                           "")
+
+  }
+  
+  minReps <- min(reps, na.rm = TRUE)
+  maxReps <- max(reps, na.rm = TRUE)
+  xMin <- ifelse(is.na(xMin), min(-10, minReps),xMin)
+  xMax <- ifelse(is.na(xMax), max(10, maxReps), xMax)
+  xStep <- ifelse(is.na(xStep), (xMax - xMin)/10, xStep)
+  xSeq <- seq(xMin, xMax, xStep)
+  
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, cex.lab = cex.lab, ...)
@@ -464,6 +480,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   title(ylab = "Density", line = 4.5, cex.lab = cex.lab)
   axis(3, tcl = 0.5, labels = FALSE)
   axis(4, tcl = 0.5, labels = FALSE)
+
 }
   
 #' ciCalculations

@@ -26,8 +26,14 @@ library(EGRET)
 eList <- Choptank_eList
 
 \dontrun{
-groups_out <- runGroups(eList, windowSide = 7,
-                        1980,1995,1996,2010)
+groupResults <- runGroups(eList, 
+                          group1firstYear = 1995, 
+                          group1lastYear = 2004, 
+                          group2firstYear = 2005, 
+                          group2lastYear = 2014, 
+                          windowSide = 7, wall = TRUE, 
+                          sample1EndDate = "2004-10-30", 
+                          paStart = 4, paLong = 2, verbose = FALSE)
 
 boot_group_out <- runGroupsBoot(eList, groups_out)
 

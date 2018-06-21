@@ -33,9 +33,10 @@ groupResults <- runGroups(eList,
                           group2lastYear = 2014, 
                           windowSide = 7, wall = TRUE, 
                           sample1EndDate = "2004-10-30", 
-                          paStart = 4, paLong = 2, verbose = FALSE)
+                          paStart = 4, paLong = 2, 
+                          verbose = FALSE)
 
-boot_group_out <- runGroupsBoot(eList, groups_out)
+boot_group_out <- runGroupsBoot(eList, groupResults)
 
 plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 }

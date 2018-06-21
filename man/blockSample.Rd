@@ -9,7 +9,7 @@ blockSample(localSample, blockLength, startSeed = NA)
 \arguments{
 \item{localSample}{Sample data frame}
 
-\item{blockLength}{integer size of subset.}
+\item{blockLength}{integer size of subset expressed in days.}
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }

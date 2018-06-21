@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCIs.R
 \name{bootAnnual}
 \alias{bootAnnual}
-\title{bootAnnual}
+\title{Single confidence interval bootstrap run}
 \usage{
 bootAnnual(eList, blockLength = 200, startSeed = 494817, verbose = FALSE)
 }
@@ -16,7 +16,7 @@ bootAnnual(eList, blockLength = 200, startSeed = 494817, verbose = FALSE)
 \item{verbose}{logical specifying whether or not to display progress message}
 }
 \description{
-One bootstrap run.
+One bootstrap run used to calculate confidence interval bands.
 }
 \examples{
 library(EGRET)

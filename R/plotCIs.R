@@ -2,8 +2,8 @@
 #' and confidence bands for flow normalized concentrations
 #' 
 #' Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 
-#' list eList), and the data frame CIAnnualResults (produced by EGRETci package 
-#' using scripts described in the vignette) to produce a graph of annual 
+#' list eList), and the data frame CIAnnualResults (produced by the function ciCalculations in the EGRETci package 
+#' using scripts described in the EGRETci vignette) to produce a graph of annual 
 #' concentration, flow normalized concentration, and confidence bands for 
 #' flow-normalized concentrations.  In addition to the arguments listed below, 
 #' it will accept any additional arguments that are listed for the EGRET function 
@@ -16,8 +16,8 @@
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param concMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
-#' @param printTitle logical
-#' @param cex.main numeric title scale
+#' @param printTitle logical, default = TRUE.
+#' @param cex.main numeric title scale, default = 1.1.
 #' @param \dots graphical parameters
 #' @export
 #' @importFrom graphics title
@@ -192,9 +192,9 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
 }
 
-#' bootAnnual
+#' Single confidence interval bootstrap run
 #'
-#' One bootstrap run.
+#' One bootstrap run used to calculate confidence interval bands.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
@@ -357,7 +357,9 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
 #' plotHistogramTrend
 #'
-#' Histogram of trend.
+#' Histogram of trend results from bootstrap process.  The histogram shows the trend results expressed as percentage change between the first year (or first period) 
+#' and the second year (or second period).  It shows the zero line (no trend) and also shows the WRTDS 
+#' estimate of the trend in percent.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.

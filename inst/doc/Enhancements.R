@@ -1,8 +1,5 @@
 ## ----setup, echo = FALSE, message=FALSE----------------------------------
-library(EGRET)
-library(EGRETci)
-library(lubridate)
-library(dplyr)
+
 library(knitr)
 
 knitr::opts_chunk$set(echo = TRUE, 
@@ -13,11 +10,15 @@ knitr::opts_chunk$set(echo = TRUE,
 
 
 ## ---- echo = FALSE-------------------------------------------------------
+library(EGRET)
+library(EGRETci)
+library(dplyr)
 load("pairResults2.RData")
 load("Chop.OPbase.RData")
 
 ## ------------------------------------------------------------------------
-bootPairOut2 <- runPairsBoot(eList, pairResults2, nBoot = 10)
+bootPairOut2 <- runPairsBoot(eList, 
+                             pairResults2, nBoot = 10)
 
 ## ----eval=FALSE----------------------------------------------------------
 #  plotHistogramTrend(eList, eBoot, caseSetUp = NA,
@@ -54,13 +55,10 @@ plotFluxHistBoot(eListOut, CIAnnualResults)
 rm(list = ls())
 load("Chop.OPbase.RData")
 load("groupResults.RData")
+load("bootGroupsOut.RData")
 
 ## ---- eval = FALSE-------------------------------------------------------
 #  bootGroupsOut <- runGroupsBoot(eList, groupResults, nBoot = 100)
-#  # Laura: I can't seem to do the next step,
-#  # what I want to do here is insert the output from this run
-#  # which I have sitting in a txt file called "bootGroupsOutput"
-#  # I'd like it inserted here, just don't know how to do it.
 
 ## ----eval=FALSE----------------------------------------------------------
 #  plotHistogramTrend(eList, eBoot, flux = TRUE,

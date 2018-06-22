@@ -82,7 +82,7 @@ test_that("pVal", {
 
 test_that("makeTwoYearsResults", {
   testthat::skip_on_cran()
-  twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
+  twoResultsWaterYear <- EGRETci:::makeTwoYearsResults(eList, 1985, 2005)
   expect_equal(floor(twoResultsWaterYear[1:2]), c(1,0))
   
 })
@@ -91,7 +91,7 @@ test_that("makeCombo", {
 
   surfaces1 <- c(1,2,3)
   surfaces2 <- c(4, NA, 5)
-  surfaces <- makeCombo(surfaces1, surfaces2)
+  surfaces <- EGRETci:::makeCombo(surfaces1, surfaces2)
   expect_equal(surfaces, c(5,2,8))
 })
 
@@ -136,7 +136,7 @@ test_that("estSliceSurfacesSimpleAlt", {
                           blockLength = 200)
   eList <- setForBoot(eList,caseSetUp)
   
-  surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
+  surfaces <- EGRETci:::estSliceSurfacesSimpleAlt(eList, 1990)
   expect_equal(surfaces[1:14,1,3], as.numeric(rep(NA, 14)))
   expect_equal(surfaces[1,173,1], 0.16541093)
 })

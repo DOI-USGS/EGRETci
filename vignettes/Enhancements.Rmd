@@ -15,10 +15,7 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 ```{r setup, echo = FALSE, message=FALSE}
-library(EGRET)
-library(EGRETci)
-library(lubridate)
-library(dplyr)
+
 library(knitr)
 
 knitr::opts_chunk$set(echo = TRUE, 
@@ -61,6 +58,9 @@ The call to **runPairsBoot** is very simple, because it gets virtually all of th
 Here we will run a trivially small example of **runPairsBoot** based on the problem set up in the second example of runPairs in the `EGRET` 3.0 enhancements User Guide.
 
 ```{r, echo = FALSE}
+library(EGRET)
+library(EGRETci)
+library(dplyr)
 load("pairResults2.RData")
 load("Chop.OPbase.RData")
 ```

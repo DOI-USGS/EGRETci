@@ -21,7 +21,7 @@
 #' @name EGRETci-package
 #' @docType package
 #' @author Robert M. Hirsch \email{rhirsch@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
-#' @references Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
+#' @references Hirsch, R.M., and De Cicco, L.A., 2015, User guide to Exploration and Graphics for RivEr Trends 
 #' (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
 #' chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
 #' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
@@ -532,24 +532,7 @@ wBT<-function(eList,caseSetUp,
 
   
 
-#' surface slice
-#'
-#' Creates surface slice for one year.
-#'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, 
-#' after running either \code{\link[EGRET]{modelEstimation}} or \code{\link{setForBoot}}.
-#' @param year integer year to perform WRTDS analysis
-#' @keywords WRTDS flow
-#' @return surfaces matrix
-#' @export
-#' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \dontrun{
-#' caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
-#' eList <- setForBoot(eList, caseSetUp)
-#' surfaces <- estSliceSurfacesSimpleAlt(eList, 1990)
-#' }
+
 estSliceSurfacesSimpleAlt <- function(eList,year){
   
   localINFO <- eList$INFO
@@ -624,40 +607,6 @@ estSliceSurfacesSimpleAlt <- function(eList,year){
   return(surfaces)
 }
 
-#' paVector
-#'
-#' Creates paVector. This is the index of which years are in the proper period of record.
-#'
-#' @param year integer year to look for. If the period of analysis is a water 
-#' year (\code{setPA(paStart = 10, paLong = 12)}), the year corresponds to the calendar year of that water year for Jan-Sept.
-#' If the period of record crosses a calendar year (\code{setPA(paStart=10, paLong=3)}), the year indicates the year at the ending month.
-#' @param paStart integer starting month for period of analysis
-#' @param paLong integer length of period of analysis
-#' @param vectorYear numeric vector of decimal years
-#' @keywords WRTDS flow
-#' @return surfaces matrix
-#' @export
-#' @examples
-#' year <- 2000
-#' paStart <- 10
-#' paLong <- 12
-#' vectorYear <- c(seq(1999,2001,0.0833))
-#' paIndexWaterYear <- paVector(year, paStart, paLong, vectorYear)
-#' requestedYears <- vectorYear[paIndexWaterYear]
-#' paStart <- 11
-#' paLong <- 3
-#' paIndexWinter <- paVector(year, paStart, paLong, vectorYear)
-#' requestedWinterYears <- vectorYear[paIndexWinter]
-#' paStart <- 6
-#' paLong <- 3
-#' paIndexSummer <- paVector(year, paStart, paLong, vectorYear)
-#' requestedSummerYears <- vectorYear[paIndexSummer]
-#' paStart <- 10
-#' paLong <- 3
-#' paIndexLate <- paVector(year, paStart, paLong, vectorYear)
-#' endOfYear <- vectorYear[paIndexLate]
-#' paCalendarYear <- paVector(year, 1, 12, vectorYear)
-#' calYear <- vectorYear[paCalendarYear]
 paVector <- function(year,paStart,paLong, vectorYear){
   
   if (paStart + paLong > 13){
@@ -690,19 +639,7 @@ paVector <- function(year,paStart,paLong, vectorYear){
   return(vectorIndex)
 }
 
-#' makeCombo
-#'
-#' Combine surface slices.
-#'
-#' @param surfaces1 vector returned from \code{\link{estSliceSurfacesSimpleAlt}}
-#' @param surfaces2 vector returned from \code{\link{estSliceSurfacesSimpleAlt}}
-#' @keywords WRTDS flow
-#' @return surfaces matrix
-#' @export
-#' @examples
-#' surfaces1 <- c(1,2,3)
-#' surfaces2 <- c(4, NA, 5)
-#' surfaces <- makeCombo(surfaces1, surfaces2)
+
 makeCombo <- function (surfaces1,surfaces2) {
 	surfaces1[is.na(surfaces1)]<-0
 	surfaces2[is.na(surfaces2)]<-0
@@ -711,21 +648,6 @@ makeCombo <- function (surfaces1,surfaces2) {
 	return(combo)
 }
 
-#' makeTwoYearsResults
-#'
-#' In bootstrap process for pairs analysis computes the results for the year1 and year2.
-#'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param year1 integer. Initial year of a 2-year trend comparison.
-#' @param year2 integer. Second year of a 2-year trend comparison.
-#' @keywords WRTDS flow
-#' @return surfaces matrix
-#' @export
-#' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' 
-#' twoResultsWaterYear <- makeTwoYearsResults(eList, 1985, 2005)
 makeTwoYearsResults <- function(eList,year1,year2){
 
   paStart <- eList$INFO$paStart
@@ -752,7 +674,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
 #' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record.  
 #' @keywords WRTDS flow
-#' @return surfaces matrix
+#' @return eList list with Daily,Sample, INFO data frames and surface matrix.
 #' @export
 #' @examples
 #' library(EGRET)
@@ -834,7 +756,7 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 #' included).
 #'
 #' @param localSample Sample data frame
-#' @param blockLength integer size of subset.
+#' @param blockLength integer size of subset expressed in days.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @keywords WRTDS flow
 #' @return newSample data frame in same format as Sample data frame
@@ -870,18 +792,7 @@ blockSample <- function(localSample, blockLength, startSeed = NA){
   return(newSample)
 }
 
-#' Assigns the narrative descriptors to the likelihood of change that is calculated by wBT (WRTDS Bootstrap Test)
-#'
-#' Function called in \code{\link{wBT}} to convert numeric likelihood percentages to useful text.
-#'
-#' @param likeList list
-#' @return character vector for [1] Upward trend in concentration, 
-#' [2] Downward trend in concentration, [3] Upward trend in flux,
-#' [4] Downward trend in flux
-#' @export
-#' @examples
-#' likeList <- c(0.01, 0.5, 0.55, 0.99)
-#' Trends <- wordLike(likeList)
+
 wordLike <- function(likeList){
 	firstPart <- c("Upward trend in concentration is",
                  "Downward trend in concentration is",
@@ -906,10 +817,13 @@ wordLike <- function(likeList){
 #' pVal
 #'
 #' Computes the two-sided p value for the null hypothesis, where null 
-#' hypothesis is that the slope is zero, based on binomial distribution
+#' hypothesis is that the slope is zero, based on binomial distribution. 
+#' Should be noted that the result does not depend on the magnitude of the s 
+#' values only depends on the number of plus values and number of negative values.
 #'
-#' @param s slope values from the bootstrap (already flipped)
+#' @param s numeric vector of slope values from the bootstrap (already flipped)
 #' @export
+#' @return pVal numeric value
 #' @importFrom stats na.omit
 #' @examples
 #' s <- c(-1.0, 0, 0.5, 0.55, 3.0)

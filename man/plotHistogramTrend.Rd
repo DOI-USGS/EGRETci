@@ -36,7 +36,9 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
 \item{\dots}{base R graphical parameters that can be passed to the hist function}
 }
 \description{
-Histogram of trend.
+Histogram of trend results from bootstrap process.  The histogram shows the trend results expressed as percentage change between the first year (or first period) 
+and the second year (or second period).  It shows the zero line (no trend) and also shows the WRTDS 
+estimate of the trend in percent.
 }
 \examples{
 library(EGRET)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/runPairsBoot.R
 \name{runPairsBoot}
 \alias{runPairsBoot}
-\title{runPairsBoot}
+\title{The bootstrap uncertainty analysis for runPairs results}
 \usage{
 runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
   blockLength = 200)
@@ -19,7 +19,7 @@ runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
 \item{blockLength}{days, typically 200 is a good choice}
 }
 \description{
-runPairsBoot
+Uncertainty analysis for determining the change between two years.
 }
 \examples{
 library(EGRET)

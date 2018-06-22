@@ -24,7 +24,7 @@ the Weighted Regressions on Time Discharge and Season (WRTDS) method. This packa
 to the EGRET package that performs the WRTDS analysis.
 }
 \references{
-Hirsch, R.M., and De Cicco, L.A., 2014, User guide to Exploration and Graphics for RivEr Trends 
+Hirsch, R.M., and De Cicco, L.A., 2015, User guide to Exploration and Graphics for RivEr Trends 
 (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
 chap. A10, 94 p., \url{http://dx.doi.org/10.3133/tm4A10}
 

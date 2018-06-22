@@ -21,7 +21,7 @@ setForBoot(eList, caseSetUp, windowY = 7, windowQ = 2, windowS = 0.5,
 \item{edgeAdjust}{logical specifying whether to use the modified method for calculating the windows at the edge of the record.}
 }
 \value{
-surfaces matrix
+eList list with Daily,Sample, INFO data frames and surface matrix.
 }
 \description{
 Adds window parameters to INFO file in eList.

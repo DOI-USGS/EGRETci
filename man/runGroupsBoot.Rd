@@ -2,7 +2,7 @@
 % Please edit documentation in R/runGroupBoot.R
 \name{runGroupsBoot}
 \alias{runGroupsBoot}
-\title{runGroupsBoot}
+\title{The bootstrap uncertainty analysis for runGroups results}
 \usage{
 runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
   blockLength = 200)
@@ -19,17 +19,24 @@ runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
 \item{blockLength}{days, typically 200 is a good choice}
 }
 \description{
-runGroupsBoot
+Uncertainty analysis for determining the change between two groups of years.
 }
 \examples{
 library(EGRET)
 eList <- Choptank_eList
 
 \dontrun{
-groups_out <- runGroups(eList, windowSide = 7,
-                        1980,1995,1996,2010)
+groupResults <- runGroups(eList, 
+                          group1firstYear = 1995, 
+                          group1lastYear = 2004, 
+                          group2firstYear = 2005, 
+                          group2lastYear = 2014, 
+                          windowSide = 7, wall = TRUE, 
+                          sample1EndDate = "2004-10-30", 
+                          paStart = 4, paLong = 2, 
+                          verbose = FALSE)
 
-boot_group_out <- runGroupsBoot(eList, groups_out)
+boot_group_out <- runGroupsBoot(eList, groupResults)
 
 plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 }

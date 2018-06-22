@@ -2,8 +2,8 @@
 #' and confidence bands for flow normalized concentrations
 #' 
 #' Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 
-#' list eList), and the data frame CIAnnualResults (produced by EGRETci package 
-#' using scripts described in the vignette) to produce a graph of annual 
+#' list eList), and the data frame CIAnnualResults (produced by the function ciCalculations in the EGRETci package 
+#' using scripts described in the EGRETci vignette) to produce a graph of annual 
 #' concentration, flow normalized concentration, and confidence bands for 
 #' flow-normalized concentrations.  In addition to the arguments listed below, 
 #' it will accept any additional arguments that are listed for the EGRET function 
@@ -16,8 +16,8 @@
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param concMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
-#' @param printTitle logical
-#' @param cex.main numeric title scale
+#' @param printTitle logical, default = TRUE.
+#' @param cex.main numeric title scale, default = 1.1.
 #' @param \dots graphical parameters
 #' @export
 #' @importFrom graphics title
@@ -192,9 +192,9 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
 }
 
-#' bootAnnual
+#' Single confidence interval bootstrap run
 #'
-#' One bootstrap run.
+#' One bootstrap run used to calculate confidence interval bands.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
@@ -357,7 +357,9 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
 #' plotHistogramTrend
 #'
-#' Histogram of trend.
+#' Histogram of trend results from bootstrap process.  The histogram shows the trend results expressed as percentage change between the first year (or first period) 
+#' and the second year (or second period).  It shows the zero line (no trend) and also shows the WRTDS 
+#' estimate of the trend in percent.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
@@ -408,11 +410,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
   
-  if("runSeries" %in% names(attributes(eList)) |
-     "segmentInfo" %in% names(attributes(eList$INFO))){
+  if(any(c("yearPair","group1firstYear") %in% names(attributes(eBoot))) |  "segmentInfo" %in% names(attributes(eList$INFO))){
     periodName <- paste(periodName, "*")
   }
   
+
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
     reps <- eBoot$pFlux
@@ -425,34 +427,50 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
     titleWord <- "Concentration"
   }
   
-  if(all(is.na(caseSetUp))){
-    if("year1" %in% names(attributes(eBoot))){
-      year1 <- attr(eBoot, "year1")
+  if(!("group2firstYear" %in% names(attributes(eBoot)))){
+    if(all(is.na(caseSetUp))){
+      if("year1" %in% names(attributes(eBoot))){
+        year1 <- attr(eBoot, "year1")
+      }
+      if("year2" %in% names(attributes(eBoot))){
+        year2 <- attr(eBoot, "year2")
+      }    
+      
+    } else {
+      year1 <- caseSetUp$year1
+      year2 <- caseSetUp$year2
     }
-    if("year2" %in% names(attributes(eBoot))){
-      year2 <- attr(eBoot, "year2")
-    }    
     
-  } else {
-    year1 <- caseSetUp$year1
-    year2 <- caseSetUp$year2
-  }
-  
-  if(any(is.na(c(year1,year2)))){
-    stop("Provide caseSetUp information")
-  }
-  
-  titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
-                                           eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                                           year1, "to", year2, "\n", eList$INFO$shortName, 
-                                           periodName), "")
-  minReps <- min(reps,na.rm = TRUE)
-  maxReps <- max(reps,na.rm = TRUE)
-  xMin <- if(is.na(xMin)) min(-10,minReps) else xMin
-  xMax <- if(is.na(xMax)) max(10,maxReps) else xMax
-  xStep <- if(is.na(xStep)) (xMax-xMin) / 10 else xStep
-  xSeq <- seq(xMin,xMax,xStep)
+    if(any(is.na(c(year1,year2)))){
+      stop("Provide caseSetUp information")
+    }
+    
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             year1, "to", year2, "\n", eList$INFO$shortName, 
+                                             periodName), "")
 
+  } else {
+    group1firstYear <- attr(eBoot,"group1firstYear")
+    group1lastYear <- attr(eBoot,"group1lastYear")
+    group2firstYear <- attr(eBoot,"group2firstYear")
+    group2lastYear <- attr(eBoot,"group2lastYear")
+    periodWords <- paste(group2firstYear, "to", group2lastYear,
+                         "minus",group1firstYear, "to",group1lastYear, sep=" ")
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             periodWords, "\n", eList$INFO$shortName, periodName), 
+                           "")
+
+  }
+  
+  minReps <- min(reps, na.rm = TRUE)
+  maxReps <- max(reps, na.rm = TRUE)
+  xMin <- ifelse(is.na(xMin), min(-10, minReps),xMin)
+  xMax <- ifelse(is.na(xMax), max(10, maxReps), xMax)
+  xStep <- ifelse(is.na(xStep), (xMax - xMin)/10, xStep)
+  xSeq <- seq(xMin, xMax, xStep)
+  
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, cex.lab = cex.lab, ...)
@@ -464,6 +482,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   title(ylab = "Density", line = 4.5, cex.lab = cex.lab)
   axis(3, tcl = 0.5, labels = FALSE)
   axis(4, tcl = 0.5, labels = FALSE)
+
 }
   
 #' ciCalculations

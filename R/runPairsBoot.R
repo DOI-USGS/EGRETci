@@ -1,7 +1,7 @@
 
-#' runPairsBoot
+#' The bootstrap uncertainty analysis for runPairs results
 #' 
-#' runPairsBoot
+#' Uncertainty analysis for determining the change between two years.
 #' 
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param pairResults data frame returned from \code{EGRET::runPairs}

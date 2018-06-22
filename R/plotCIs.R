@@ -2,8 +2,8 @@
 #' and confidence bands for flow normalized concentrations
 #' 
 #' Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 
-#' list eList), and the data frame CIAnnualResults (produced by EGRETci package 
-#' using scripts described in the vignette) to produce a graph of annual 
+#' list eList), and the data frame CIAnnualResults (produced by the function ciCalculations in the EGRETci package 
+#' using scripts described in the EGRETci vignette) to produce a graph of annual 
 #' concentration, flow normalized concentration, and confidence bands for 
 #' flow-normalized concentrations.  In addition to the arguments listed below, 
 #' it will accept any additional arguments that are listed for the EGRET function 
@@ -16,13 +16,10 @@
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
 #' @param concMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
-#' @param printTitle logical
-#' @param cex.main numeric title scale
+#' @param printTitle logical, default = TRUE.
+#' @param cex.main numeric title scale, default = 1.1.
 #' @param \dots graphical parameters
 #' @export
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET setSeasonLabel
-#' @importFrom EGRET plotConcHist
 #' @importFrom graphics title
 #' @importFrom graphics lines
 #' @examples
@@ -45,9 +42,14 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   
   widthCI <- (max(probs) - min(probs))*100
   
-  localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
+  localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
-  periodName <- setSeasonLabel(localAnnualResults)
+  periodName <- EGRET::setSeasonLabel(localAnnualResults)
+  if("runSeries" %in% names(attributes(eList)) |
+     "segmentInfo" %in% names(attributes(eList$INFO))){
+    periodName <- paste(periodName, "*")
+  }
+  
   title3 <- paste(widthCI,"% CI on FN Concentration, Replicates =",nBoot,"Block=",blockLength,"days")
 
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
@@ -55,15 +57,22 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   
   if(is.na(concMax)){
     numYears <- length(localAnnualResults$DecYear)
-    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
-    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
-    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+
+    subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    
+    if(is.na(yearStart)){
+      yearStart <- min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
+    }
+    
+    if(is.na(yearEnd)){
+      yearEnd <- max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
+    }
     
     annConc <- subAnnualResults$Conc
     concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,annConc), na.rm=TRUE)
   }
   
-  plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+  EGRET::plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                col.pred=col.pred, printTitle=FALSE, 
                plotFlowNorm = plotFlowNorm, concMax = concMax, ...)
   if(printTitle) {
@@ -103,9 +112,6 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param cex.main numeric title scale
 #' @param \dots graphical parameters
 #' @export
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET setSeasonLabel
-#' @importFrom EGRET plotFluxHist
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines
 #' @importFrom graphics title
@@ -131,9 +137,14 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
   widthCI <- (max(probs) - min(probs))*100
   
-  localAnnualResults <- setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
+  localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
-  periodName <- setSeasonLabel(localAnnualResults)
+  periodName <- EGRET::setSeasonLabel(localAnnualResults)
+  if("runSeries" %in% names(attributes(eList)) |
+     "segmentInfo" %in% names(attributes(eList$INFO))){
+    periodName <- paste(periodName, "*")
+  }
+  
   title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
   
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
@@ -148,16 +159,18 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
   if(is.na(fluxMax)){
     numYears <- length(localAnnualResults$DecYear)
-    yearStart <- if(is.na(yearStart)) trunc(localAnnualResults$DecYear[1]) else yearStart
-    yearEnd <- if(is.na(yearEnd)) trunc(localAnnualResults$DecYear[numYears])+1 else yearEnd
-    subAnnualResults<-localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+
+    yearStart <- if(is.na(yearStart)) trunc(min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE)) else yearStart
+    yearEnd <- if(is.na(yearEnd)) trunc(max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE))+1 else yearEnd
     
-    annFlux<-unitFactorReturn*subAnnualResults$Flux
+    subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
+    
+    annFlux <- unitFactorReturn*subAnnualResults$Flux
     
     fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,annFlux), na.rm=TRUE)
   }
   
-  plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
+  EGRET::plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                fluxUnit=fluxUnit, col.pred=col.pred,fluxMax=fluxMax,
                plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
   if (printTitle) {
@@ -179,24 +192,22 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
 }
 
-#' bootAnnual
+#' Single confidence interval bootstrap run
 #'
-#' One bootstrap run.
+#' One bootstrap run used to calculate confidence interval bands.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param blockLength integer suggested value is 200
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param verbose logical specifying whether or not to display progress message
 #' @export
-#' @importFrom EGRET as.egret
-#' @importFrom EGRET estSurfaces
-#' @importFrom EGRET setupYears
-#' @importFrom EGRET estDailyFromSurfaces
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' \dontrun{
 #' annualResults <- bootAnnual(eList)
 #' }
-bootAnnual <- function(eList, blockLength=200){
+bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FALSE){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
@@ -215,18 +226,49 @@ bootAnnual <- function(eList, blockLength=200){
     paStart <- INFO$paStart
   }
   
-  bootSample <- blockSample(Sample, blockLength)
-  eListBoot <- as.egret(INFO,Daily,bootSample,NA)
-  surfaces1<-estSurfaces(eListBoot, 
-                         windowY = eList$INFO$windowY, 
-                         windowQ = eList$INFO$windowQ, 
-                         windowS = eList$INFO$windowS,
-                         minNumObs = eList$INFO$minNumObs, 
-                         minNumUncen = eList$INFO$minNumUncen, 
-                         edgeAdjust = eListBoot$INFO$edgeAdjust)
-  eListBoot<-as.egret(INFO,Daily,bootSample,surfaces1)
-  Daily1<-estDailyFromSurfaces(eListBoot)
-  annualResults1 <- setupYears(Daily1, paStart=paStart, paLong=paLong)
+  bootSample <- blockSample(localSample = Sample, blockLength = blockLength, startSeed = startSeed)
+  eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
+  
+  if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
+    #Indicates runSeries was run
+    
+    seriesEList <- EGRET::runSeries(eList = eListBoot,
+                                    windowSide = INFO$windowSide,
+                                    surfaceStart = INFO$surfaceStart,
+                                    surfaceEnd = INFO$surfaceEnd,
+                                    flowBreak = INFO$flowBreak,
+                                    Q1EndDate = INFO$Q1EndDate,
+                                    QStartDate = INFO$QStartDate,
+                                    QEndDate = INFO$QEndDate,
+                                    wall = INFO$wall, 
+                                    oldSurface = FALSE,
+                                    sample1EndDate = INFO$sample1EndDate,
+                                    sampleStartDate = INFO$sampleStartDate,
+                                    sampleEndDate = INFO$sampleEndDate,
+                                    paStart = INFO$paStart,
+                                    paLong = INFO$paLong,
+                                    minNumObs = INFO$minNumObs,
+                                    minNumUncen = INFO$minNumUncen,
+                                    windowY = INFO$windowY,
+                                    windowQ = INFO$windowQ,
+                                    windowS = INFO$windowS,
+                                    edgeAdjust = INFO$edgeAdjust,
+                                    verbose = verbose)
+    Daily1 <- seriesEList$Daily
+  } else {
+    surfaces1 <- EGRET::estSurfaces(eListBoot, 
+                           windowY = eList$INFO$windowY, 
+                           windowQ = eList$INFO$windowQ, 
+                           windowS = eList$INFO$windowS,
+                           minNumObs = eList$INFO$minNumObs, 
+                           minNumUncen = eList$INFO$minNumUncen, 
+                           edgeAdjust = eListBoot$INFO$edgeAdjust,
+                           verbose = verbose)
+    seriesEList <- EGRET::as.egret(INFO, Daily, bootSample, surfaces1)
+    Daily1 <- EGRET::estDailyFromSurfaces(seriesEList)
+  }
+  
+  annualResults1 <- EGRET::setupYears(Daily1, paStart=paStart, paLong=paLong)
   annualResults1$year <- as.integer(annualResults1$DecYear)
   annualResults <- annualResults1[,c("year","FNConc","FNFlux")]
   
@@ -243,7 +285,6 @@ bootAnnual <- function(eList, blockLength=200){
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param probs vector high and low confidence interval percentages
 #' @export
-#' @importFrom EGRET setupYears
 #' @importFrom stats quantile
 #' @examples
 #' library(EGRET)
@@ -254,8 +295,8 @@ bootAnnual <- function(eList, blockLength=200){
 #' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
 #' for(n in 1:nBoot){
-#'    annualResults <- bootAnnual(eList, blockLength) 
-#'    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+#'    annualResults <- bootAnnual(eList, blockLength, startSeed = n) 
+#'    repAnnualResults[[n]] <- annualResults
 #' }
 #' 
 #' CIAnnualResults <- ciBands(eList, repAnnualResults)
@@ -280,7 +321,7 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
     paStart <- INFO$paStart
   }
 
-  AnnualResults <- setupYears(eList$Daily, paLong = paLong, paStart=paStart)
+  AnnualResults <- EGRET::setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   
   nBoot <- length(repAnnualResults)
   numYears <- nrow(repAnnualResults[[1]])
@@ -316,7 +357,9 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 
 #' plotHistogramTrend
 #'
-#' Histogram of trend.
+#' Histogram of trend results from bootstrap process.  The histogram shows the trend results expressed as percentage change between the first year (or first period) 
+#' and the second year (or second period).  It shows the zero line (no trend) and also shows the WRTDS 
+#' estimate of the trend in percent.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
@@ -347,16 +390,31 @@ ciBands <- function(eList, repAnnualResults, probs=c(0.05,0.95)){
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
 #' plotHistogramTrend(eList, eBoot, caseSetUp,  
-#'                    flux=FALSE, xSeq = seq(-20,60,5))
+#'                    flux=FALSE, xMin = -20, xMax = 60, xStep = 5)
 #' plotHistogramTrend(eList, eBoot, caseSetUp, 
-#'                    flux=TRUE, xSeq = seq(-20,60,5))
+#'                    flux=TRUE, xMin = -20, xMax = 60, xStep = 5)
+#'    
+#' # Using runPairs:
+#' year1 <- 1985
+#' year2 <- 2009          
+#' pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
+#' boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 10)
+#' 
+#' plotHistogramTrend(eList, boot_pair_out,caseSetUp=NA, 
+#'                    flux=TRUE, xMin = -20, xMax = 60, xStep = 5)          
 #' }
 plotHistogramTrend <- function (eList, eBoot, caseSetUp, 
-                                flux = TRUE, xMin = NA, xMax = NA, xStep = NA,
+                                flux = TRUE, xMin = NA, xMax = NA, xStep = NA, 
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
-  periodName <- setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
+  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
                                           PeriodLong = eList$INFO$paLong))
+  
+  if(any(c("yearPair","group1firstYear") %in% names(attributes(eBoot))) |  "segmentInfo" %in% names(attributes(eList$INFO))){
+    periodName <- paste(periodName, "*")
+  }
+  
+
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux
     reps <- eBoot$pFlux
@@ -369,16 +427,50 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
     titleWord <- "Concentration"
   }
   
-  titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
-                                           eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
-                                           caseSetUp$year1, "to", caseSetUp$year2, "\n", eList$INFO$shortName, 
-                                           periodName), "")
-  minReps <- min(reps,na.rm = TRUE)
-  maxReps <- max(reps,na.rm = TRUE)
-  xMin <- if(is.na(xMin)) min(-10,minReps) else xMin
-  xMax <- if(is.na(xMax)) max(10,maxReps) else xMax
-  xStep <- if(is.na(xStep)) (xMax-xMin) / 10 else xStep
-  xSeq <- seq(xMin,xMax,xStep)
+  if(!("group2firstYear" %in% names(attributes(eBoot)))){
+    if(all(is.na(caseSetUp))){
+      if("year1" %in% names(attributes(eBoot))){
+        year1 <- attr(eBoot, "year1")
+      }
+      if("year2" %in% names(attributes(eBoot))){
+        year2 <- attr(eBoot, "year2")
+      }    
+      
+    } else {
+      year1 <- caseSetUp$year1
+      year2 <- caseSetUp$year2
+    }
+    
+    if(any(is.na(c(year1,year2)))){
+      stop("Provide caseSetUp information")
+    }
+    
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             year1, "to", year2, "\n", eList$INFO$shortName, 
+                                             periodName), "")
+
+  } else {
+    group1firstYear <- attr(eBoot,"group1firstYear")
+    group1lastYear <- attr(eBoot,"group1lastYear")
+    group2firstYear <- attr(eBoot,"group2firstYear")
+    group2lastYear <- attr(eBoot,"group2lastYear")
+    periodWords <- paste(group2firstYear, "to", group2lastYear,
+                         "minus",group1firstYear, "to",group1lastYear, sep=" ")
+    titleToPrint <- ifelse(printTitle, paste("Trend magnitude in", 
+                                             eList$INFO$paramShortName, "\nFlow Normalized", titleWord, 
+                                             periodWords, "\n", eList$INFO$shortName, periodName), 
+                           "")
+
+  }
+  
+  minReps <- min(reps, na.rm = TRUE)
+  maxReps <- max(reps, na.rm = TRUE)
+  xMin <- ifelse(is.na(xMin), min(-10, minReps),xMin)
+  xMax <- ifelse(is.na(xMax), max(10, maxReps), xMax)
+  xStep <- ifelse(is.na(xStep), (xMax - xMin)/10, xStep)
+  xSeq <- seq(xMin, xMax, xStep)
+  
   hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, cex.lab = cex.lab, ...)
@@ -390,6 +482,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   title(ylab = "Density", line = 4.5, cex.lab = cex.lab)
   axis(3, tcl = 0.5, labels = FALSE)
   axis(4, tcl = 0.5, labels = FALSE)
+
 }
   
 #' ciCalculations
@@ -397,18 +490,33 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' Interactive function to calculate WRTDS confidence bands
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param verbose logical specifying whether or not to display progress message
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
-#' @importFrom EGRET modelEstimation
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' \dontrun{
 #' CIAnnualResults <- ciCalculations(eList)
+#' 
+#' seriesOut_2 <- runSeries(eList, windowSide = 7)
+#' CIAnnualResults <- ciCalculations(seriesOut_2, 
+#'                      nBoot = 10,
+#'                      blockLength = 200,
+#'                      widthCI = 90)
+#'                      
+#'  plotConcHistBoot(seriesOut_2, CIAnnualResults)
+#' 
 #' }
-ciCalculations <- function (eList,...){
+ciCalculations <- function (eList, 
+                            startSeed = 494817,
+                            verbose = TRUE,
+                            ...){
   
   matchReturn <- list(...)
+  
+  INFO <- eList$INFO
   
   if(!is.null(matchReturn$nBoot)){
     nBoot <- matchReturn$nBoot
@@ -439,15 +547,45 @@ ciCalculations <- function (eList,...){
   
   repAnnualResults <- vector(mode = "list", length = nBoot)
   
-  cat("\nRunning the EGRET standard modelEstimation first to have that as a baseline for the Confidence Bands")
-  eList <- modelEstimation(eList, windowY = eList$INFO$windowY, 
-                           windowQ = eList$INFO$windowQ, 
-                           windowS = eList$INFO$windowS, 
-                           minNumObs = eList$INFO$minNumObs, 
-                           minNumUncen = eList$INFO$minNumUncen) 
+  if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){
+    #Indicates runSeries was run
+    cat("\nRunning the EGRET runSeries function to have that as a baseline for the Confidence Bands\n")
+
+    eList <- EGRET::runSeries(eList = eList,
+                                    windowSide = INFO$windowSide,
+                                    surfaceStart = INFO$surfaceStart,
+                                    surfaceEnd = INFO$surfaceEnd,
+                                    flowBreak = INFO$flowBreak,
+                                    Q1EndDate = INFO$Q1EndDate,
+                                    QStartDate = INFO$QStartDate,
+                                    QEndDate = INFO$QEndDate,
+                                    wall = INFO$wall,
+                                    oldSurface = TRUE,
+                                    sample1EndDate = INFO$sample1EndDate,
+                                    sampleStartDate = INFO$sampleStartDate,
+                                    sampleEndDate = INFO$sampleEndDate,
+                                    paStart = INFO$paStart,
+                                    paLong = INFO$paLong,
+                                    minNumObs = INFO$minNumObs,
+                                    minNumUncen = INFO$minNumUncen,
+                                    windowY = INFO$windowY,
+                                    windowQ = INFO$windowQ,
+                                    windowS = INFO$windowS,
+                                    edgeAdjust = INFO$edgeAdjust, verbose = verbose)
+  } else {
+    cat("\nRunning the EGRET modelEstimation function first to have that as a baseline for the Confidence Bands")
+
+    eList <- EGRET::modelEstimation(eList, windowY = eList$INFO$windowY,
+                             windowQ = eList$INFO$windowQ,
+                             windowS = eList$INFO$windowS,
+                             minNumObs = eList$INFO$minNumObs,
+                             minNumUncen = eList$INFO$minNumUncen,
+                             verbose = verbose)
+
+  }
   
   for(n in 1:nBoot){
-    repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose)
   }
   
   CIAnnualResults <- ciBands(eList, repAnnualResults, probs)

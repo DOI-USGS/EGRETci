@@ -26,8 +26,8 @@ blockLength <- 200
 
 repAnnualResults <- vector(mode = "list", length = nBoot)
 for(n in 1:nBoot){
-   annualResults <- bootAnnual(eList, blockLength) 
-   repAnnualResults[[n]] <- bootAnnual(eList, blockLength)
+   annualResults <- bootAnnual(eList, blockLength, startSeed = n) 
+   repAnnualResults[[n]] <- annualResults
 }
 
 CIAnnualResults <- ciBands(eList, repAnnualResults)

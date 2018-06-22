@@ -1,7 +1,7 @@
 Package: EGRETci
 Type: Package
 Title: Exploration and Graphics for RivEr Trends (EGRET) Confidence Intervals
-Version: 1.0.6.9002
+Version: 2.0.0
 Authors@R: c( person("Robert", "Hirsch", role = c("aut"),
     email = "rhirsch@usgs.gov"),
     person("Laura", "DeCicco", role = c("aut","cre"),
@@ -14,19 +14,17 @@ License: CC0
 Depends:
     R (>= 3.0)
 Imports:
-    EGRET(>= 2.1.1),
+    EGRET(>= 3.0.0),
     binom,
-    lubridate,
     stats,
     graphics,
-    foreach
+    utils
 Suggests:
     knitr,
     testthat,
     doParallel,
     iterators,
-    rmarkdown,
-    doParallel
+    rmarkdown
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr

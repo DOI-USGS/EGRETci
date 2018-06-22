@@ -7,3 +7,12 @@ output.RData
 ^\.travis\.yml$
 .travis.yml
 CONDUCT.md
+DISCLAIMER.md
+code.json
+vignettes/Chop.OPbase.RData
+vignettes/eListOut.RData
+vignettes/eListOutChop.RData
+vignettes/bootGroupsOut.RData
+vignettes/bootPairOut2.RData
+vignettes/groupResults.RData
+vignettes/pairResults2.RData

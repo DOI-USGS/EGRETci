@@ -36,7 +36,9 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
 \item{\dots}{base R graphical parameters that can be passed to the hist function}
 }
 \description{
-Histogram of trend.
+Histogram of trend results from bootstrap process.  The histogram shows the trend results expressed as percentage change between the first year (or first period) 
+and the second year (or second period).  It shows the zero line (no trend) and also shows the WRTDS 
+estimate of the trend in percent.
 }
 \examples{
 library(EGRET)
@@ -49,8 +51,17 @@ plotHistogramTrend(eList, eBoot, caseSetUp, flux=FALSE)
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)
 plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE, xSeq = seq(-20,60,5))
+                   flux=FALSE, xMin = -20, xMax = 60, xStep = 5)
 plotHistogramTrend(eList, eBoot, caseSetUp, 
-                   flux=TRUE, xSeq = seq(-20,60,5))
+                   flux=TRUE, xMin = -20, xMax = 60, xStep = 5)
+   
+# Using runPairs:
+year1 <- 1985
+year2 <- 2009          
+pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
+boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 10)
+
+plotHistogramTrend(eList, boot_pair_out,caseSetUp=NA, 
+                   flux=TRUE, xMin = -20, xMax = 60, xStep = 5)          
 }
 }

@@ -24,16 +24,16 @@ plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 
 \item{concMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
 
-\item{printTitle}{logical}
+\item{printTitle}{logical, default = TRUE.}
 
-\item{cex.main}{numeric title scale}
+\item{cex.main}{numeric title scale, default = 1.1.}
 
 \item{\dots}{graphical parameters}
 }
 \description{
 Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 
-list eList), and the data frame CIAnnualResults (produced by EGRETci package 
-using scripts described in the vignette) to produce a graph of annual 
+list eList), and the data frame CIAnnualResults (produced by the function ciCalculations in the EGRETci package 
+using scripts described in the EGRETci vignette) to produce a graph of annual 
 concentration, flow normalized concentration, and confidence bands for 
 flow-normalized concentrations.  In addition to the arguments listed below, 
 it will accept any additional arguments that are listed for the EGRET function 

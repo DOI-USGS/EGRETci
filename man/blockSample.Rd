@@ -4,24 +4,32 @@
 \alias{blockSample}
 \title{blockSample}
 \usage{
-blockSample(localSample, blockLength)
+blockSample(localSample, blockLength, startSeed = NA)
 }
 \arguments{
 \item{localSample}{Sample data frame}
 
-\item{blockLength}{integer size of subset.}
+\item{blockLength}{integer size of subset expressed in days.}
+
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }
 \value{
-surfaces matrix
+newSample data frame in same format as Sample data frame
 }
 \description{
-Get a subset of the Sample data frame based on the user-specified blockLength.
+Get a random subset of the Sample data frame based on the user-specified blockLength 
+for use in bootstrap estimation process. The subset is a random subset of blocks of 
+data from Sample dataframe.  The subset is based on the random selection (with 
+replacement) of starting dates from the full Sample data frame.  The Sample selected 
+has the same number of observations as the original Sample (some 
+observations are are included once, some included multiple times, and some are not 
+included).
 }
 \examples{
 library(EGRET)
 eList <- Choptank_eList
 Sample <- eList$Sample
-bsReturn <- blockSample(Sample, 25)
+bsReturn <- blockSample(Sample, 200)
 }
 \keyword{WRTDS}
 \keyword{flow}

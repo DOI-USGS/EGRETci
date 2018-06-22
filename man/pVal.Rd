@@ -7,12 +7,18 @@
 pVal(s)
 }
 \arguments{
-\item{s}{slope values from the bootstrap (already flipped)}
+\item{s}{numeric vector of slope values from the bootstrap (already flipped)}
+}
+\value{
+pVal numeric value
 }
 \description{
-Computes the two-sided p value for the null hypothesis
+Computes the two-sided p value for the null hypothesis, where null 
+hypothesis is that the slope is zero, based on binomial distribution. 
+Should be noted that the result does not depend on the magnitude of the s 
+values only depends on the number of plus values and number of negative values.
 }
 \examples{
-s <- c(0.01, 0.5, 0.55, 0.99)
+s <- c(-1.0, 0, 0.5, 0.55, 3.0)
 pValue <- pVal(s)
 }

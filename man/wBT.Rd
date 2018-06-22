@@ -5,7 +5,7 @@
 \title{Run the WBT (WRTDS Bootstrap Test)}
 \usage{
 wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
-  repSeed = 1000)
+  startSeed = 494817)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -16,9 +16,7 @@ wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
 
 \item{fileName}{character. Name to save the output file if \code{saveOutput=TRUE}.}
 
-\item{repSeed}{setSeed value. Defaults to 1000. This is used to make repeatable output.}
-
-\item{run.parallel}{logical to run bootstrapping in parallel or not}
+\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }
 \value{
 eBoot, a named list with bootOut,wordsOut,xConc,xFlux values

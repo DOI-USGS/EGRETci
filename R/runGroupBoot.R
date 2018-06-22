@@ -1,7 +1,8 @@
 
-#' runGroupsBoot
+#' The bootstrap uncertainty analysis for runGroups results
 #' 
-#' runGroupsBoot
+#' Uncertainty analysis for determining the change between two groups of years.
+#' 
 #' 
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param groupResults data frame returned from \code{EGRET::runGroups}

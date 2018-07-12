@@ -120,7 +120,9 @@ par(mfrow=c(1,1))
 #  cl <- makeCluster(nCores)
 #  registerDoParallel(cl)
 #  repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
-#     annualResults <- bootAnnual(eList, blockLength)
+#     annualResults <- bootAnnual(eList,
+#                                 blockLength,
+#                                 startSeed = n)
 #  }
 #  stopCluster(cl)
 #  

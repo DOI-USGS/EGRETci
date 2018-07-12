@@ -69,7 +69,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to EGRET Confidence Intervals</h1>
 <h4 class="author"><em>Robert M. Hirsch, Laura A. De Cicco</em></h4>
-<h4 class="date"><em>22 June, 2018</em></h4>
+<h4 class="date"><em>12 July, 2018</em></h4>
 
 
 <div id="TOC">
@@ -498,7 +498,9 @@ nCores &lt;-<span class="st"> </span><span class="kw">detectCores</span>() <span
 cl &lt;-<span class="st"> </span><span class="kw">makeCluster</span>(nCores)
 <span class="kw">registerDoParallel</span>(cl)
 repAnnual &lt;-<span class="st"> </span><span class="kw">foreach</span>(<span class="dt">n =</span> <span class="dv">1</span><span class="op">:</span>nBoot,<span class="dt">.packages=</span><span class="kw">c</span>(<span class="st">'EGRETci'</span>)) <span class="op">%dopar%</span><span class="st"> </span>{
-   annualResults &lt;-<span class="st"> </span><span class="kw">bootAnnual</span>(eList, blockLength)  
+   annualResults &lt;-<span class="st"> </span><span class="kw">bootAnnual</span>(eList, 
+                               blockLength,
+                               <span class="dt">startSeed =</span> n)  
 }
 <span class="kw">stopCluster</span>(cl)               
 

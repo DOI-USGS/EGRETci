@@ -230,7 +230,7 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
     cat("\n* Note p-value should be considered to be < stated value")
   likeFUp <- (posXFlux + 0.5)/(nBootGood + 1)
   likeFDown <- 1 - likeFUp
-  cat("\n Likelihood that Flow Normalized Concentration is trending up =", 
+  cat("\n Likelihood that Flow Normalized Flux is trending up =", 
       format(likeFUp, digits = 3), " is trending down =", format(likeFDown, 
                                                                  digits = 3))
   if (nBootGood < nBoot) 

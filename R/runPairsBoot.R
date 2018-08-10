@@ -31,10 +31,10 @@ runPairsBoot <- function(eList, pairResults,
   localDaily <- eList$Daily
   localSample <- eList$Sample
   
-  firstDayDaily <- localDaily$Date[1]
-  lastDayDaily <- localDaily$Date[length(localDaily$Date)]
-  firstDaySample <- localSample$Date[1]
-  lastDaySample <- localSample$Date[length(localSample$Date)]
+  firstDayDaily <- min(localDaily$Date, na.rm = TRUE)
+  lastDayDaily <- max(localDaily$Date, na.rm = TRUE)
+  firstDaySample <- min(localSample$Date, na.rm = TRUE)
+  lastDaySample <- max(localSample$Date, na.rm = TRUE)
   
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
   
@@ -60,7 +60,6 @@ runPairsBoot <- function(eList, pairResults,
   startEnd1 <- EGRET::startEnd(paStart, paLong, year1)
   startEnd2 <- EGRET::startEnd(paStart, paLong, year2)
 
-  
   if(startEnd2$startDate > range(eList$Sample$Date)[2]){
     stop("year2 is outside the Sample range")
   }
@@ -95,51 +94,53 @@ runPairsBoot <- function(eList, pairResults,
   pFlux <- rep(NA, nBoot)
   
   #
-  regDeltaConc <- pairResults[1,7] - pairResults[1,5]
+  regDeltaConc <- pairResults$x22[1] - pairResults$x11[1]
   estC <- regDeltaConc
-  baseConc <- pairResults[1,5]
+  baseConc <- pairResults$x11[1]
   regDeltaConcPct <- (regDeltaConc/baseConc) * 100
-  LConcDiff <- log(pairResults[1,7]) - log(pairResults[1,5])
+  LConcDiff <- log(pairResults$x22[1]) - log(pairResults$x11[1])
   #  pairResults are in 10^6 kg/year, when we get to the bootstrap results
   #  we will need to convert them all to 10^6 kg/year units
-  regDeltaFlux <- (pairResults[2,7] - pairResults[2,5]) 
+  regDeltaFlux <- (pairResults$x22[2] - pairResults$x11[2]) 
   estF <- regDeltaFlux
-  baseFlux <- pairResults[2,5] 
+  baseFlux <- pairResults$x11[2] 
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
-  LFluxDiff <- log(pairResults[2,7]) - log(pairResults[2,5])
+  LFluxDiff <- log(pairResults$x22[2]) - log(pairResults$x11[2])
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 3, width = 8)
   Daily1 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[1]) & localDaily$Date <= 
                          as.Date(dateInfo$flowNormEnd[1]), ]
   Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & localDaily$Date <= 
                          as.Date(dateInfo$flowNormEnd[2]), ]
-  # start inserting the setup stuff
-  
+
   # bootstrap loop starts here
   nBootGood <- 0
   for (iBoot in 1:(2*nBoot)){
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
-    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, NA)
+    eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
     
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &
                             bootSample$Date <= sample1EndDate,]
     
-    possibleError3 <- tryCatch( surfaces1 <- EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,edgeAdjust = edgeAdjust,
+    possibleError3 <- tryCatch( surfaces1 <- suppressMessages(EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,edgeAdjust = edgeAdjust,
                                                          localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
-                                                         verbose = FALSE), error = function(e) e)
+                                                         verbose = FALSE)), error = function(e) e)
     
     Sample2 <- bootSample[bootSample$Date >= sample2StartDate &
                             bootSample$Date <= sample2EndDate,]
     
-    possibleError4 <- tryCatch( surfaces2 <- EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,edgeAdjust = edgeAdjust,
+    possibleError4 <- tryCatch( surfaces2 <- suppressMessages(EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,edgeAdjust = edgeAdjust,
                                                          localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
-                                                         verbose = FALSE), error = function(e) e)
+                                                         verbose = FALSE)), error = function(e) e)
     if (!inherits(possibleError3, "error") & 
         !inherits(possibleError4, "error")) {
   # note that all the flux calculations inside the bootstrap loop are in kg/day units    
       DailyRS1FD1 <- EGRET::estDailyFromSurfaces(eListBoot, localsurfaces = surfaces1, localDaily = Daily1)
       annualFlex <- EGRET::setupYears(DailyRS1FD1, paLong = paLong, paStart = paStart)
+      
+      #  runPairs are in 10^6 kg/year, when we get to the bootstrap results
+      #  Converting them all to 10^6 kg/year units
       c11 <- mean(annualFlex$FNConc, na.rm = TRUE)
       f11 <- mean(annualFlex$FNFlux, na.rm = TRUE) * 0.00036525
       
@@ -148,8 +149,6 @@ runPairsBoot <- function(eList, pairResults,
       c22 <- mean(annualFlex$FNConc, na.rm = TRUE)
       f22 <- mean(annualFlex$FNFlux, na.rm = TRUE) * 0.00036525
       
-      
-
       xConc_here <- (2 * regDeltaConc) - (c22 - c11)
       xFlux_here <- (2 * regDeltaFlux) - (f22 - f11)
       
@@ -180,11 +179,11 @@ runPairsBoot <- function(eList, pairResults,
   }
   # now summarize the bootstrap outputs
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
-  lowConc <- quantConc[2]
-  highConc <- quantConc[8]
+  lowConc <- quantConc[["5%"]]
+  highConc <- quantConc[["95%"]]
   quantFlux <- quantile(xFlux, prob, type = 6, na.rm = TRUE)
-  lowFlux <- quantFlux[2]
-  highFlux <- quantFlux[8]
+  lowFlux <- quantFlux[["5%"]]
+  highFlux <- quantFlux[["95%"]]
   rejectC <- lowConc * highConc > 0
   rejectF <- lowFlux * highFlux > 0
   cat("\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
@@ -196,15 +195,15 @@ runPairsBoot <- function(eList, pairResults,
       words(rejectC))
   fquantConc <- format(quantConc, digits = 3, width = 8)
   cat("\n best estimate of change in concentration is", fcc, "mg/L\n  Lower and Upper 90% CIs", 
-      fquantConc[2], fquantConc[8])
-  lowC <- quantConc[2]
-  upC <- quantConc[8]
-  cat("\n also 95% CIs", fquantConc[1], fquantConc[9], 
-      "\n and 50% CIs", fquantConc[4], fquantConc[6])
-  lowC50 <- quantConc[4]
-  upC50 <- quantConc[6]
-  lowC95 <- quantConc[1]
-  upC95 <- quantConc[9]
+      fquantConc[["5%"]], fquantConc[["95%"]])
+  lowC <- quantConc[["5%"]]
+  upC <- quantConc[["95%"]]
+  cat("\n also 95% CIs", fquantConc[["2.5%"]], fquantConc[["97.5%"]], 
+      "\n and 50% CIs", fquantConc[["25%"]], fquantConc[["75%"]])
+  lowC50 <- quantConc[["25%"]]
+  upC50 <- quantConc[["75%"]]
+  lowC95 <- quantConc[["2.5%"]]
+  upC95 <- quantConc[["97.5%"]]
   pValC <- pVal(xConc)
   cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                            digits = 2, width = 9))
@@ -226,15 +225,15 @@ runPairsBoot <- function(eList, pairResults,
       words(rejectF))
   fquantFlux <- format(quantFlux, digits = 3, width = 8)
   cat("\n best estimate of change in flux is", ffc, "10^6 kg/year\n  Lower and Upper 90% CIs", 
-      fquantFlux[2], fquantFlux[8])
-  lowF <- quantFlux[2]
-  upF <- quantFlux[8]
-  cat("\n also 95% CIs", fquantFlux[1], fquantFlux[9], 
-      "\n and 50% CIs", fquantFlux[4], fquantFlux[6])
-  lowF50 <- quantFlux[4]
-  upF50 <- quantFlux[6]
-  lowF95 <- quantFlux[1]
-  upF95 <- quantFlux[9]
+      fquantFlux[["5%"]], fquantFlux[["95%"]])
+  lowF <- quantFlux[["5%"]]
+  upF <- quantFlux[["95%"]]
+  cat("\n also 95% CIs", fquantFlux[["2.5%"]], fquantFlux[["97.5%"]], 
+      "\n and 50% CIs", fquantFlux[["25%"]], fquantFlux[["75%"]])
+  lowF50 <- quantFlux[["25%"]]
+  upF50 <- quantFlux[["75%"]]
+  lowF95 <- quantFlux[["2.5%"]]
+  upF95 <- quantFlux[["97.5%"]]
   pValF <- pVal(xFlux)
   cat("\n approximate two-sided p-value for Flux", format(pValF, 
                                                            digits = 2, width = 9))

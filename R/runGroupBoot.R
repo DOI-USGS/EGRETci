@@ -35,10 +35,10 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   localINFO <- eList$INFO
   localDaily <- eList$Daily
   localSample <- eList$Sample
-  firstDayDaily <- localDaily$Date[1]
-  lastDayDaily <- localDaily$Date[length(localDaily$Date)]
-  firstDaySample <- localSample$Date[1]
-  lastDaySample <- localSample$Date[length(localSample$Date)]
+  firstDayDaily <- min(localDaily$Date, na.rm = TRUE)
+  lastDayDaily <- max(localDaily$Date, na.rm = TRUE)
+  firstDaySample <- min(localSample$Date, na.rm = TRUE)
+  lastDaySample <- max(localSample$Date, na.rm = TRUE)
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
   
   words <- function(z) {
@@ -87,16 +87,16 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   pConc <- rep(NA, nBoot)
   pFlux <- rep(NA, nBoot)
   
-  regDeltaConc <- groupResults[1, 7] - groupResults[1, 5]
+  regDeltaConc <- groupResults$x22[1] - groupResults$x11[1]
   estC <- regDeltaConc
-  baseConc <- groupResults[1, 5]
+  baseConc <- groupResults$x11[1]
   regDeltaConcPct <- (regDeltaConc/baseConc) * 100
-  LConcDiff <- log(groupResults[1, 7]) - log(groupResults[1, 5])
-  regDeltaFlux <- (groupResults[2, 7] - groupResults[2, 5])
+  LConcDiff <- log(groupResults$x22[1]) - log(groupResults$x11[1])
+  regDeltaFlux <- (groupResults$x22[2] - groupResults$x11[2])
   estF <- regDeltaFlux
-  baseFlux <- groupResults[2, 5]
+  baseFlux <- groupResults$x11[2]
   regDeltaFluxPct <- (regDeltaFlux/baseFlux) * 100
-  LFluxDiff <- log(groupResults[2, 7]) - log(groupResults[2, 5])
+  LFluxDiff <- log(groupResults$x22[2]) - log(groupResults$x11[2])
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 3, width = 8)
                        
@@ -105,51 +105,59 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   for (iBoot in 1:(2 * nBoot)) {
     bootSample <- blockSample(localSample = localSample, 
                               blockLength = blockLength, startSeed = startSeed + iBoot)
-    eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample,NA)
-# Note to Laura: the function calls below one to stitch and one to estSurfaces
-# should probably have the error handling put back into them (like in runPairsBoot)
+    eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample,NA))
+
     if(wall) {
-      surfaces <- EGRET::stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
+      possibleError <- tryCatch(surfaces <- suppressMessages(EGRET::stitch(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
                          sample1StartDate = sample1StartDate, sample1EndDate = sample1EndDate,
                          sample2StartDate = sample2StartDate, sample2EndDate = sample2EndDate,
                          windowY = windowY, windowQ = windowQ, windowS = windowS,
-                         minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust)
+                         minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust)), 
+                         error = function(e) e)
     } else {
-      surfaces <- EGRET::estSurfaces(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
+      possibleError <- tryCatch(surfaces <- EGRET::estSurfaces(eListBoot, surfaceStart = surfaceStart, surfaceEnd = surfaceEnd,
                               windowY = windowY, windowQ = windowQ, windowS = windowS,
-                              minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust) 
+                              minNumObs = minNumObs, minNumUncen = minNumUncen, edgeAdjust = edgeAdjust),
+                              error = function(e) e)
     }
-    eListS <- EGRET::as.egret(eListBoot$INFO, eListBoot$Daily, eListBoot$Sample, surfaces)
-    eListOut <- EGRET::flexFN(eListS, dateInfo, flowNormStartCol = "flowNormStart", 
-                       flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
-                       flowEndCol = "flowEnd")
-    eListOut$INFO$wall <- wall
-    eListOut$INFO$surfaceStart <- surfaceStart
-    eListOut$INFO$surfaceEnd <- surfaceEnd
-    DailyFlex <- eListOut$Daily
-    annFlex <- EGRET::setupYears(DailyFlex, paLong = paLong, paStart = paStart)
-    annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
-    annFlex1 <- annFlex[annFlex$DecYear >= group1firstYear & annFlex$DecYear <= group1lastYear,]
-    annFlex2 <- annFlex[annFlex$DecYear >= group2firstYear & annFlex$DecYear <= group2lastYear,]
-    c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
-    f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
-    c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
-    f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
-    xConc_here <- (2 * regDeltaConc) - (c22 - c11)
-    xFlux_here <- (2 * regDeltaFlux) - (f22 - f11)
-    if (!is.na(xConc_here) & !is.na(xFlux_here)) {
-      nBootGood <- nBootGood + 1
-      xConc[nBootGood] <- xConc_here
-      xFlux[nBootGood] <- xFlux_here
-      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
-      pConc[nBootGood] <- (100 * exp(LConc)) - 100
-      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
-      pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
-      cat("\n iBoot, xConc and xFlux", nBootGood, xConc[nBootGood], 
-          xFlux[nBootGood])
-      if (nBootGood >= nBoot) {
-        (break)()
+    if (!inherits(possibleError, "error") ) {
+      eListS <- suppressMessages(EGRET::as.egret(eListBoot$INFO, eListBoot$Daily, eListBoot$Sample, surfaces))
+      eListOut <- suppressMessages(EGRET::flexFN(eListS, dateInfo, flowNormStartCol = "flowNormStart", 
+                         flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
+                         flowEndCol = "flowEnd"))
+      eListOut$INFO$wall <- wall
+      eListOut$INFO$surfaceStart <- surfaceStart
+      eListOut$INFO$surfaceEnd <- surfaceEnd
+      DailyFlex <- eListOut$Daily
+      annFlex <- EGRET::setupYears(DailyFlex, paLong = paLong, paStart = paStart)
+      annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
+      annFlex1 <- annFlex[annFlex$DecYear >= group1firstYear & annFlex$DecYear <= group1lastYear,]
+      annFlex2 <- annFlex[annFlex$DecYear >= group2firstYear & annFlex$DecYear <= group2lastYear,]
+      
+      #  pairResults are in 10^6 kg/year, when we get to the bootstrap results
+      #  Converting them all to 10^6 kg/year units
+      c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
+      f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
+      c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
+      f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
+      xConc_here <- (2 * regDeltaConc) - (c22 - c11)
+      xFlux_here <- (2 * regDeltaFlux) - (f22 - f11)
+      if (!is.na(xConc_here) & !is.na(xFlux_here)) {
+        nBootGood <- nBootGood + 1
+        xConc[nBootGood] <- xConc_here
+        xFlux[nBootGood] <- xFlux_here
+        LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
+        pConc[nBootGood] <- (100 * exp(LConc)) - 100
+        LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
+        pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
+        cat("\n iBoot, xConc and xFlux", nBootGood, xConc[nBootGood], 
+            xFlux[nBootGood])
+        if (nBootGood >= nBoot) {
+          (break)()
+        }
       }
+    } else {
+      stop(possibleError3, "\n", possibleError4)
     }
   }
 
@@ -161,11 +169,11 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
             nBoot, " sucessful runs.")
   }
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
-  lowConc <- quantConc[2]
-  highConc <- quantConc[8]
+  lowConc <- quantConc[["5%"]]
+  highConc <- quantConc[["95%"]]
   quantFlux <- quantile(xFlux, prob, type = 6, na.rm = TRUE)
-  lowFlux <- quantFlux[2]
-  highFlux <- quantFlux[8]
+  lowFlux <- quantFlux[["5%"]]
+  highFlux <- quantFlux[["95%"]]
   rejectC <- lowConc * highConc > 0
   rejectF <- lowFlux * highFlux > 0
   cat("\n\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
@@ -180,15 +188,15 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
       words(rejectC))
   fquantConc <- format(quantConc, digits = 3, width = 8)
   cat("\n best estimate of change in concentration is", fcc, 
-      "mg/L\n  Lower and Upper 90% CIs", fquantConc[2], fquantConc[8])
-  lowC <- quantConc[2]
-  upC <- quantConc[8]
-  cat("\n also 95% CIs", fquantConc[1], fquantConc[9], "\n and 50% CIs", 
-      fquantConc[4], fquantConc[6])
-  lowC50 <- quantConc[4]
-  upC50 <- quantConc[6]
-  lowC95 <- quantConc[1]
-  upC95 <- quantConc[9]
+      "mg/L\n  Lower and Upper 90% CIs", fquantConc[["5%"]], fquantConc[["95%"]])
+  lowC <- quantConc[["5%"]]
+  upC <- quantConc[["95%"]]
+  cat("\n also 95% CIs", fquantConc[["2.5%"]], fquantConc[["97.5%"]], "\n and 50% CIs", 
+      fquantConc[["25%"]], fquantConc[["75%"]])
+  lowC50 <- quantConc[["25%"]]
+  upC50 <- quantConc[["75%"]]
+  lowC95 <- quantConc[["2.5%"]]
+  upC95 <- quantConc[["97.5%"]]
   pValC <- pVal(xConc)
   cat("\n approximate two-sided p-value for Conc", format(pValC, 
                                                           digits = 2, width = 9))
@@ -210,15 +218,15 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
       words(rejectF))
   fquantFlux <- format(quantFlux, digits = 3, width = 8)
   cat("\n best estimate of change in flux is", ffc, "10^6 kg/year\n  Lower and Upper 90% CIs", 
-      fquantFlux[2], fquantFlux[8])
-  lowF <- quantFlux[2]
-  upF <- quantFlux[8]
-  cat("\n also 95% CIs", fquantFlux[1], fquantFlux[9], "\n and 50% CIs", 
-      fquantFlux[4], fquantFlux[6])
-  lowF50 <- quantFlux[4]
-  upF50 <- quantFlux[6]
-  lowF95 <- quantFlux[1]
-  upF95 <- quantFlux[9]
+      fquantFlux[["5%"]], fquantFlux[["95%"]])
+  lowF <- quantFlux[["5%"]]
+  upF <- quantFlux[["95%"]]
+  cat("\n also 95% CIs", fquantFlux[["2.5%"]], fquantFlux[["97.5%"]], "\n and 50% CIs", 
+      fquantFlux[["25%"]], fquantFlux[["75%"]])
+  lowF50 <- quantFlux[["25%"]]
+  upF50 <- quantFlux[["75%"]]
+  lowF95 <- quantFlux[["2.5%"]]
+  upF95 <- quantFlux[["97.5%"]]
   pValF <- pVal(xFlux)
   cat("\n approximate two-sided p-value for Flux", format(pValF, 
                                                           digits = 2, width = 9))

@@ -177,4 +177,67 @@ test_that("wBT", {
   
 })
 
+test_that("runPairsBoot", {
+  
+  testthat::skip_on_cran()
+  
+  eList <- EGRET::Choptank_eList
+  year1 <- 1985
+  year2 <- 2009
 
+  pairOut_2 <- EGRET::runPairs(eList, year1, year2, windowSide = 7)
+
+  boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 3)
+  
+  expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
+                    "pConc","pFlux","startSeed") %in% names(boot_pair_out)))
+  
+  expect_true(boot_pair_out$bootOut$rejectC)
+  expect_true(all(c("Upward trend in concentration is likely",  
+                    "Downward trend in concentration is unlikely",
+                    "Upward trend in flux is likely",             
+                    "Downward trend in flux is unlikely") %in% boot_pair_out$wordsOut))
+  
+  expect_equal(round(boot_pair_out$xConc[1:2], digits = 2), c(0.39,0.41))
+  expect_equal(round(boot_pair_out$xFlux[1:2], digits = 2), c(0.05,0.06))
+  expect_equal(round(boot_pair_out$pConc[1:2], digits = 2), c(37.30,40.55))
+  expect_equal(round(boot_pair_out$pFlux[1:2], digits = 2), c(44.48,54.51))
+  
+})
+
+
+test_that("runGroupBoot", {
+  
+  testthat::skip_on_cran()
+  
+  eList <- EGRET::Choptank_eList
+  year1 <- 1985
+  year2 <- 2009
+  
+  groupResults <- EGRET::runGroups(eList,
+                            group1firstYear = 1995,
+                            group1lastYear = 2004,
+                            group2firstYear = 2005,
+                            group2lastYear = 2014,
+                            windowSide = 7, wall = TRUE,
+                            sample1EndDate = "2004-10-30",
+                            paStart = 4, paLong = 2,
+                            verbose = FALSE)
+
+  boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
+  
+  expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
+                    "pConc","pFlux","startSeed") %in% names(boot_group_out)))
+  
+  expect_true(boot_group_out$bootOut$rejectC)
+  expect_true(all(c("Upward trend in concentration is likely",  
+                    "Downward trend in concentration is unlikely",
+                    "Upward trend in flux is about as likely as not",             
+                    "Downward trend in flux is about as likely as not") %in% boot_group_out$wordsOut))
+  
+  expect_equal(round(boot_group_out$xConc[1:2], digits = 2), c(0.1,0.2))
+  expect_equal(round(boot_group_out$xFlux[1:2], digits = 2), c(0.00,0.01))
+  expect_equal(round(boot_group_out$pConc[1:2], digits = 2), c(8.96,17.77))
+  expect_equal(round(boot_group_out$pFlux[1:2], digits = 2), c(-0.34,7.92))
+  
+})

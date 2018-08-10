@@ -1,15 +1,22 @@
 
 #' The bootstrap uncertainty analysis for runGroups results
 #' 
-#' Uncertainty analysis for determining the change between two groups of years.
-#' 
+#' This function that does the uncertainty analysis for determining the change 
+#' between two groups of years.  The process is virtually 
+#' identical to what is used for \code{\link{runPairsBoot}}.  
 #' 
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
-#' @param groupResults data frame returned from \code{EGRET::runGroups}
+#' @param groupResults data frame returned from \code{\link[EGRET]{runGroups}}
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
 #' @param blockLength days, typically 200 is a good choice
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @export
+#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
+#' of the bootstrapping tests. wordsOut is a character vector describing the results.
+#' xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
+#' computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
+#' in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change. 
+#' @seealso \code{\link{runPairsBoot}}, \code{\link[EGRET]{runGroups}}
 #' @examples 
 #' library(EGRET)
 #' eList <- Choptank_eList

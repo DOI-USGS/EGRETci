@@ -10,7 +10,7 @@ runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
 
-\item{groupResults}{data frame returned from \code{EGRET::runGroups}}
+\item{groupResults}{data frame returned from \code{\link[EGRET]{runGroups}}}
 
 \item{nBoot}{the maximum number of bootstrap replicates to be used, typically 100}
 
@@ -18,8 +18,17 @@ runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
 
 \item{blockLength}{days, typically 200 is a good choice}
 }
+\value{
+eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
+of the bootstrapping tests. wordsOut is a character vector describing the results.
+xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
+computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
+in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+}
 \description{
-Uncertainty analysis for determining the change between two groups of years.
+This function that does the uncertainty analysis for determining the change 
+between two groups of years.  The process is virtually 
+identical to what is used for \code{\link{runPairsBoot}}.
 }
 \examples{
 library(EGRET)
@@ -40,4 +49,7 @@ boot_group_out <- runGroupsBoot(eList, groupResults)
 
 plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 }
+}
+\seealso{
+\code{\link{runPairsBoot}}, \code{\link[EGRET]{runGroups}}
 }

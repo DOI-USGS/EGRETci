@@ -10,7 +10,7 @@ runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
 
-\item{pairResults}{data frame returned from \code{EGRET::runPairs}}
+\item{pairResults}{data frame returned from \code{\link[EGRET]{runPairs}}}
 
 \item{nBoot}{the maximum number of bootstrap replicates to be used, typically 100}
 
@@ -18,8 +18,19 @@ runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
 
 \item{blockLength}{days, typically 200 is a good choice}
 }
+\value{
+eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
+of the bootstrapping tests. wordsOut is a character vector describing the results.
+xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
+computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
+in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+}
 \description{
-Uncertainty analysis for determining the change between two years.
+The function that does the uncertainty analysis for determining the change between any 
+pair of years.  It is very similar to the \code{\link{wBT}} function that runs the WRTDS 
+bootstrap test.  It differs from \code{\link{wBT}} in that it runs a specific number of 
+bootstrap replicates, unlike the \code{\link{wBT}} approach that will stop running replicates 
+based on the status of the test statistics along the way.
 }
 \examples{
 library(EGRET)
@@ -34,4 +45,7 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2)
 
 plotHistogramTrend(eList, boot_pair_out, caseSetUp=NA)
 }
+}
+\seealso{
+\code{\link{runGroupsBoot}}, \code{\link[EGRET]{runPairs}}
 }

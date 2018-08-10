@@ -251,8 +251,9 @@ wBT<-function(eList,caseSetUp,
   possibleError1 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eList, year1), error = function(e) e)
   possibleError2 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eList, year2), error = function(e) e)
   
-  if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
-                                                     "error")) {
+  if (!inherits(possibleError1, "error") &&
+      !inherits(possibleError2, "error")) {
+    
     combo <- makeCombo(surfaces1, surfaces2)
     eListCombo <- suppressMessages(EGRET::as.egret(localINFO, localDaily, localSample, 
                            combo))
@@ -403,12 +404,7 @@ wBT<-function(eList,caseSetUp,
         if(nBootGood >= nBoot) {
           break()
         }
-      } else {
-        if (saveOutput) {
-          sink()
-        }
-        stop(possibleError3, "/n", possibleError4)
-      }
+      } 
     }
     
     if(iBoot == 2*nBoot){
@@ -529,7 +525,15 @@ wBT<-function(eList,caseSetUp,
     attr(eBoot, "year2") <- year2
     return(eBoot)
   } else {
-    stop(possibleError1, "/n", possibleError2)
+    if("message" %in% names(possibleError1) && 
+       "message" %in% names(possibleError2)){
+      stop(possibleError1$message, "/n", possibleError2)
+    } else if ("message" %in% names(possibleError1)){
+      stop(possibleError1$message)
+    } else {
+      stop(possibleError2$message)
+    }
+    
   }
 }
   

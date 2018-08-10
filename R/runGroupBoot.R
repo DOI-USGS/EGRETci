@@ -163,9 +163,7 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
           (break)()
         }
       }
-    } else {
-      stop(possibleError3, "\n", possibleError4)
-    }
+    } 
   }
 
   if (iBoot == 2 * nBoot) {

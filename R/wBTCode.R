@@ -178,18 +178,23 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' confidence intervals for the trends between two specified years.  The trends 
 #' evaluated are trends in flow normalized concentration and flow normalized flux.  
 #' Function produces text outputs and a named list (eBoot) that contains all of the 
-#' relevant outputs.
+#' relevant outputs. Check out \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}}
+#' for more bootstrapping options.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
 #' @export
-#' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}
+#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
+#' of the bootstrapping tests. wordsOut is a character vector describing the results.
+#' xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
+#' computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
+#' in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+#' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -249,8 +254,8 @@ wBT<-function(eList,caseSetUp,
   if (!inherits(possibleError1, "error") & !inherits(possibleError2, 
                                                      "error")) {
     combo <- makeCombo(surfaces1, surfaces2)
-    eListCombo <- EGRET::as.egret(localINFO, localDaily, localSample, 
-                           combo)
+    eListCombo <- suppressMessages(EGRET::as.egret(localINFO, localDaily, localSample, 
+                           combo))
     res <- makeTwoYearsResults(eListCombo, year1, year2)
     regDeltaConc <- res[2] - res[1]
     estC <- regDeltaConc
@@ -273,8 +278,8 @@ wBT<-function(eList,caseSetUp,
       cat("\n\n  Bootstrap process, for change from Calendar Year", 
           year1, " to ", year2)      
     } else if (eList$INFO$paStart == 10 & eList$INFO$paLong == 12){
-      cat("\n\n  Bootstrap process, for change from Water Year", 
-          year1, " to Water Year", year2)       
+      cat("\n\n  Bootstrap process, for change from Water Year ", 
+          year1, " to Water Year ", year2)       
     } else {
       cat("\n\n  Bootstrap process, for change from ", 
           year1, " to ", year2, ":",periodName) 
@@ -323,8 +328,7 @@ wBT<-function(eList,caseSetUp,
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength,
                                 startSeed = startSeed + iBoot)
-      eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, 
-                            NA)
+      eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 
                                                                         year1), error = function(e) e)
       possibleError4 <- tryCatch(surfaces2 <- estSliceSurfacesSimpleAlt(eListBoot, 
@@ -332,7 +336,7 @@ wBT<-function(eList,caseSetUp,
       if (!inherits(possibleError3, "error") & !inherits(possibleError4, 
                                                          "error")) {
         combo <- makeCombo(surfaces1, surfaces2)
-        eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample, combo)
+        eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, combo))
         res <- makeTwoYearsResults(eListBoot, year1, year2)
         
         nBootGood <- nBootGood + 1

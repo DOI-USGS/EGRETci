@@ -19,14 +19,19 @@ wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 }
 \value{
-eBoot, a named list with bootOut,wordsOut,xConc,xFlux values
+eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
+of the bootstrapping tests. wordsOut is a character vector describing the results.
+xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
+computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
+in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
 }
 \description{
 Runs the WBT for a given data set to evaluate the significance level and 
 confidence intervals for the trends between two specified years.  The trends 
 evaluated are trends in flow normalized concentration and flow normalized flux.  
 Function produces text outputs and a named list (eBoot) that contains all of the 
-relevant outputs.
+relevant outputs. Check out \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}}
+for more bootstrapping options.
 }
 \examples{
 library(EGRET)
@@ -42,5 +47,5 @@ eBoot <- wBT(eList,caseSetUp)
 }
 }
 \seealso{
-\code{\link{trendSetUp}}, \code{\link{setForBoot}}
+\code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}
 }

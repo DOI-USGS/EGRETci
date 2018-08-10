@@ -60,7 +60,6 @@ Here we will run a trivially small example of **runPairsBoot** based on the prob
 ```{r, echo = FALSE}
 library(EGRET)
 library(EGRETci)
-library(dplyr)
 load("pairResults2.RData")
 load("Chop.OPbase.RData")
 ```
@@ -155,7 +154,6 @@ The call to **runGroupsBoot** is very simple, because it gets virtually all of t
 Here we will run **runGroupsBoot** based on the problem set-up in the example of runGroups in the EGRET 3.0 Enhancements User Guide.
 
 ```{r, echo = FALSE}
-rm(list = ls())
 load("Chop.OPbase.RData")
 load("groupResults.RData")
 load("bootGroupsOut.RData")

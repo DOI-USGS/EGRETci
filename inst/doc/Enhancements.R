@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE,
 ## ---- echo = FALSE-------------------------------------------------------
 library(EGRET)
 library(EGRETci)
-library(dplyr)
 load("pairResults2.RData")
 load("Chop.OPbase.RData")
 
@@ -52,7 +51,6 @@ plotConcHistBoot(eListOut, CIAnnualResults)
 plotFluxHistBoot(eListOut, CIAnnualResults)
 
 ## ---- echo = FALSE-------------------------------------------------------
-rm(list = ls())
 load("Chop.OPbase.RData")
 load("groupResults.RData")
 load("bootGroupsOut.RData")

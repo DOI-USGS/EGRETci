@@ -5,7 +5,8 @@ Version: 2.0.0
 Authors@R: c( person("Robert", "Hirsch", role = c("aut"),
     email = "rhirsch@usgs.gov"),
     person("Laura", "DeCicco", role = c("aut","cre"),
-    email = "ldecicco@usgs.gov"))
+    email = "ldecicco@usgs.gov"),
+    person("Jennifer","Murphy", role = c("ctb")))
 Description: Collection of functions to evaluate uncertainty of results from
     water quality analysis using the Weighted Regressions on Time Discharge and
     Season (WRTDS) method. This package is an add-on to the EGRET package that

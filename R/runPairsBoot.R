@@ -176,9 +176,7 @@ runPairsBoot <- function(eList, pairResults,
           break()
         }
       }
-    } else {
-      stop(possibleError3, "\n", possibleError4)
-    }
+    } 
   }
 
   if(iBoot == 2*nBoot){

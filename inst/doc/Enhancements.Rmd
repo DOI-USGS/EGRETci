@@ -292,7 +292,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Do Not Reject Ho
  also 95% CIs -0.001023  0.001058 
  and 50% CIs -0.000192  0.000545
  approximate two-sided p-value for Flux      0.68
- Likelihood that Flow Normalized Concentration is trending up = 0.658  is trending down = 0.342
+ Likelihood that Flow Normalized Flux is trending up = 0.658  is trending down = 0.342
 
  Upward trend in concentration is about as likely as not 
  Upward trend in flux is about as likely as not

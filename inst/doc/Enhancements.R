@@ -9,6 +9,18 @@ knitr::opts_chunk$set(echo = TRUE,
                       fig.width=7, fig.height=7)
 
 
+## ----eval=FALSE----------------------------------------------------------
+#  nCores <- detectCores() - coreOut
+#  cl <- makeCluster(nCores)
+#  registerDoParallel(cl)
+#  repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
+#     annualResults <- bootAnnual(eList,
+#                                 blockLength,
+#                                 startSeed = n)
+#  }
+#  stopCluster(cl)
+#  
+
 ## ---- echo = FALSE-------------------------------------------------------
 library(EGRET)
 library(EGRETci)

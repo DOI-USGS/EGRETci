@@ -471,7 +471,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   xStep <- ifelse(is.na(xStep), (xMax - xMin)/10, xStep)
   xSeq <- seq(xMin, xMax, xStep)
   
-  hist(reps, breaks = xSeq, yaxs = "i", xaxs = "i", axes = FALSE, ylab = "",
+  hist(reps, breaks = xSeq, axes = FALSE, ylab = "",
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
        cex.main = cex.main, cex.lab = cex.lab, ...)
   abline(v = change, lwd = 3, lty = 2)

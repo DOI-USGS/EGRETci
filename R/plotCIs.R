@@ -470,10 +470,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
   xMax <- ifelse(is.na(xMax), max(10, maxReps), xMax)
   xStep <- ifelse(is.na(xStep), (xMax - xMin)/10, xStep)
   xSeq <- seq(xMin, xMax, xStep)
-  
-  hist(reps, breaks = xSeq, axes = FALSE, ylab = "",
+  yLim <- c(0,1.04*max(hist(reps, breaks = xSeq, plot = FALSE)$density, na.rm = TRUE))
+
+  hist(reps, breaks = xSeq, axes = FALSE, ylab = "", yaxs = "i", xaxs = "i", 
        main = titleToPrint, freq = FALSE, xlab = xlabel, col = col.fill, 
-       cex.main = cex.main, cex.lab = cex.lab, ...)
+       cex.main = cex.main, cex.lab = cex.lab, ylim = yLim, ...)
   abline(v = change, lwd = 3, lty = 2)
   abline(v = 0, lwd = 3)
   box()

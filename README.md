@@ -1,14 +1,48 @@
 # EGRETci
 
-A bootstrap method for estimating uncertainty of water quality trends
+[![CRAN version](http://www.r-pkg.org/badges/version/EGRETci)](https://cran.r-project.org/package=EGRETci)
+[![](http://cranlogs.r-pkg.org/badges/EGRETci)](https://cran.r-project.org/package=EGRETci)
+[![](http://cranlogs.r-pkg.org/badges/grand-total/EGRETci)](https://cran.r-project.org/package=EGRETci)
+[![travis](https://travis-ci.org/USGS-R/EGRETci.svg?branch=master)](https://travis-ci.org/USGS-R/EGRETci)
+[![Coverage Status](https://coveralls.io/repos/github/USGS-R/EGRETci/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/EGRETci?branch=master)
+[![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
+[![Research software impact](http://depsy.org/api/package/cran/EGRETci/badge.svg)](http://depsy.org/package/r/EGRETci)
 
-See: [http://authors.elsevier.com/sd/article/S1364815215300220](http://authors.elsevier.com/sd/article/S1364815215300220) for more details
+This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.
 
-## Package Status
+See: [http://authors.elsevier.com/sd/article/S1364815215300220](http://authors.elsevier.com/sd/article/S1364815215300220) for more details.
 
-|Linux| Test Coverage | USGS Status |
-|----------|------------|------------|
-| [![travis](https://travis-ci.org/USGS-R/EGRETci.svg?branch=master)](https://travis-ci.org/USGS-R/EGRETci)| [![Coverage Status](https://coveralls.io/repos/github/USGS-R/EGRETci/badge.svg?branch=master)](https://coveralls.io/github/USGS-R/EGRETci?branch=master)|[![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)|
+The **EGRETci** package is designed to carry out three specific types of tasks.
+
+1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving the functions: `trendSetUp` and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
+
+2)  Plot histograms of values for the trend magnitudes, expressed in percent change over the specified period, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.  Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period).  Such analyses would require a small amount of script writing by the user.
+
+3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
+
+## How to cite EGRET:
+
+```
+citation(package = "EGRETci")
+
+To cite EGRETci in publications, please use:
+
+  Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method for
+  estimating uncertainty of water quality trends", Environmental
+  Modelling & Software, Vol 73, Nov 2015, p 148-166. doi:
+  j.envsoft.2015.07.017
+
+A BibTeX entry for LaTeX users is
+
+  @Article{,
+    author = {Robert M. Hirsch and Stacey A. Archfield and Laura A. {De Cicco}},
+    title = {A bootstrap method for estimating uncertainty of water quality trends},
+    journal = {Journal of Environmental Modelling and Software},
+    year = {2015},
+  }
+
+```
+
 
 ### Reporting bugs
 
@@ -30,15 +64,6 @@ Additionally, to subscribe to an email list concerning updates to these R packag
 
 We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/EGRETci/blob/master/CONDUCT.md) for more information.
 
-### Current CRAN information:
-
-|Version|Monthly Downloads|Total Downloads|
-|----------|------------|------------|
-|[![CRAN version](http://www.r-pkg.org/badges/version/EGRETci)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/EGRETci)](https://cran.r-project.org/package=EGRETci)|[![](http://cranlogs.r-pkg.org/badges/grand-total/EGRETci)](https://cran.r-project.org/package=EGRETci)|
-
-### Research software impact:
-
-[![Research software impact](http://depsy.org/api/package/cran/EGRETci/badge.svg)](http://depsy.org/package/r/EGRETci)
 
 ## Model Archive
 
@@ -115,13 +140,4 @@ Packages -----------------------------------------------------------------------
 
 ## Disclaimer
 
-This software is in the public domain because it contains materials that originally came from the U.S. Geological Survey  (USGS), an agency of the United States Department of Interior. For more information, see the official USGS copyright policy at [http://www.usgs.gov/visual-id/credit_usgs.html#copyright](http://www.usgs.gov/visual-id/credit_usgs.html#copyright)
-
-Although this software program has been used by the USGS, no warranty, expressed or implied, is made by the USGS or the U.S. Government as to the accuracy and functioning of the program and related program material nor shall the fact of distribution constitute any such warranty, and no responsibility is assumed by the USGS in connection therewith.
-
-This software is provided "AS IS."
-
-
- [
-   ![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png)
- ](http://creativecommons.org/publicdomain/zero/1.0/)
+This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.

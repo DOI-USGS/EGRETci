@@ -20,7 +20,7 @@ The **EGRETci** package is designed to carry out three specific types of tasks.
 
 3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
-## How to cite EGRET:
+## How to cite EGRETci:
 
 ```
 citation(package = "EGRETci")

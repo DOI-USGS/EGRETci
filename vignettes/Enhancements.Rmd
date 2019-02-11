@@ -21,7 +21,6 @@ library(knitr)
 knitr::opts_chunk$set(echo = TRUE, 
                       warning = FALSE, 
                       message = FALSE, 
-                      eval = nzchar(Sys.getenv("EGRET_eval")),
                       fig.width=7, fig.height=7)
 
 ```
@@ -52,11 +51,6 @@ stopCluster(cl)
 ```
 
 
-
-
-
-
-
 # Problem set up
 
 There are three distinct types of problem set-ups that are possible in the new formulation and each of them has its own distinct workflow and outputs.  They are known as *Pairs*, *Series*, and *Groups*.  What do these terms mean here?  **Pairs** is for the comparison of any two years in the study period, **Series** is to describe the entire study period to produce graphs of the change as a function of time, **Groups** is for the comparison of any two groups of contiguous years.  The appropriate use of each of these three set-ups is described in detail in the "Guide to EGRET 3.0 enhancements."    
@@ -78,13 +72,29 @@ Here we will run a trivially small example of **runPairsBoot** based on the prob
 ```{r, echo = FALSE}
 library(EGRET)
 library(EGRETci)
-load("pairResults2.RData")
-load("Chop.OPbase.RData")
+eList <- Choptank_eList
+pairResults2 <- readRDS("pairResults2.rds")
+
+```
+
+```{r setupData, eval=FALSE}
+library(EGRET)
+library(EGRETci)
+eList <- Choptank_eList
+pairResults2 <- runPairs(eList, year1 = 1985, year2 = 2010, 
+                         windowSide = 7, flowBreak = TRUE, 
+                         Q1EndDate = "1995-05-31", wall = TRUE,
+                         sample1EndDate = "1995-05-31", 
+                         QStartDate = "1979-10-01", 
+                         QEndDate = "2010-09-30", 
+                         paStart = 4, paLong = 5)
+
 ```
 
 ```{r}
 bootPairOut2 <- runPairsBoot(eList, 
-                             pairResults2, nBoot = 10)
+                             pairResults2, 
+                             nBoot = 10) 
 ```
 
 The output is pretty self-explanatory and the latter part of it is identical to the summary information provided by **wBT**.
@@ -108,7 +118,7 @@ The only two arguments required are eList, and eBoot which represents the output
 Here are the calls to **plotHistogramTrend** first for flux, and then for concentration.  [We have substituted in a set of **runPairsBoot** outputs for which **nBoot = 100** rather than using the one shown above.]
 
 ```{r, echo = FALSE}
-load("bootPairOut2.RData")
+bootPairOut2 <- readRDS("bootPairOut2.rds")
 ```
 
 ```{r}
@@ -137,15 +147,28 @@ The eList that is passed to the function should be a version of eList that has a
 
 The `...` in the call specifically relate to some other bootstrap-related parameters that the user might wish to set.  They can be left out of the call, and the program with interactively request the information, or they can be set directly in the call.  We will set up to run the job specifying them without the interactive part (as would be done in a batch implementation).
 
-We will run the bootstrap analysis here.  We will use the output of the last run of **runSeries** above.
+We will run the bootstrap analysis here.  We will use the output of the last run of **runSeries** example in the EGRET enhancement vignette.
+
+```{r setupSeries, eval=FALSE}
+eList <- Choptank_eList
+eListOut <- runSeries(eList, windowSide = 7, verbose = FALSE)
+CIAnnualResults <- ciCalculations(eListOut, 
+                                  verbose = FALSE, 
+                                  nBoot = 100,
+                                  blockLength = 200, 
+                                  widthCI = 90)
+```
 
 ```{r, echo = FALSE}
-load("eListOutChop.RData")
+CIAnnualResults <- readRDS("CIAnnualResults.rds")
+eListOut <- readRDS("eListOutSeries.rds")
 ```
 
 ```{r, eval = FALSE}
-CIAnnualResults <- ciCalculations(eListOut, verbose = FALSE, 
-                                  nBoot = 100, blockLength = 200, 
+CIAnnualResults <- ciCalculations(eListOut, 
+                                  verbose = FALSE, 
+                                  nBoot = 100,
+                                  blockLength = 200, 
                                   widthCI = 90)
 ```
 
@@ -171,14 +194,21 @@ The call to **runGroupsBoot** is very simple, because it gets virtually all of t
 
 Here we will run **runGroupsBoot** based on the problem set-up in the example of runGroups in the EGRET 3.0 Enhancements User Guide.
 
-```{r, echo = FALSE}
-load("Chop.OPbase.RData")
-load("groupResults.RData")
-load("bootGroupsOut.RData")
+```{r, echo = TRUE, eval=FALSE}
+eList <- Choptank_eList
+groupResults <- runGroups(eList, 
+                          group1firstYear = 1995, group1lastYear = 2004, 
+                          group2firstYear = 2005, group2lastYear = 2010,
+                          windowSide = 7, wall = TRUE, 
+                          sample1EndDate = "2004-10-30", 
+                          paStart = 4, paLong = 2, verbose = FALSE)
+bootGroupsOut <- runGroupsBoot(eList, groupResults, nBoot = 100)
+
 ```
 
-```{r, eval = FALSE}
-bootGroupsOut <- runGroupsBoot(eList, groupResults, nBoot = 100)
+```{r, eval = TRUE, echo=FALSE}
+groupResults <- readRDS("groupResults.rds")
+bootGroupsOut <- readRDS("bootGroupsOut.rds")
 ```
 
 
@@ -338,10 +368,8 @@ The only two arguments required are **eList**, and **eBoot** which represents th
 
 Here are the calls to **plotHistogramTrend** first for flux, and then for concentration. The **xMin, xMax, and xStep** arguments shown below were selected based on first viewing the results using the default values and then searching for a set of values for the three arguments that provided a good representation of the distribution.
 
-```{r, echo = FALSE}
-load("bootGroupsOut.RData")
-```
-```{r}
+
+```{r eval=FALSE}
 plotHistogramTrend(eList, bootGroupsOut, 
                    xMin = -30, xMax = 40, xStep = 10)
 

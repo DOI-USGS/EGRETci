@@ -6,13 +6,6 @@ temp.txt
 CONDUCT.md
 DISCLAIMER.md
 code.json
-vignettes/Chop.OPbase.RData
-vignettes/eListOut.RData
-vignettes/eListOutChop.RData
-vignettes/bootGroupsOut.RData
-vignettes/bootPairOut2.RData
-vignettes/groupResults.RData
-vignettes/pairResults2.RData
 vignettes/^\*\.html$
 vignettes/^\*\.R$
 ^docs$

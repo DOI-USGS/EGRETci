@@ -214,138 +214,138 @@ bootGroupsOut <- readRDS("bootGroupsOut.rds")
 
 <pre><code>
 
- iBoot, xConc and xFlux 1 0.00296113 0.0003499154
- iBoot, xConc and xFlux 2 -0.0002956797 -0.0003143112
- iBoot, xConc and xFlux 3 0.0001199606 0.0001024746
- iBoot, xConc and xFlux 4 0.004232349 0.0005949532
- iBoot, xConc and xFlux 5 -0.0008650439 4.191467e-05
- iBoot, xConc and xFlux 6 -0.001280164 0.0001122891
- iBoot, xConc and xFlux 7 -0.002730855 -0.0005173218
- iBoot, xConc and xFlux 8 0.0005945323 3.359549e-05
- iBoot, xConc and xFlux 9 -0.00185535 -0.0002769316
- iBoot, xConc and xFlux 10 0.00237835 -5.252596e-05
- iBoot, xConc and xFlux 11 -0.0007078044 0.0003114707
- iBoot, xConc and xFlux 12 0.001508941 0.0001066674
- iBoot, xConc and xFlux 13 0.004071296 0.0005335327
- iBoot, xConc and xFlux 14 -0.0001735777 -0.0005556122
- iBoot, xConc and xFlux 15 0.00599777 0.000614942
- iBoot, xConc and xFlux 16 0.001538242 0.0002337665
- iBoot, xConc and xFlux 17 0.006749636 0.0007939581
- iBoot, xConc and xFlux 18 0.005815952 0.0007315923
- iBoot, xConc and xFlux 19 0.003426709 0.0007374633
- iBoot, xConc and xFlux 20 -0.001774188 -0.0003256709
- iBoot, xConc and xFlux 21 -0.002079089 0.0004484381
- iBoot, xConc and xFlux 22 -0.0007066837 -0.0001807576
- iBoot, xConc and xFlux 23 -0.005430486 -0.0007201224
- iBoot, xConc and xFlux 24 0.000223922 0.0001479919
- iBoot, xConc and xFlux 25 0.005366904 0.0007532143
- iBoot, xConc and xFlux 26 0.008773515 0.001460164
- iBoot, xConc and xFlux 27 0.003369205 0.0003861387
- iBoot, xConc and xFlux 28 -0.0001132602 0.0001867561
- iBoot, xConc and xFlux 29 0.0006686016 4.493021e-05
- iBoot, xConc and xFlux 30 -0.001548789 -0.0005782319
- iBoot, xConc and xFlux 31 -0.003271376 -0.0002991132
- iBoot, xConc and xFlux 32 0.003254532 0.0005080041
- iBoot, xConc and xFlux 33 -0.002473899 -0.0006956646
- iBoot, xConc and xFlux 34 0.002954511 0.0004589053
- iBoot, xConc and xFlux 35 0.001859739 0.0005232247
- iBoot, xConc and xFlux 36 0.000205754 -0.0002925691
- iBoot, xConc and xFlux 37 0.006250899 0.001055866
- iBoot, xConc and xFlux 38 -0.0006535967 -0.0004822819
- iBoot, xConc and xFlux 39 0.0006988749 -2.064548e-05
- iBoot, xConc and xFlux 40 0.003918804 0.000786653
- iBoot, xConc and xFlux 41 -0.004701281 -0.0005051942
- iBoot, xConc and xFlux 42 0.004054271 0.0008490754
- iBoot, xConc and xFlux 43 -0.006320721 -0.001543896
- iBoot, xConc and xFlux 44 0.001859387 0.0004101864
- iBoot, xConc and xFlux 45 -0.0009117444 -0.000255238
- iBoot, xConc and xFlux 46 0.0008818197 0.0003139016
- iBoot, xConc and xFlux 47 0.005216368 0.0007289817
- iBoot, xConc and xFlux 48 0.004077073 0.0003021199
- iBoot, xConc and xFlux 49 0.003401253 0.0003820816
- iBoot, xConc and xFlux 50 0.0005679719 -1.639405e-05
- iBoot, xConc and xFlux 51 -0.0009884518 0.0004520003
- iBoot, xConc and xFlux 52 -0.004420304 -0.0003096841
- iBoot, xConc and xFlux 53 0.002586903 0.001034837
- iBoot, xConc and xFlux 54 0.004206091 0.0003783913
- iBoot, xConc and xFlux 55 -0.009143585 -0.001147733
- iBoot, xConc and xFlux 56 0.0005986389 -4.747323e-06
- iBoot, xConc and xFlux 57 0.002109233 0.0007813532
- iBoot, xConc and xFlux 58 0.00414972 0.0004610786
- iBoot, xConc and xFlux 59 0.002993041 0.0003091531
- iBoot, xConc and xFlux 60 0.002846247 0.0006659026
- iBoot, xConc and xFlux 61 0.002668368 0.000449732
- iBoot, xConc and xFlux 62 -0.001742667 -0.0005525405
- iBoot, xConc and xFlux 63 -0.002404266 -0.0001700295
- iBoot, xConc and xFlux 64 -0.0008766811 1.589613e-05
- iBoot, xConc and xFlux 65 0.0004430443 0.000302904
- iBoot, xConc and xFlux 66 0.006818324 0.001059532
- iBoot, xConc and xFlux 67 0.0006334154 0.0002179236
- iBoot, xConc and xFlux 68 -0.002110705 -0.0002216237
- iBoot, xConc and xFlux 69 0.006488668 0.0006934581
- iBoot, xConc and xFlux 70 -0.003196369 -0.0007519133
- iBoot, xConc and xFlux 71 0.002657402 0.0002592652
- iBoot, xConc and xFlux 72 -0.001853064 -7.620064e-05
- iBoot, xConc and xFlux 73 0.00085342 0.0004325767
- iBoot, xConc and xFlux 74 0.006531278 0.0009578679
- iBoot, xConc and xFlux 75 0.008537614 0.0008598648
- iBoot, xConc and xFlux 76 0.002297062 2.555942e-05
- iBoot, xConc and xFlux 77 -0.002687176 0.0002488402
- iBoot, xConc and xFlux 78 0.003694669 0.00068228
- iBoot, xConc and xFlux 79 0.004350885 0.0007601271
- iBoot, xConc and xFlux 80 0.001781713 -0.0001474699
- iBoot, xConc and xFlux 81 0.0008217254 0.0005422078
- iBoot, xConc and xFlux 82 -0.001323234 0.0004066879
- iBoot, xConc and xFlux 83 0.005265871 0.0003251419
- iBoot, xConc and xFlux 84 0.001481824 0.0006118648
- iBoot, xConc and xFlux 85 0.001815007 0.0001646148
- iBoot, xConc and xFlux 86 -0.006386326 -0.0005447886
- iBoot, xConc and xFlux 87 0.001665425 7.357665e-05
- iBoot, xConc and xFlux 88 -0.002839328 -0.0003985006
- iBoot, xConc and xFlux 89 0.002342255 0.0004648416
- iBoot, xConc and xFlux 90 -0.0003995236 0.0002937856
- iBoot, xConc and xFlux 91 -0.002952168 -0.0005628717
- iBoot, xConc and xFlux 92 0.001756899 0.0002947953
- iBoot, xConc and xFlux 93 0.004775163 0.0005555863
- iBoot, xConc and xFlux 94 0.003524297 0.0005459668
- iBoot, xConc and xFlux 95 -0.002492192 -4.470779e-05
- iBoot, xConc and xFlux 96 -0.006018777 -0.0009101245
- iBoot, xConc and xFlux 97 -0.003374182 -0.0004205534
- iBoot, xConc and xFlux 98 0.001089447 0.0006524845
- iBoot, xConc and xFlux 99 0.003994856 0.000587242
- iBoot, xConc and xFlux 100 -0.002853742 -0.0001963295
+ iBoot, xConc and xFlux 1 0.1112342 0.00210587
+ iBoot, xConc and xFlux 2 0.2313755 0.01785959
+ iBoot, xConc and xFlux 3 0.1940411 0.01241572
+ iBoot, xConc and xFlux 4 0.1362666 0.01586453
+ iBoot, xConc and xFlux 5 0.06292122 -0.007460321
+ iBoot, xConc and xFlux 6 0.155426 0.0001782416
+ iBoot, xConc and xFlux 7 0.005606766 -0.01078393
+ iBoot, xConc and xFlux 8 0.2249887 0.02234805
+ iBoot, xConc and xFlux 9 0.2078581 0.0200677
+ iBoot, xConc and xFlux 10 0.184202 0.01364342
+ iBoot, xConc and xFlux 11 0.191663 0.01690589
+ iBoot, xConc and xFlux 12 0.1291275 0.01157755
+ iBoot, xConc and xFlux 13 0.08322428 0.007420818
+ iBoot, xConc and xFlux 14 0.2509934 0.02653539
+ iBoot, xConc and xFlux 15 0.1582714 0.01139846
+ iBoot, xConc and xFlux 16 0.1202528 0.005556409
+ iBoot, xConc and xFlux 17 0.07175938 -0.003486396
+ iBoot, xConc and xFlux 18 0.03284808 -0.01543805
+ iBoot, xConc and xFlux 19 0.08242534 -0.001544557
+ iBoot, xConc and xFlux 20 0.1627448 0.009068357
+ iBoot, xConc and xFlux 21 0.3101094 0.03109831
+ iBoot, xConc and xFlux 22 0.1352483 0.003423816
+ iBoot, xConc and xFlux 23 0.1856816 0.01151778
+ iBoot, xConc and xFlux 24 0.1067084 -0.002745697
+ iBoot, xConc and xFlux 25 0.1384229 0.009025054
+ iBoot, xConc and xFlux 26 0.1044397 0.004463952
+ iBoot, xConc and xFlux 27 0.1371231 0.004849107
+ iBoot, xConc and xFlux 28 0.1057587 0.002020604
+ iBoot, xConc and xFlux 29 0.06285098 -0.006140418
+ iBoot, xConc and xFlux 30 0.1053837 0.006480032
+ iBoot, xConc and xFlux 31 0.2348087 0.01868799
+ iBoot, xConc and xFlux 32 0.0809752 -0.004032307
+ iBoot, xConc and xFlux 33 0.1055674 0.004243022
+ iBoot, xConc and xFlux 34 0.1313141 0.0120335
+ iBoot, xConc and xFlux 35 0.07496742 -0.001147932
+ iBoot, xConc and xFlux 36 0.259437 0.01931961
+ iBoot, xConc and xFlux 37 0.2360811 0.01891111
+ iBoot, xConc and xFlux 38 0.01944388 -0.01482583
+ iBoot, xConc and xFlux 39 0.06970571 -0.003820835
+ iBoot, xConc and xFlux 40 0.0737763 -0.006203921
+ iBoot, xConc and xFlux 41 0.04751532 -0.007057069
+ iBoot, xConc and xFlux 42 0.223248 0.01829072
+ iBoot, xConc and xFlux 43 0.0878771 0.001692402
+ iBoot, xConc and xFlux 44 0.01341636 -0.02144129
+ iBoot, xConc and xFlux 45 0.2081807 0.01755321
+ iBoot, xConc and xFlux 46 0.1221659 0.003935921
+ iBoot, xConc and xFlux 47 0.09278815 0.009981752
+ iBoot, xConc and xFlux 48 0.05095054 -0.003292809
+ iBoot, xConc and xFlux 49 0.1453256 0.01266178
+ iBoot, xConc and xFlux 50 0.1416339 0.01254616
+ iBoot, xConc and xFlux 51 0.4064174 0.04352515
+ iBoot, xConc and xFlux 52 0.130523 0.004890011
+ iBoot, xConc and xFlux 53 0.1244287 0.007266819
+ iBoot, xConc and xFlux 54 0.1806815 0.009675149
+ iBoot, xConc and xFlux 55 0.1720944 0.00576974
+ iBoot, xConc and xFlux 56 0.2379197 0.02117021
+ iBoot, xConc and xFlux 57 0.1449829 0.01024958
+ iBoot, xConc and xFlux 58 0.28329 0.02452299
+ iBoot, xConc and xFlux 59 0.1690522 0.01051543
+ iBoot, xConc and xFlux 60 0.12694 0.007726314
+ iBoot, xConc and xFlux 61 0.09701123 -0.0041987
+ iBoot, xConc and xFlux 62 0.1383497 0.006674396
+ iBoot, xConc and xFlux 63 0.1424172 0.0007736108
+ iBoot, xConc and xFlux 64 0.1183457 0.00187264
+ iBoot, xConc and xFlux 65 0.146094 0.009399198
+ iBoot, xConc and xFlux 66 0.1733963 0.002191635
+ iBoot, xConc and xFlux 67 -0.01026774 -0.0204027
+ iBoot, xConc and xFlux 68 0.1662299 0.01413006
+ iBoot, xConc and xFlux 69 0.08120086 0.0005708573
+ iBoot, xConc and xFlux 70 0.1917981 0.02270401
+ iBoot, xConc and xFlux 71 0.1157307 0.001804805
+ iBoot, xConc and xFlux 72 0.06264893 -0.0128353
+ iBoot, xConc and xFlux 73 0.03711312 -0.01459279
+ iBoot, xConc and xFlux 74 0.05306334 -0.005625662
+ iBoot, xConc and xFlux 75 0.1475555 0.007394673
+ iBoot, xConc and xFlux 76 0.117711 0.0009185418
+ iBoot, xConc and xFlux 77 0.1121241 -0.004503165
+ iBoot, xConc and xFlux 78 0.06010995 -0.001444297
+ iBoot, xConc and xFlux 79 0.2004474 0.03582305
+ iBoot, xConc and xFlux 80 0.1002849 0.003946271
+ iBoot, xConc and xFlux 81 0.2177704 0.01507397
+ iBoot, xConc and xFlux 82 0.2552872 0.01902596
+ iBoot, xConc and xFlux 83 0.1549289 0.007406193
+ iBoot, xConc and xFlux 84 0.2725142 0.02991958
+ iBoot, xConc and xFlux 85 0.1566289 0.006519237
+ iBoot, xConc and xFlux 86 0.2439327 0.01873373
+ iBoot, xConc and xFlux 87 0.2061489 0.0262877
+ iBoot, xConc and xFlux 88 0.1919945 0.01642432
+ iBoot, xConc and xFlux 89 0.1704908 0.01144599
+ iBoot, xConc and xFlux 90 0.2072139 0.0145469
+ iBoot, xConc and xFlux 91 0.2399481 0.01762005
+ iBoot, xConc and xFlux 92 0.2014063 0.01811737
+ iBoot, xConc and xFlux 93 0.1437091 0.008101229
+ iBoot, xConc and xFlux 94 0.1796633 0.009883034
+ iBoot, xConc and xFlux 95 0.09747391 -0.0009297245
+ iBoot, xConc and xFlux 96 0.1066498 0.003860713
+ iBoot, xConc and xFlux 97 0.1565149 0.007076587
+ iBoot, xConc and xFlux 98 0.2323236 0.02383054
+ iBoot, xConc and xFlux 99 0.1258737 0.01037859
+ iBoot, xConc and xFlux 100 0.2255112 0.01616338
 
-   CHOPTANK RIVER NEAR GREENSBORO, MD 
-   Orthophosphate as P
+   Choptank River 
+   Inorganic nitrogen (nitrate and nitrite)
    Season Consisting of Apr May 
 
  Change estimates for
- average of 2005  through 2014  minus average of 1995  through 2004 
+ average of 2005  through 2010  minus average of 1995  through 2004 
 
  Sample data set was partitioned with a wall at  2004-10-30 
 
 
 
-Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Do Not Reject Ho
- best estimate of change in concentration is  0.0022 mg/L
-  Lower and Upper 90% CIs -0.005394  0.006529
- also 95% CIs -0.006352  0.007635 
- and 50% CIs -0.001492  0.003420
- approximate two-sided p-value for Conc      0.76
- Likelihood that Flow Normalized Concentration is trending up = 0.619  is trending down = 0.381
+Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
+ best estimate of change in concentration is   0.153 mg/L
+  Lower and Upper 90% CIs  0.03306  0.25923
+ also 95% CIs  0.00971  0.29603 
+ and 50% CIs  0.09818  0.19353
+ approximate two-sided p-value for Conc     0.033
+ Likelihood that Flow Normalized Concentration is trending up = 0.985  is trending down = 0.0149
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Do Not Reject Ho
- best estimate of change in flux is 0.000372 10^6 kg/year
-  Lower and Upper 90% CIs -0.000719  0.000953
- also 95% CIs -0.001023  0.001058 
- and 50% CIs -0.000192  0.000545
- approximate two-sided p-value for Flux      0.68
- Likelihood that Flow Normalized Flux is trending up = 0.658  is trending down = 0.342
+ best estimate of change in flux is  0.00931 10^6 kg/year
+  Lower and Upper 90% CIs -0.014505  0.026523
+ also 95% CIs -0.017796  0.033343 
+ and 50% CIs  0.000622  0.016089
+ approximate two-sided p-value for Flux      0.47
+ Likelihood that Flow Normalized Flux is trending up = 0.767  is trending down = 0.233
 
- Upward trend in concentration is about as likely as not 
- Upward trend in flux is about as likely as not
- Downward trend in concentration is about as likely as not 
- Downward trend in flux is about as likely as not
+ Upward trend in concentration is highly likely 
+ Upward trend in flux is likely
+ Downward trend in concentration is highly unlikely 
+ Downward trend in flux is unlikely
 </code></pre>
 
 The output is pretty self-explanatory and virtually the same as that which is generated by **runPairsBoot**.

@@ -65,7 +65,9 @@ test_that("wordLike", {
 })
 
 test_that("blockSample", {
+  skip_on_cran()
   Sample <- eList$Sample
+  suppressWarnings(RNGversion("3.5.0"))
   set.seed(1)
   bsReturn <- blockSample(Sample, 25)
   

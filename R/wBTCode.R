@@ -777,6 +777,7 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
 blockSample <- function(localSample, blockLength, startSeed = NA){
   
   if(!is.na(startSeed)){
+    suppressWarnings(RNGversion("3.5.0"))
     set.seed(startSeed)
   }
   

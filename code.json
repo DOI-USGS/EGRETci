@@ -17,7 +17,7 @@
     },
 
     "homepageURL": "https://code.usgs.gov/water/EGRETci",
-    "downloadURL": "https://code.usgs.gov/water/EGRETci/-/archive/v2.0.3/EGRETci-v2.0.3.zip",
+    "downloadURL": "https://code.usgs.gov/water/EGRETci/-/archive/v2.0.2/EGRETci-v2.0.2.zip",
     "disclaimerURL": "https://code.usgs.gov/water/EGRETci/blob/master/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/water/EGRETci.git",
     "vcs": "git",

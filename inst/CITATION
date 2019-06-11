@@ -8,6 +8,6 @@ bibentry(bibtype = "article",
   title = "A bootstrap method for estimating uncertainty of water quality trends",
   journal = "Journal of Environmental Modelling and Software",
   year = 2015,
-  textVersion = 'Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method for estimating uncertainty of water quality trends", Environmental Modelling & Software, Vol 73, Nov 2015, p 148-166. doi: j.envsoft.2015.07.017'
+  textVersion = 'Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method for estimating uncertainty of water quality trends", Environmental Modelling & Software, Vol 73, Nov 2015, p 148-166. doi: 10.1016/j.envsoft.2015.07.017'
 )
 

@@ -75,7 +75,7 @@ The following table provides definitions of the four data frames that constitute
 |xConc | | a vector of length iBoot, of the change in flow normalized concentration computed by each bootstrap replicate (mg/L) |
 |xFlux | | a vector of length iBoot, of the change in flow normalized flux computed by each bootstrap replicate (10^6^ kg/yr) |
 |pConc | | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
-|pFlux | | a vector of length iBoot, of the change in flow normalized concentration computed from each bootstrap replicate expressed as % change |
+|pFlux | | a vector of length iBoot, of the change in flow normalized flux computed from each bootstrap replicate expressed as % change |
 
 
 

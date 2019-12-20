@@ -31,7 +31,8 @@ Suggests:
     testthat,
     doParallel,
     iterators,
-    rmarkdown
+    rmarkdown,
+    pkgdown
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr

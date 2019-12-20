@@ -9,3 +9,4 @@ code.json
 vignettes/^\*\.html$
 vignettes/^\*\.R$
 ^docs$
+test_stuff

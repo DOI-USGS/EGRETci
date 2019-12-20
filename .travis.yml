@@ -10,11 +10,15 @@ dist: trusty
 
 matrix:
   include:
-    - os: linux
-      r: release
-    - os: linux
-      r: devel
-      env: R_CODECOV=true
+    - r: release
+      after_success:
+        - travis_wait 20 R -e 'covr::coveralls()'
+      before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
+      deploy:
+        provider: script
+        script: Rscript -e 'pkgdown::deploy_site_github(verbose = TRUE)'
+        skip_cleanup: true
+    - r: devel
 
 addons:
   apt:
@@ -36,7 +40,6 @@ r_github_packages:
 
 after_success:
   - if [[ "${R_CODECOV}" ]]; then travis_wait 20 R -e 'covr::coveralls()'; fi
-  
   
 notifications:
   email:

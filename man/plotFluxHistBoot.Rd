@@ -4,9 +4,19 @@
 \alias{plotFluxHistBoot}
 \title{Graph of annual flux, flow normalized flux, and confidence bands for flow normalized flux}
 \usage{
-plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
-  plotFlowNorm = TRUE, fluxUnit = 9, fluxMax = NA,
-  col.pred = "green", printTitle = TRUE, cex.main = 1.1, ...)
+plotFluxHistBoot(
+  eList,
+  CIAnnualResults,
+  yearStart = NA,
+  yearEnd = NA,
+  plotFlowNorm = TRUE,
+  fluxUnit = 9,
+  fluxMax = NA,
+  col.pred = "green",
+  printTitle = TRUE,
+  cex.main = 1.1,
+  ...
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}

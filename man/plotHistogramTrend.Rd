@@ -4,9 +4,21 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
-  xMax = NA, xStep = NA, printTitle = TRUE, cex.main = 1.1,
-  cex.axis = 1.1, cex.lab = 1.1, col.fill = "grey", ...)
+plotHistogramTrend(
+  eList,
+  eBoot,
+  caseSetUp,
+  flux = TRUE,
+  xMin = NA,
+  xMax = NA,
+  xStep = NA,
+  printTitle = TRUE,
+  cex.main = 1.1,
+  cex.axis = 1.1,
+  cex.lab = 1.1,
+  col.fill = "grey",
+  ...
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}

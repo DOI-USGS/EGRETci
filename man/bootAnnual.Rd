@@ -4,8 +4,7 @@
 \alias{bootAnnual}
 \title{Single confidence interval bootstrap run}
 \usage{
-bootAnnual(eList, blockLength = 200, startSeed = 494817,
-  verbose = FALSE)
+bootAnnual(eList, blockLength = 200, startSeed = 494817, verbose = FALSE)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}

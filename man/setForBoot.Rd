@@ -4,8 +4,14 @@
 \alias{setForBoot}
 \title{Allows user to set window parameters for the WRTDS model prior to running the bootstrap procedure}
 \usage{
-setForBoot(eList, caseSetUp, windowY = 7, windowQ = 2, windowS = 0.5,
-  edgeAdjust = TRUE)
+setForBoot(
+  eList,
+  caseSetUp,
+  windowY = 7,
+  windowQ = 2,
+  windowS = 0.5,
+  edgeAdjust = TRUE
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}

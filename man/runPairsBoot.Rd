@@ -4,8 +4,13 @@
 \alias{runPairsBoot}
 \title{The bootstrap uncertainty analysis for runPairs results}
 \usage{
-runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
-  blockLength = 200)
+runPairsBoot(
+  eList,
+  pairResults,
+  nBoot = 100,
+  startSeed = 494817,
+  blockLength = 200
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}

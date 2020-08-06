@@ -5,9 +5,18 @@
 \title{Graph of annual concentration, flow normalized concentration, 
 and confidence bands for flow normalized concentrations}
 \usage{
-plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
-  plotFlowNorm = TRUE, col.pred = "green", concMax = NA,
-  printTitle = TRUE, cex.main = 1.1, ...)
+plotConcHistBoot(
+  eList,
+  CIAnnualResults,
+  yearStart = NA,
+  yearEnd = NA,
+  plotFlowNorm = TRUE,
+  col.pred = "green",
+  concMax = NA,
+  printTitle = TRUE,
+  cex.main = 1.1,
+  ...
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}

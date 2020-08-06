@@ -4,8 +4,13 @@
 \alias{runGroupsBoot}
 \title{The bootstrap uncertainty analysis for runGroups results}
 \usage{
-runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
-  blockLength = 200)
+runGroupsBoot(
+  eList,
+  groupResults,
+  nBoot = 100,
+  startSeed = 494817,
+  blockLength = 200
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}

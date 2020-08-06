@@ -7,7 +7,7 @@
 #' @param nKalman number of different realizations for each re-estimated model
 #' @param rho numeric the lag one autocorrelation. Default is 0.9.
 #' @param niter number of iterations. Default is 200. 
-#' @param seed setSeed value. Defaults is \code{NA}, which will not specify a randomized seed.
+#' @param setSeed value. Defaults is \code{NA}, which will not specify a randomized seed.
 #' This can be used to make repeatable output.
 #' @export
 #' @rdname kalman
@@ -61,7 +61,7 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
 #' @param dailyBootOut data frame returned from \code{\link{genDailyBoot}}
 #' @param eList is the data with a fitted model already done. Note that the eList$Sample 
 #' may have multiple values on a given day and it can also have censored values.
-#' 
+#' @importFrom stats aggregate
 #' @export
 #' @examples 
 #' eList <- EGRET::Choptank_eList

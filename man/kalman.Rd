@@ -25,7 +25,7 @@ may have multiple values on a given day and it can also have censored values.}
 
 \item{niter}{number of iterations. Default is 200.}
 
-\item{seed}{setSeed value. Defaults is \code{NA}, which will not specify a randomized seed.
+\item{setSeed}{value. Defaults is \code{NA}, which will not specify a randomized seed.
 This can be used to make repeatable output.}
 }
 \description{

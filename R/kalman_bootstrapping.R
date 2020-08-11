@@ -86,8 +86,8 @@ makeMonths <- function(dailyBootOut, eList){
   monthFluxPcts <- matrix(data = NA, nrow = nMonths, ncol = 11)
   monthConcPcts <- matrix(data = NA, nrow = nMonths, ncol = 11)
   for(iMonth in 1:nMonths){
-    monthFluxPcts[iMonth,] <- quantile(monthsFlux[iMonth,], probs = probs, type = 6)
-    monthConcPcts[iMonth,] <- quantile(monthsConc[iMonth,], probs = probs, type = 6)
+    monthFluxPcts[iMonth,] <- quantile(monthsFlux[iMonth,], probs = probs, type = 6, na.rm = TRUE)
+    monthConcPcts[iMonth,] <- quantile(monthsConc[iMonth,], probs = probs, type = 6, na.rm = TRUE)
   }
   monthPcts <- list(monthFluxPcts = monthFluxPcts, 
                     monthConcPcts = monthConcPcts,

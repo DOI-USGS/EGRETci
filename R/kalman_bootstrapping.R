@@ -62,11 +62,17 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
 #' @param eList is the data with a fitted model already done. Note that the eList$Sample 
 #' may have multiple values on a given day and it can also have censored values.
 #' @importFrom stats aggregate
+#' @return a list of 2 data frame with monthSeq column that corresponds to the months
+#' in the "MonthSeq" column in the Daily data frame. The remaining columns are
+#' quantiles of the flux or concentration (depending on the data frame).
 #' @export
 #' @examples 
 #' eList <- EGRET::Choptank_eList
 #' dailyBoot <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
 #' monthPcts <- makeMonths(dailyBoot, eList)
+#' head(monthPcts[["month_flux_results"]])
+#' head(monthPcts[["month_conc_results"]])
+#' 
 makeMonths <- function(dailyBootOut, eList){
   nDaily <- length(dailyBootOut[,1])
   nIter <- length(dailyBootOut[1,])
@@ -89,10 +95,39 @@ makeMonths <- function(dailyBootOut, eList){
     monthFluxPcts[iMonth,] <- quantile(monthsFlux[iMonth,], probs = probs, type = 6, na.rm = TRUE)
     monthConcPcts[iMonth,] <- quantile(monthsConc[iMonth,], probs = probs, type = 6, na.rm = TRUE)
   }
-  monthPcts <- list(monthFluxPcts = monthFluxPcts, 
-                    monthConcPcts = monthConcPcts,
-                    firstMonth = firstMonth)
-  return(monthPcts)
+  
+
+  lastMonth <- firstMonth + length(monthFluxPcts[,1]) - 1
+  monthSeqVec <- seq(firstMonth, lastMonth)
+  
+  month_flux_results <- data.frame(monthSeq = monthSeqVec,
+                                 p1 = monthFluxPcts[,1],
+                                 p2.5 = monthFluxPcts[,2],
+                                 p5 = monthFluxPcts[,3],
+                                 p10 = monthFluxPcts[,4],
+                                 p25 = monthFluxPcts[,5],
+                                 p50 = monthFluxPcts[,6],
+                                 p75 = monthFluxPcts[,7],
+                                 p90 = monthFluxPcts[,8],
+                                 p95 = monthFluxPcts[,9],
+                                 p97.5 = monthFluxPcts[,10],
+                                 p99 = monthFluxPcts[,11])
+  
+  month_conc_results <- data.frame(monthSeq = monthSeqVec,
+                                   p1 = monthConcPcts[,1],
+                                   p2.5 = monthConcPcts[,2],
+                                   p5 = monthConcPcts[,3],
+                                   p10 = monthConcPcts[,4],
+                                   p25 = monthConcPcts[,5],
+                                   p50 = monthConcPcts[,6],
+                                   p75 = monthConcPcts[,7],
+                                   p90 = monthConcPcts[,8],
+                                   p95 = monthConcPcts[,9],
+                                   p97.5 = monthConcPcts[,10],
+                                   p99 = monthConcPcts[,11])
+  
+  return(list(month_flux_results = month_flux_results,
+              month_conc_results = month_conc_results))
 }
 
 

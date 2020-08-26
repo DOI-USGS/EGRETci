@@ -12,6 +12,11 @@ makeMonths(dailyBootOut, eList)
 \item{eList}{is the data with a fitted model already done. Note that the eList$Sample 
 may have multiple values on a given day and it can also have censored values.}
 }
+\value{
+a list of 2 data frame with monthSeq column that corresponds to the months
+in the "MonthSeq" column in the Daily data frame. The remaining columns are
+quantiles of the flux or concentration (depending on the data frame).
+}
 \description{
 Month statistics
 }
@@ -19,4 +24,7 @@ Month statistics
 eList <- EGRET::Choptank_eList
 dailyBoot <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
 monthPcts <- makeMonths(dailyBoot, eList)
+head(monthPcts[["month_flux_results"]])
+head(monthPcts[["month_conc_results"]])
+
 }

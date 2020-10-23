@@ -4,14 +4,7 @@
 \alias{genDailyBoot}
 \title{WRTDSKalman Bootstrapping}
 \usage{
-genDailyBoot(
-  eList,
-  nBoot = 10,
-  nKalman = 10,
-  rho = 0.9,
-  niter = 200,
-  setSeed = NA
-)
+genDailyBoot(eList, nBoot = 10, nKalman = 10, rho = 0.9, setSeed = NA)
 }
 \arguments{
 \item{eList}{is the data with a fitted model already done. Note that the eList$Sample 
@@ -23,13 +16,11 @@ may have multiple values on a given day and it can also have censored values.}
 
 \item{rho}{numeric the lag one autocorrelation. Default is 0.9.}
 
-\item{niter}{number of iterations. Default is 200.}
-
 \item{setSeed}{value. Defaults is \code{NA}, which will not specify a randomized seed.
 This can be used to make repeatable output.}
 }
 \description{
-Funtion to get
+Function to get bootstrapping results from WRTDS_K
 }
 \examples{
 

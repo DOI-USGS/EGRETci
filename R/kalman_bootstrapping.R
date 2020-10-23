@@ -1,12 +1,12 @@
 #' WRTDSKalman Bootstrapping
 #' 
-#' Funtion to get
+#' Function to get bootstrapping results from WRTDS_K
+#' 
 #' @param eList is the data with a fitted model already done. Note that the eList$Sample 
 #' may have multiple values on a given day and it can also have censored values.
 #' @param nBoot number of times the bootstrap resampling and model estimating is done
 #' @param nKalman number of different realizations for each re-estimated model
 #' @param rho numeric the lag one autocorrelation. Default is 0.9.
-#' @param niter number of iterations. Default is 200. 
 #' @param setSeed value. Defaults is \code{NA}, which will not specify a randomized seed.
 #' This can be used to make repeatable output.
 #' @export
@@ -18,7 +18,7 @@
 #' 
 #' 
 genDailyBoot <- function(eList, nBoot = 10, nKalman = 10, 
-                         rho = 0.9, niter = 200, setSeed = NA) {
+                         rho = 0.9, setSeed = NA) {
 
   # to see if the results are roughly reproducible,seed value can be changed
   #
@@ -43,7 +43,7 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
     # but the Kalman filtering is done with the full Sample set
     for(iKalman in 1:nKalman) {
       cat("     - Kalman index: ", iKalman, "\n")
-      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, niter = niter)
+      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, niter = 1)
       
       iter <- ((iBoot-1) * nKalman) + iKalman 
       dailyBootOut[,iter] <- eListK$Daily$GenFlux

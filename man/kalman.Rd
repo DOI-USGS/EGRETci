@@ -4,7 +4,15 @@
 \alias{genDailyBoot}
 \title{WRTDSKalman Bootstrapping}
 \usage{
-genDailyBoot(eList, nBoot = 10, nKalman = 10, rho = 0.9, setSeed = NA)
+genDailyBoot(
+  eList,
+  nBoot = 10,
+  nKalman = 10,
+  rho = 0.9,
+  setSeed = NA,
+  jitterOn = FALSE,
+  V = 0.2
+)
 }
 \arguments{
 \item{eList}{is the data with a fitted model already done. Note that the eList$Sample 
@@ -18,6 +26,11 @@ may have multiple values on a given day and it can also have censored values.}
 
 \item{setSeed}{value. Defaults is \code{NA}, which will not specify a randomized seed.
 This can be used to make repeatable output.}
+
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+
+\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+means that the sd of the LnQ jitter is 0.02*sdLQ}
 }
 \description{
 Function to get bootstrapping results from WRTDS_K

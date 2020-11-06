@@ -4,7 +4,14 @@
 \alias{bootAnnual}
 \title{Single confidence interval bootstrap run}
 \usage{
-bootAnnual(eList, blockLength = 200, startSeed = 494817, verbose = FALSE)
+bootAnnual(
+  eList,
+  blockLength = 200,
+  startSeed = 494817,
+  verbose = FALSE,
+  jitterOn = FALSE,
+  V = 0.2
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -14,6 +21,11 @@ bootAnnual(eList, blockLength = 200, startSeed = 494817, verbose = FALSE)
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
 \item{verbose}{logical specifying whether or not to display progress message}
+
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+
+\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+means that the sd of the LnQ jitter is 0.02*sdLQ}
 }
 \description{
 One bootstrap run used to calculate confidence interval bands.

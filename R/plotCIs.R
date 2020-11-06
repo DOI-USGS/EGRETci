@@ -200,6 +200,9 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' @param blockLength integer suggested value is 200
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @param verbose logical specifying whether or not to display progress message
+#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
+#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+#'  means that the sd of the LnQ jitter is 0.02*sdLQ
 #' @export
 #' @examples
 #' library(EGRET)
@@ -207,7 +210,8 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' \dontrun{
 #' annualResults <- bootAnnual(eList)
 #' }
-bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FALSE){
+bootAnnual <- function(eList, blockLength=200, startSeed = 494817,
+                       verbose = FALSE, jitterOn = FALSE, V = 0.2){
   Sample <- eList$Sample
   Daily <- eList$Daily
   INFO <- eList$INFO
@@ -227,6 +231,9 @@ bootAnnual <- function(eList, blockLength=200, startSeed = 494817, verbose = FAL
   }
   
   bootSample <- blockSample(localSample = Sample, blockLength = blockLength, startSeed = startSeed)
+  
+  if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+  
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   
   if(isTRUE("runSeries" %in% names(attributes(eList)) && attr(eList, "runSeries"))){

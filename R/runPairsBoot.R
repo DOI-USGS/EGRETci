@@ -11,6 +11,9 @@
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
 #' @param blockLength days, typically 200 is a good choice
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
+#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+#'  means that the sd of the LnQ jitter is 0.02*sdLQ
 #' @export
 #' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
 #' of the bootstrapping tests. wordsOut is a character vector describing the results.
@@ -33,7 +36,7 @@
 #' }
 runPairsBoot <- function(eList, pairResults, 
                          nBoot=100, startSeed = 494817, 
-                         blockLength = 200) {
+                         blockLength = 200, jitterOn = FALSE, V = 0.2) {
 
   interactive <- FALSE
   localINFO <- eList$INFO
@@ -127,6 +130,9 @@ runPairsBoot <- function(eList, pairResults,
   for (iBoot in 1:(2*nBoot)){
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
+    
+    if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+    
     eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
     
     Sample1 <- bootSample[bootSample$Date >= sample1StartDate &

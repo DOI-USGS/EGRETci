@@ -9,7 +9,9 @@ wBT(
   caseSetUp,
   saveOutput = TRUE,
   fileName = "temp.txt",
-  startSeed = 494817
+  startSeed = 494817,
+  jitterOn = FALSE,
+  V = 0.2
 )
 }
 \arguments{
@@ -22,6 +24,11 @@ wBT(
 \item{fileName}{character. Name to save the output file if \code{saveOutput=TRUE}.}
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
+
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+
+\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+means that the sd of the LnQ jitter is 0.02*sdLQ}
 }
 \value{
 eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results

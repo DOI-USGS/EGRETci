@@ -9,6 +9,9 @@
 #' @param rho numeric the lag one autocorrelation. Default is 0.9.
 #' @param setSeed value. Defaults is \code{NA}, which will not specify a randomized seed.
 #' This can be used to make repeatable output.
+#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
+#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+#'  means that the sd of the LnQ jitter is 0.02*sdLQ
 #' @export
 #' @rdname kalman
 #' @examples 
@@ -18,7 +21,8 @@
 #' 
 #' 
 genDailyBoot <- function(eList, nBoot = 10, nKalman = 10, 
-                         rho = 0.9, setSeed = NA) {
+                         rho = 0.9, setSeed = NA,
+                         jitterOn = FALSE, V = 0.2) {
 
   # to see if the results are roughly reproducible,seed value can be changed
   #
@@ -34,6 +38,9 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
   for(iBoot in 1: nBoot){
     cat("Boot: ", iBoot, "\n")
     bootSample <- blockSample(localSample, 200)
+    
+    if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+    
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample)
     surfaces1 <- EGRET::estSurfaces(eListBoot, verbose = FALSE)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, localSample, 

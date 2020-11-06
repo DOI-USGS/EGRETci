@@ -9,7 +9,9 @@ runGroupsBoot(
   groupResults,
   nBoot = 100,
   startSeed = 494817,
-  blockLength = 200
+  blockLength = 200,
+  jitterOn = FALSE,
+  V = 0.2
 )
 }
 \arguments{
@@ -22,6 +24,11 @@ runGroupsBoot(
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
 \item{blockLength}{days, typically 200 is a good choice}
+
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+
+\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+means that the sd of the LnQ jitter is 0.02*sdLQ}
 }
 \value{
 eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results

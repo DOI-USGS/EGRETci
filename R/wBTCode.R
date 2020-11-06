@@ -186,6 +186,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
+#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+#'  means that the sd of the LnQ jitter is 0.02*sdLQ
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
 #' @export
@@ -208,7 +211,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, fileName="temp.txt", startSeed = 494817){
+              saveOutput=TRUE, 
+              fileName="temp.txt", startSeed = 494817,
+              jitterOn = FALSE, V = 0.2){
   
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
@@ -329,6 +334,9 @@ wBT<-function(eList,caseSetUp,
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength,
                                 startSeed = startSeed + iBoot)
+      
+      if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+      
       eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 
                                                                         year1), error = function(e) e)

@@ -39,7 +39,7 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
     cat("Boot: ", iBoot, "\n")
     bootSample <- blockSample(localSample, 200)
     
-    if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+    if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
     
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample)
     surfaces1 <- EGRET::estSurfaces(eListBoot, verbose = FALSE)

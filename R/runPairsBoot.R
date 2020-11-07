@@ -131,7 +131,7 @@ runPairsBoot <- function(eList, pairResults,
 
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
     
-    if(jitterOn) bootSample <- jitterSamV(bootSample, V = V)
+    if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
     
     eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
     

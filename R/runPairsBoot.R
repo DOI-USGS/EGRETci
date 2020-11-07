@@ -21,6 +21,7 @@
 #' computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
 #' in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change. 
 #' @seealso \code{\link{runGroupsBoot}}, \code{\link[EGRET]{runPairs}}
+#' @importFrom EGRET jitterSam
 #' @examples 
 #' library(EGRET)
 #' eList <- Choptank_eList

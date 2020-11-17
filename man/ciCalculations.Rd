@@ -8,7 +8,7 @@ ciCalculations(
   eList,
   startSeed = 494817,
   verbose = TRUE,
-  jitter = FALSE,
+  jitterOn = FALSE,
   V = 0.2,
   ...
 )
@@ -20,12 +20,12 @@ ciCalculations(
 
 \item{verbose}{logical specifying whether or not to display progress message}
 
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+
 \item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
 means that the sd of the LnQ jitter is 0.02*sdLQ}
 
 \item{\dots}{optionally include nBoot, blockLength, or widthCI}
-
-\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
 }
 \description{
 Interactive function to calculate WRTDS confidence bands

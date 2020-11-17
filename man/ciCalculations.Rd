@@ -4,7 +4,14 @@
 \alias{ciCalculations}
 \title{ciCalculations}
 \usage{
-ciCalculations(eList, startSeed = 494817, verbose = TRUE, ...)
+ciCalculations(
+  eList,
+  startSeed = 494817,
+  verbose = TRUE,
+  jitter = FALSE,
+  V = 0.2,
+  ...
+)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -13,7 +20,12 @@ ciCalculations(eList, startSeed = 494817, verbose = TRUE, ...)
 
 \item{verbose}{logical specifying whether or not to display progress message}
 
+\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+means that the sd of the LnQ jitter is 0.02*sdLQ}
+
 \item{\dots}{optionally include nBoot, blockLength, or widthCI}
+
+\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
 }
 \description{
 Interactive function to calculate WRTDS confidence bands

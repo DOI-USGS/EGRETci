@@ -500,6 +500,9 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @param verbose logical specifying whether or not to display progress message
+#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
+#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
+#'  means that the sd of the LnQ jitter is 0.02*sdLQ
 #' @param \dots optionally include nBoot, blockLength, or widthCI
 #' @export
 #' @examples
@@ -520,6 +523,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 ciCalculations <- function (eList, 
                             startSeed = 494817,
                             verbose = TRUE,
+                            jitter = FALSE, V = 0.2,
                             ...){
   
   matchReturn <- list(...)
@@ -593,7 +597,8 @@ ciCalculations <- function (eList,
   }
   
   for(n in 1:nBoot){
-    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose)
+    repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose, 
+                                        jitterOn = jitterOn, V = V)
   }
   
   CIAnnualResults <- ciBands(eList, repAnnualResults, probs)

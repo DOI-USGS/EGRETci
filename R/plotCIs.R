@@ -523,7 +523,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 ciCalculations <- function (eList, 
                             startSeed = 494817,
                             verbose = TRUE,
-                            jitter = FALSE, V = 0.2,
+                            jitterOn = FALSE, V = 0.2,
                             ...){
   
   matchReturn <- list(...)

@@ -18,6 +18,16 @@
 #' @param concMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
 #' @param printTitle logical, default = TRUE.
 #' @param cex.main numeric title scale, default = 1.1.
+#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted 
+#' @param plotGenConc logical variable. If \code{TRUE}, annual concentration points from WRTDS_K output are plotted, if \code{FALSE} not plotted 
+#' @param tinyPlot logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE
+#' @param cex numerical value giving the amount by which plotting symbols should be magnified
+#' @param cex.axis magnification to be used for axis annotation relative to the current setting of cex
+#' @param lwd number magnification of line width, default = 2.
+#' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
+#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
+#' @param col color of points on plot, see ?par 'Color Specification', default = "black"
+#' @param col.gen color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"
 #' @param \dots graphical parameters
 #' @export
 #' @importFrom graphics title
@@ -34,6 +44,9 @@
 #' }
 plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = NA, 
                               plotFlowNorm=TRUE, col.pred="green", concMax = NA,
+                              plotAnnual = TRUE, plotGenConc = FALSE,
+                              cex = 0.8, cex.axis = 1.1,  lwd = 2, 
+                              col = "black", col.gen = "red", customPar = FALSE, 
                               printTitle=TRUE, cex.main=1.1, ...){
   
   nBoot <- attr(CIAnnualResults, "nBoot")
@@ -41,6 +54,13 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   probs <- attr(CIAnnualResults, "probs")
   
   widthCI <- (max(probs) - min(probs))*100
+  
+  if(plotGenConc){
+    if(!all((c("GenFlux","GenConc") %in% names(eList$Daily)))){
+      stop("This option requires running WRTDSKalman on eList")
+    }
+    
+  } 
   
   localAnnualResults <- EGRET::setupYears(paStart = eList$INFO$paStart, paLong = eList$INFO$paLong,
                                    localDaily = eList$Daily)
@@ -73,8 +93,11 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   }
   
   EGRET::plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
-               col.pred=col.pred, printTitle=FALSE, 
-               plotFlowNorm = plotFlowNorm, concMax = concMax, ...)
+               col.pred=col.pred, printTitle=FALSE, cex.axis = cex.axis,
+               cex = cex, cex.main = cex.main, col.gen = col.gen,
+               plotGenConc = plotGenConc, plotAnnual = plotAnnual,
+               plotFlowNorm = plotFlowNorm, concMax = concMax, 
+               lwd = lwd, customPar = customPar, ...)
   if(printTitle) {
     title(main=title, cex.main=cex.main)
   }
@@ -108,9 +131,21 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param fluxMax number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)
 #' @param plotFlowNorm logical variable if TRUE flow normalized line is plotted, if FALSE not plotted 
 #' @param col.pred character prediction color
-#' @param printTitle logical
+#' @param cex.main magnification to be used for main titles relative to the current setting of cex
+#' @param printTitle logical#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted 
+#' @param plotGenFlux logical variable. If \code{TRUE}, annual flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted 
+#' @param tinyPlot logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE
+#' @param cex numerical value giving the amount by which plotting symbols should be magnified
+#' @param cex.axis magnification to be used for axis annotation relative to the current setting of cex
+#' @param lwd number magnification of line width, default = 2.
+#' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
+#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
+#' @param col color of points on plot, see ?par 'Color Specification', default = "black"
+#' @param col.gen color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"
 #' @param cex.main numeric title scale
-#' @param \dots graphical parameters
+#' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
+#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
+##' @param \dots graphical parameters
 #' @export
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines
@@ -127,9 +162,12 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' }
 plotFluxHistBoot <- function (eList, CIAnnualResults, 
                               yearStart=NA, yearEnd=NA,
-                              plotFlowNorm=TRUE, fluxUnit = 9, fluxMax=NA,
-                              col.pred="green", printTitle=TRUE, 
-                              cex.main=1.1, ...){
+                              fluxUnit = 9, fluxMax=NA,
+                              plotFlowNorm=TRUE, col.pred="green",
+                              plotAnnual = TRUE, plotGenFlux = FALSE,
+                              cex = 0.8, cex.axis = 1.1,  lwd = 2, 
+                              col = "black", col.gen = "red", cex.main = 1.1,
+                              printTitle=TRUE, customPar = FALSE, ...){
   
   nBoot <- attr(CIAnnualResults, "nBoot")
   blockLength <- attr(CIAnnualResults, "blockLength")
@@ -144,6 +182,12 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
      "segmentInfo" %in% names(attributes(eList$INFO))){
     periodName <- paste(periodName, "*")
   }
+  
+  if(plotGenFlux){
+    if(!all((c("GenFlux","GenConc") %in% names(eList$Daily)))){
+      stop("This option requires running WRTDS_K on eList")
+    }
+  } 
   
   title3 <- paste(widthCI,"% CI on FN Flux, Replicates =",nBoot,", Block=",blockLength,"days")
   
@@ -172,7 +216,11 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   
   EGRET::plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,
                fluxUnit=fluxUnit, col.pred=col.pred,fluxMax=fluxMax,
-               plotFlowNorm = plotFlowNorm, printTitle=FALSE,...)
+               printTitle=FALSE, cex.axis = cex.axis,
+               cex = cex, cex.main = cex.main, col.gen = col.gen,
+               plotGenFlux = plotGenFlux, plotAnnual = plotAnnual,
+               plotFlowNorm = plotFlowNorm, 
+               lwd = lwd, customPar = customPar,...)
   if (printTitle) {
     title(main=title, cex.main=cex.main)
   }

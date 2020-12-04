@@ -9,12 +9,20 @@ plotFluxHistBoot(
   CIAnnualResults,
   yearStart = NA,
   yearEnd = NA,
-  plotFlowNorm = TRUE,
   fluxUnit = 9,
   fluxMax = NA,
+  plotFlowNorm = TRUE,
   col.pred = "green",
-  printTitle = TRUE,
+  plotAnnual = TRUE,
+  plotGenFlux = FALSE,
+  cex = 0.8,
+  cex.axis = 1.1,
+  lwd = 2,
+  col = "black",
+  col.gen = "red",
   cex.main = 1.1,
+  printTitle = TRUE,
+  customPar = FALSE,
   ...
 )
 }
@@ -27,19 +35,36 @@ plotFluxHistBoot(
 
 \item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
 
-\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
-
 \item{fluxUnit}{number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
 
 \item{fluxMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
 
+\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
+
 \item{col.pred}{character prediction color}
 
-\item{printTitle}{logical}
+\item{plotGenFlux}{logical variable. If \code{TRUE}, annual flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted}
+
+\item{cex}{numerical value giving the amount by which plotting symbols should be magnified}
+
+\item{cex.axis}{magnification to be used for axis annotation relative to the current setting of cex}
+
+\item{lwd}{number magnification of line width, default = 2.}
+
+\item{col}{color of points on plot, see ?par 'Color Specification', default = "black"}
+
+\item{col.gen}{color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"}
 
 \item{cex.main}{numeric title scale}
 
+\item{printTitle}{logical#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+
+\item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
+(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.}
+
 \item{\dots}{graphical parameters}
+
+\item{tinyPlot}{logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE}
 }
 \description{
 Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named list eList), 

@@ -13,6 +13,14 @@ plotConcHistBoot(
   plotFlowNorm = TRUE,
   col.pred = "green",
   concMax = NA,
+  plotAnnual = TRUE,
+  plotGenConc = FALSE,
+  cex = 0.8,
+  cex.axis = 1.1,
+  lwd = 2,
+  col = "black",
+  col.gen = "red",
+  customPar = FALSE,
   printTitle = TRUE,
   cex.main = 1.1,
   ...
@@ -33,11 +41,30 @@ plotConcHistBoot(
 
 \item{concMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
 
+\item{plotAnnual}{logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+
+\item{plotGenConc}{logical variable. If \code{TRUE}, annual concentration points from WRTDS_K output are plotted, if \code{FALSE} not plotted}
+
+\item{cex}{numerical value giving the amount by which plotting symbols should be magnified}
+
+\item{cex.axis}{magnification to be used for axis annotation relative to the current setting of cex}
+
+\item{lwd}{number magnification of line width, default = 2.}
+
+\item{col}{color of points on plot, see ?par 'Color Specification', default = "black"}
+
+\item{col.gen}{color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"}
+
+\item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
+(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.}
+
 \item{printTitle}{logical, default = TRUE.}
 
 \item{cex.main}{numeric title scale, default = 1.1.}
 
 \item{\dots}{graphical parameters}
+
+\item{tinyPlot}{logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE}
 }
 \description{
 Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 

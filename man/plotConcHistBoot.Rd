@@ -56,15 +56,13 @@ plotConcHistBoot(
 \item{col.gen}{color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"}
 
 \item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.}
+(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.}
 
 \item{printTitle}{logical, default = TRUE.}
 
 \item{cex.main}{numeric title scale, default = 1.1.}
 
 \item{\dots}{graphical parameters}
-
-\item{tinyPlot}{logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE}
 }
 \description{
 Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named 

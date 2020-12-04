@@ -43,6 +43,8 @@ plotFluxHistBoot(
 
 \item{col.pred}{character prediction color}
 
+\item{plotAnnual}{logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+
 \item{plotGenFlux}{logical variable. If \code{TRUE}, annual flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted}
 
 \item{cex}{numerical value giving the amount by which plotting symbols should be magnified}
@@ -60,11 +62,9 @@ plotFluxHistBoot(
 \item{printTitle}{logical#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
 
 \item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.}
+(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.}
 
 \item{\dots}{graphical parameters}
-
-\item{tinyPlot}{logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE}
 }
 \description{
 Uses the output of \code{\link[EGRET]{modelEstimation}} in the EGRET package (results in the named list eList), 

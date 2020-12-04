@@ -20,12 +20,11 @@
 #' @param cex.main numeric title scale, default = 1.1.
 #' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted 
 #' @param plotGenConc logical variable. If \code{TRUE}, annual concentration points from WRTDS_K output are plotted, if \code{FALSE} not plotted 
-#' @param tinyPlot logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE
 #' @param cex numerical value giving the amount by which plotting symbols should be magnified
 #' @param cex.axis magnification to be used for axis annotation relative to the current setting of cex
 #' @param lwd number magnification of line width, default = 2.
 #' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
+#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.
 #' @param col color of points on plot, see ?par 'Color Specification', default = "black"
 #' @param col.gen color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"
 #' @param \dots graphical parameters
@@ -134,18 +133,16 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param cex.main magnification to be used for main titles relative to the current setting of cex
 #' @param printTitle logical#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted 
 #' @param plotGenFlux logical variable. If \code{TRUE}, annual flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted 
-#' @param tinyPlot logical variable, if TRUE plot is designed to be plotted small, as a part of a multipart figure, default is FALSE
 #' @param cex numerical value giving the amount by which plotting symbols should be magnified
 #' @param cex.axis magnification to be used for axis annotation relative to the current setting of cex
 #' @param lwd number magnification of line width, default = 2.
+#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted 
 #' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
+#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.
 #' @param col color of points on plot, see ?par 'Color Specification', default = "black"
 #' @param col.gen color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"
 #' @param cex.main numeric title scale
-#' @param customPar logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-#' (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins depending on tinyPlot.
-##' @param \dots graphical parameters
+#' @param \dots graphical parameters
 #' @export
 #' @importFrom EGRET fluxConst
 #' @importFrom graphics lines

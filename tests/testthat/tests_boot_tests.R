@@ -191,8 +191,9 @@ test_that("runPairsBoot", {
 
   boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 3)
   
-  expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
-                    "pConc","pFlux","startSeed") %in% names(boot_pair_out)))
+  expect_true(all(c("bootOut","wordsOut","xConc","xFlux",
+		    "xConcQTC","xConcCQTC","xFluxQTC","xFluxCQTC",
+		    "pConc","pFlux","startSeed") %in% names(boot_pair_out)))
   
   expect_true(boot_pair_out$bootOut$rejectC)
   expect_true(all(c("Upward trend in concentration is likely",  
@@ -204,6 +205,11 @@ test_that("runPairsBoot", {
   expect_equal(round(boot_pair_out$xFlux[1:2], digits = 2), c(0.05,0.06))
   expect_equal(round(boot_pair_out$pConc[1:2], digits = 2), c(37.30,40.55))
   expect_equal(round(boot_pair_out$pFlux[1:2], digits = 2), c(44.48,54.51))
+
+  expect_equal(round((boot_pair_out$xConcQTC + boot_pair_out$xConcCQTC)[1:2], digits=2),
+		     c(0.39,0.41))
+  expect_equal(round((boot_pair_out$xFluxQTC + boot_pair_out$xFluxCQTC)[1:2], digits=2),
+		     c(0.05,0.06))
   
 })
 

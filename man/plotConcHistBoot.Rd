@@ -5,62 +5,47 @@
 \title{Graph of annual concentration, flow normalized concentration, 
 and confidence bands for flow normalized concentrations}
 \usage{
-plotConcHistBoot(
-  eList,
-  CIAnnualResults,
-  yearStart = NA,
-  yearEnd = NA,
-  plotFlowNorm = TRUE,
-  col.pred = "green",
-  concMax = NA,
-  plotAnnual = TRUE,
-  plotGenConc = FALSE,
-  cex = 0.8,
-  cex.axis = 1.1,
-  lwd = 2,
-  col = "black",
-  col.gen = "red",
-  customPar = FALSE,
-  printTitle = TRUE,
-  cex.main = 1.1,
-  ...
-)
+plotConcHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
+  plotFlowNorm = TRUE, col.pred = "green", concMax = NA,
+  plotAnnual = TRUE, plotGenConc = FALSE, cex = 0.8, cex.axis = 1.1,
+  lwd = 2, col = "black", col.gen = "red", customPar = FALSE,
+  printTitle = TRUE, cex.main = 1.1, ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{CIAnnualResults}{data frame generated from ciBands (includes nBoot, probs, and blockLength attributes)}
+\item{CIAnnualResults}{data frame generated from ciBands (includes nBoot, probs, and blockLength attributes).}
 
-\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).}
 
-\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).}
 
-\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
+\item{plotFlowNorm}{logical variable if TRUE flow normalized concentration line is plotted, if FALSE not plotted, default is TRUE.}
 
-\item{col.pred}{character prediction color}
+\item{col.pred}{character color of line for flow-normalized concentration and for the confidence limits, default is "green".}
 
-\item{concMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
+\item{concMax}{numeric specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data).}
 
-\item{plotAnnual}{logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+\item{plotAnnual}{logical variable if \code{TRUE}, annual mean concentration points from WRTDS output are plotted, if \code{FALSE} not plotted.}
 
-\item{plotGenConc}{logical variable. If \code{TRUE}, annual concentration points from WRTDS_K output are plotted, if \code{FALSE} not plotted}
+\item{plotGenConc}{logical variable. If \code{TRUE}, annual mean concentration points from WRTDS_K output are plotted, if \code{FALSE} not plotted.}
 
-\item{cex}{numerical value giving the amount by which plotting symbols should be magnified}
+\item{cex}{numeric value giving the amount by which plotting symbols should be magnified, default = 0.8.}
 
-\item{cex.axis}{magnification to be used for axis annotation relative to the current setting of cex}
+\item{cex.axis}{numeric value of magnification to be used for axis annotation relative to the current setting of cex, default = 1.1.}
 
-\item{lwd}{number magnification of line width, default = 2.}
+\item{lwd}{numeric magnification of line width, default = 2.}
 
-\item{col}{color of points on plot, see ?par 'Color Specification', default = "black"}
+\item{col}{color of annual mean points on plot, see ?par 'Color Specification', default = "black".}
 
-\item{col.gen}{color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"}
+\item{col.gen}{color of annual mean points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red".}
 
 \item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
-(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.}
+(for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRETci chooses the best margins.}
 
-\item{printTitle}{logical, default = TRUE.}
+\item{printTitle}{logical print title of the plot, default = TRUE.}
 
-\item{cex.main}{numeric title scale, default = 1.1.}
+\item{cex.main}{numeric value of magnification to be used for plot title, default = 1.1.}
 
 \item{\dots}{graphical parameters}
 }

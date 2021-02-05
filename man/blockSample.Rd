@@ -9,21 +9,22 @@ blockSample(localSample, blockLength, startSeed = NA)
 \arguments{
 \item{localSample}{Sample data frame}
 
-\item{blockLength}{integer size of subset expressed in days.}
+\item{blockLength}{integer size of subset, expressed in days.  200 days has been found to be a good choice.}
 
-\item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
+\item{startSeed}{setSeed value. This is used to make repeatable output. Default = NA.}
 }
 \value{
-newSample data frame in same format as Sample data frame
+newSample data frame in same format as Sample data frame.  It has the same number of rows as the Sample data frame.
 }
 \description{
-Get a random subset of the Sample data frame based on the user-specified blockLength 
-for use in bootstrap estimation process. The subset is a random subset of blocks of 
-data from Sample dataframe.  The subset is based on the random selection (with 
-replacement) of starting dates from the full Sample data frame.  The Sample selected 
-has the same number of observations as the original Sample (some 
-observations are are included once, some included multiple times, and some are not 
-included).
+Get a bootstrap replicate of the Sample data frame based on the user-specified blockLength. 
+The bootstrap replicate is made up randomly selected blocks of 
+data from Sample data frame.  Each block includes all the samples in a standard period of time (the blockLength measured in days).
+The blocks are created based on the random selection (with 
+replacement) of starting dates from the full Sample data frame.  The bootstrap replicate  
+has the same number of observations as the original Sample, but some 
+observations are included once, some are included multiple times, and some are not 
+included at all.
 }
 \examples{
 library(EGRET)
@@ -32,4 +33,5 @@ Sample <- eList$Sample
 bsReturn <- blockSample(Sample, 200)
 }
 \keyword{WRTDS}
-\keyword{flow}
+\keyword{quality}
+\keyword{water}

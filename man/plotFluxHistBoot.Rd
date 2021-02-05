@@ -4,62 +4,46 @@
 \alias{plotFluxHistBoot}
 \title{Graph of annual flux, flow normalized flux, and confidence bands for flow normalized flux}
 \usage{
-plotFluxHistBoot(
-  eList,
-  CIAnnualResults,
-  yearStart = NA,
-  yearEnd = NA,
-  fluxUnit = 9,
-  fluxMax = NA,
-  plotFlowNorm = TRUE,
-  col.pred = "green",
-  plotAnnual = TRUE,
-  plotGenFlux = FALSE,
-  cex = 0.8,
-  cex.axis = 1.1,
-  lwd = 2,
-  col = "black",
-  col.gen = "red",
-  cex.main = 1.1,
-  printTitle = TRUE,
-  customPar = FALSE,
-  ...
-)
+plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
+  fluxUnit = 9, fluxMax = NA, plotFlowNorm = TRUE, col.pred = "green",
+  plotAnnual = TRUE, plotGenFlux = FALSE, cex = 0.8, cex.axis = 1.1,
+  lwd = 2, col = "black", col.gen = "red", cex.main = 1.1,
+  printTitle = TRUE, customPar = FALSE, ...)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{CIAnnualResults}{data frame from ciBands (needs nBoot, probs, and blockLength attributes)}
+\item{CIAnnualResults}{data frame from ciBands (needs nBoot, probs, and blockLength attributes).}
 
-\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+\item{yearStart}{numeric is the calendar year containing the first estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).}
 
-\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data)}
+\item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).}
 
-\item{fluxUnit}{number representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
+\item{fluxUnit}{integer representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
 
-\item{fluxMax}{number specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data)}
+\item{fluxMax}{numeric specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data), uses units specificed by fluxUnit.}
 
-\item{plotFlowNorm}{logical variable if TRUE flow normalized line is plotted, if FALSE not plotted}
+\item{plotFlowNorm}{logical variable if TRUE flow normalized flux line is plotted, if FALSE not plotted, default is TRUE.}
 
-\item{col.pred}{character prediction color}
+\item{col.pred}{character color of line for flow-normalized flux and for the confidence limits, default is "green".}
 
-\item{plotAnnual}{logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+\item{plotAnnual}{logical variable if \code{TRUE}, annual mean flux points from WRTDS output are plotted, if \code{FALSE} not plotted.}
 
-\item{plotGenFlux}{logical variable. If \code{TRUE}, annual flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted}
+\item{plotGenFlux}{logical variable. If \code{TRUE}, annual mean flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted.}
 
-\item{cex}{numerical value giving the amount by which plotting symbols should be magnified}
+\item{cex}{numeric value giving the amount by which plotting symbols should be magnified, default = 0.8.}
 
-\item{cex.axis}{magnification to be used for axis annotation relative to the current setting of cex}
+\item{cex.axis}{numeric magnification to be used for axis annotation relative to the current setting of cex, default = 1.1.}
 
-\item{lwd}{number magnification of line width, default = 2.}
+\item{lwd}{numeric magnification of line width, default = 2.}
 
-\item{col}{color of points on plot, see ?par 'Color Specification', default = "black"}
+\item{col}{color of annual mean points on plot, see ?par 'Color Specification', default = "black".}
 
-\item{col.gen}{color of points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red"}
+\item{col.gen}{color of annual mean points for WRTDS_K output on plot, see ?par 'Color Specification', default = "red".}
 
 \item{cex.main}{numeric title scale}
 
-\item{printTitle}{logical#' @param plotAnnual logical variable if \code{TRUE}, annual concentration points from WRTDS output are plotted, if \code{FALSE} not plotted}
+\item{printTitle}{logical print title of the plot, default = TRUE.}
 
 \item{customPar}{logical defaults to FALSE. If TRUE, par() should be set by user before calling this function 
 (for example, adjusting margins with par(mar=c(5,5,5,5))). If customPar FALSE, EGRET chooses the best margins.}

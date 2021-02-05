@@ -202,15 +202,18 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
 #' The standard deviation of the added jitter is V * standard deviation of Log Q.
 #' The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
+#' 
 #' @return eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
-#' \itemize{
-#'   \bootOut is a data frame with the results of the bootstrap test. 
-#'   \wordsOut is a character vector describing the results.
-#'   \xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration and flow normalized flux computed from each of the bootstrap replicates. 
-#'   \pConc and pFlux are vectors of length iBoot, of the change in flow normalized 
-concentration or flow normalized flux computed from each of the bootstrap replicates
-expressed as \% change.
-}
+#' \tabular{ll}{
+#' Object \tab Description\cr
+#' bootOut \tab a data frame with the results of the bootstrap test. \cr
+#' wordsOut \tab a character vector describing the results. \cr
+#' xConc and xFlux \tab vectors of length iBoot, of the change in flow normalized concentration
+#'    and flow normalized flux computed from each of the bootstrap replicates. \cr
+#' pConc and pFlux \tab vectors of length iBoot, of the change in flow normalized concentration
+#'    or flow normalized flux computed from each of the bootstrap replicates expressed as % change. \cr
+#' } 
+#' 
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}
 #' @examples
 #' library(EGRET)

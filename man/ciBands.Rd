@@ -2,16 +2,19 @@
 % Please edit documentation in R/plotCIs.R
 \name{ciBands}
 \alias{ciBands}
-\title{ciBands}
+\title{Confidence Interval Band Calculations}
 \usage{
 ciBands(eList, repAnnualResults, probs = c(0.05, 0.95))
 }
 \arguments{
-\item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
+\item{eList}{named list with at least the Daily, Sample, 
+and INFO dataframes. Created from the EGRET package, after running 
+\code{\link[EGRET]{modelEstimation}}.}
 
-\item{repAnnualResults}{named list returned from bootstrapping process}
+\item{repAnnualResults}{named list returned from bootstrapping process.}
 
-\item{probs}{vector high and low confidence interval percentages}
+\item{probs}{numeric vector low and high confidence interval frequencies, 
+default = c(0.05, 0.95) (which results in a 90\% confidence interval).}
 }
 \description{
 Computes confidence intervals for Flow-Normalized Concentration 
@@ -33,4 +36,5 @@ for(n in 1:nBoot){
 CIAnnualResults <- ciBands(eList, repAnnualResults)
 
 }
+
 }

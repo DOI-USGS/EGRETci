@@ -24,13 +24,13 @@
 #' The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 #' @return eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
 #' \itemize{
-#'   \bootOut is a data frame with the results of the bootstrap test. 
-#'   \wordsOut is a character vector describing the results.
-#'   \xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration and flow normalized flux computed from each of the bootstrap replicates. 
-#'   \pConc and pFlux are vectors of length iBoot, of the change in flow normalized 
-concentration or flow normalized flux computed from each of the bootstrap replicates
-expressed as \% change.
-}
+#'   \item{bootOut is a data frame with the results of the bootstrap test. }
+#'   \item{wordsOut is a character vector describing the results.}
+#'   \item{xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration
+#'    and flow normalized flux computed from each of the bootstrap replicates. }
+#'   \item{pConc and pFlux are vectors of length iBoot, of the change in flow normalized concentration
+#'    or flow normalized flux computed from each of the bootstrap replicates expressed as \% change.}
+#' }
 #' @seealso \code{\link{runGroupsBoot}}, \code{\link[EGRET]{runPairs}}
 #' @importFrom EGRET jitterSam
 #' @examples 

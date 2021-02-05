@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -65,7 +65,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/USGS-R/EGRETci/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -79,13 +79,13 @@
 
       
 
-      </header><script src="EGRETci_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="EGRETci_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to EGRET Confidence Intervals</h1>
                         <h4 class="author">Robert M. Hirsch, Laura A. De Cicco</h4>
             
-            <h4 class="date">26 August, 2020</h4>
+            <h4 class="date">05 February, 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/USGS-R/EGRETci/blob/master/vignettes/EGRETci.Rmd"><code>vignettes/EGRETci.Rmd</code></a></small>
       <div class="hidden name"><code>EGRETci.Rmd</code></div>
@@ -333,17 +333,18 @@
 <p>If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the <code>setPA</code> function. For example if we want to do the analysis for the three months starting with April, the command would be <code>eList &lt;- setPA(eList, paStart = 4, paLong = 3)</code>.</p>
 <p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code> in the <strong>EGRET</strong> package).</p>
 <p>Once all of the parameters have been set (which requires no action by the user if the defaults are to be used) the set of commands for interactive processing would be this (using the example data set Choptank_eList):</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRET</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRETci</span>)
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/">EGRET</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci">EGRETci</a></span><span class="op">)</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 
 <span class="co">#Interactive function to set up trend analysis:</span>
-<span class="no">caseSetUp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/trendSetUp.html">trendSetUp</a></span>(<span class="no">eList</span>)
-<span class="no">eBoot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/wBT.html">wBT</a></span>(<span class="no">eList</span>,<span class="no">caseSetUp</span>,
-             <span class="kw">fileName</span> <span class="kw">=</span> <span class="st">"outputText.txt"</span>)
+<span class="va">caseSetUp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trendSetUp.html">trendSetUp</a></span><span class="op">(</span><span class="va">eList</span><span class="op">)</span>
+<span class="va">eBoot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/wBT.html">wBT</a></span><span class="op">(</span><span class="va">eList</span>,<span class="va">caseSetUp</span>, 
+             fileName <span class="op">=</span> <span class="st">"outputText.txt"</span><span class="op">)</span>
 
 <span class="co">#Interactive save output function:</span>
-<span class="fu"><a href="../reference/saveEGRETci.html">saveEGRETci</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/saveEGRETci.html">saveEGRETci</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span><span class="op">)</span></code></pre></div>
 <p>Two sets of outputs are created, a text file which documents the results of the WBT, and an RData file (created by the <code>saveEGRETci</code> function) that saves the relevant results as data frames for use in the <code>plotHistogramTrend</code> function (described below) or other user-specified post-processing functions.</p>
 <p>The output in <code>outputText.txt</code> looks like this:</p>
 <pre><code>
@@ -383,20 +384,21 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
  Downward trend in concentration is highly unlikely 
  Downward trend in flux is highly unlikely</code></pre>
 <p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50, and all other smoothing parameters at their default values. And we want to run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minimum of 39 replicates, and a block length of 200. The script would be:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRET</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRETci</span>)
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span>
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/setPA.html">setPA</a></span>(<span class="no">eList</span>, <span class="kw">paStart</span> <span class="kw">=</span> <span class="fl">12</span>, <span class="kw">paLong</span> <span class="kw">=</span> <span class="fl">4</span>)
-<span class="no">eList</span>$<span class="no">INFO</span>$<span class="no">windowY</span> <span class="kw">&lt;-</span> <span class="fl">10</span>
-<span class="no">eList</span>$<span class="no">INFO</span>$<span class="no">minNumObs</span> <span class="kw">&lt;-</span> <span class="fl">50</span>
-<span class="no">caseSetUp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/trendSetUp.html">trendSetUp</a></span>(<span class="no">eList</span>,
-                        <span class="kw">year1</span><span class="kw">=</span><span class="fl">1990</span>,
-                        <span class="kw">year2</span><span class="kw">=</span><span class="fl">2012</span>,
-                        <span class="kw">nBoot</span> <span class="kw">=</span> <span class="fl">50</span>,
-                        <span class="kw">bootBreak</span> <span class="kw">=</span> <span class="fl">39</span>,
-                        <span class="kw">blockLength</span> <span class="kw">=</span> <span class="fl">200</span>)
-<span class="no">eBoot</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/wBT.html">wBT</a></span>(<span class="no">eList</span>, <span class="no">caseSetUp</span>, <span class="kw">fileName</span> <span class="kw">=</span><span class="st">"outputText.txt"</span>)
-<span class="fu"><a href="../reference/saveEGRETci.html">saveEGRETci</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>, <span class="kw">fileName</span> <span class="kw">=</span> <span class="st">"output"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/">EGRET</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci">EGRETci</a></span><span class="op">)</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/setPA.html">setPA</a></span><span class="op">(</span><span class="va">eList</span>, paStart <span class="op">=</span> <span class="fl">12</span>, paLong <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
+<span class="va">eList</span><span class="op">$</span><span class="va">INFO</span><span class="op">$</span><span class="va">windowY</span> <span class="op">&lt;-</span> <span class="fl">10</span>
+<span class="va">eList</span><span class="op">$</span><span class="va">INFO</span><span class="op">$</span><span class="va">minNumObs</span> <span class="op">&lt;-</span> <span class="fl">50</span>
+<span class="va">caseSetUp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/trendSetUp.html">trendSetUp</a></span><span class="op">(</span><span class="va">eList</span>, 
+                        year1<span class="op">=</span><span class="fl">1990</span>, 
+                        year2<span class="op">=</span><span class="fl">2012</span>, 
+                        nBoot <span class="op">=</span> <span class="fl">50</span>, 
+                        bootBreak <span class="op">=</span> <span class="fl">39</span>, 
+                        blockLength <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>
+<span class="va">eBoot</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/wBT.html">wBT</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">caseSetUp</span>, fileName <span class="op">=</span><span class="st">"outputText.txt"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/saveEGRETci.html">saveEGRETci</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>, fileName <span class="op">=</span> <span class="st">"output"</span><span class="op">)</span></code></pre></div>
 <p>This will result in the creation of the text file called <code>outputText.txt</code>, and an RData file called <code>output.RData</code>. The RData file will contain the objects <code>caseSetUp, bootOut, wordsOut, xConc, xFlux, and INFO</code>. Both files will be located in the working directory.</p>
 <div id="histograms" class="section level2">
 <h2 class="hasAnchor">
@@ -406,48 +408,54 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>Ultimately we want a plot with these characteristics: The value of xStep should be an integer such as 5, 10, or 20 so the width of the bins is 5%, 10% or 20%. xStep should be small enough so that the histogram looks relatively smooth. If it is too small the histogram bars will tend to be irregular. xStep should not be so large that there is poor resolution of the shape of the distribution. If a very smooth histogram is desired then the analyst needs to have run the <code>wBT</code> function with a high number of replicates (say <code>nBoot = 200</code>). The value of xStep should be less than the minimum value observed in the set of bootstrap replicates. xMin should be some negative integer multiple of step size. If no values were negative, then setting it at -1 times xStep would be a good choice. xMax should be larger than the maximum value in the set of bootstrap replicates and should be some positive integer multiple of xStep. If there are no positive values then 1 times xStep would be a good choice.</p>
 <p>Note that the plots always show a vertical solid line at 0% trend, simply as a point of reference for the “no trend” result. They also show a dashed vertical line at the value of the ordinary WRTDS estimate of the trend magnitude in percent. This vertical line fall near the median value for all the bootstrap replicates.</p>
 <p>This initial run will give the analyst the basic information needed to set up a good set of values for xMin, xMax and xStep.</p>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRET</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRETci</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/">EGRET</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci">EGRETci</a></span><span class="op">)</span>
 
 <span class="co"># Example data included in package:</span>
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span> <span class="co"># Example data from EGRET package</span>
-<span class="no">eBoot</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eBoot</span>
-<span class="no">caseSetUp</span> <span class="kw">&lt;-</span> <span class="no">Choptank_caseSetUp</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span> <span class="co"># Example data from EGRET package</span>
+<span class="va">eBoot</span> <span class="op">&lt;-</span> <span class="va">Choptank_eBoot</span>
+<span class="va">caseSetUp</span> <span class="op">&lt;-</span> <span class="va">Choptank_caseSetUp</span>
 
 <span class="co">#Concentration an initial run:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                   <span class="kw">flux</span><span class="kw">=</span><span class="fl">FALSE</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,  
+                   flux<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/unnamed-chunk-3-1.png" width="576"></p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="co">#Flux an initial run:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                   <span class="kw">flux</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">#Flux an initial run:</span>
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,
+                   flux<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/unnamed-chunk-3-2.png" width="576"></p>
 <p>Having seen these initial versions of the plot one can run the functions again with a set of arguments that will produce a plot that is suitable for presentation or publication.</p>
 <p>Alternatively, the two plots can be shown side-by-side using a workflow. Use the <code>par</code> function to set up both functions to plot side-by-side:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">2</span>))
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#Concentration, presentation version:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                   <span class="kw">flux</span><span class="kw">=</span><span class="fl">FALSE</span>, <span class="kw">xMin</span> <span class="kw">=</span> -<span class="fl">5</span>, <span class="kw">xMax</span> <span class="kw">=</span> <span class="fl">65</span>, <span class="kw">xStep</span> <span class="kw">=</span> <span class="fl">5</span>)
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,  
+                   flux<span class="op">=</span><span class="cn">FALSE</span>, xMin <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, xMax <span class="op">=</span> <span class="fl">65</span>, xStep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 
 <span class="co">#Flux, presentation version:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                   <span class="kw">flux</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">xMin</span> <span class="kw">=</span> -<span class="fl">5</span>, <span class="kw">xMax</span> <span class="kw">=</span> <span class="fl">55</span>, <span class="kw">xStep</span> <span class="kw">=</span> <span class="fl">5</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,
+                   flux<span class="op">=</span><span class="cn">TRUE</span>, xMin <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, xMax <span class="op">=</span> <span class="fl">55</span>, xStep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/histExampleCombo-1.png" width="672"></p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># To return to figures printing in 1 row, 1 columns:</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">1</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># To return to figures printing in 1 row, 1 columns:</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>                   </code></pre></div>
 <p>Or:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>,<span class="fl">1</span>))
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#Concentration, presentation version:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                   <span class="kw">flux</span><span class="kw">=</span><span class="fl">FALSE</span>, <span class="kw">xMin</span> <span class="kw">=</span> -<span class="fl">5</span>, <span class="kw">xMax</span> <span class="kw">=</span> <span class="fl">65</span>, <span class="kw">xStep</span> <span class="kw">=</span> <span class="fl">5</span>)
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,  
+                   flux<span class="op">=</span><span class="cn">FALSE</span>, xMin <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, xMax <span class="op">=</span> <span class="fl">65</span>, xStep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
 
 <span class="co">#Flux, presentation version:</span>
-<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span>(<span class="no">eList</span>, <span class="no">eBoot</span>, <span class="no">caseSetUp</span>,
-                  <span class="kw">flux</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">xMin</span> <span class="kw">=</span> -<span class="fl">5</span>, <span class="kw">xMax</span> <span class="kw">=</span> <span class="fl">65</span>, <span class="kw">xStep</span> <span class="kw">=</span> <span class="fl">5</span>,
-                  <span class="kw">printTitle</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotHistogramTrend.html">plotHistogramTrend</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">eBoot</span>, <span class="va">caseSetUp</span>,
+                  flux<span class="op">=</span><span class="cn">TRUE</span>, xMin <span class="op">=</span> <span class="op">-</span><span class="fl">5</span>, xMax <span class="op">=</span> <span class="fl">65</span>, xStep <span class="op">=</span> <span class="fl">5</span>,
+                  printTitle <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/histExampleCombo2-1.png" width="672"></p>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># To return to figures printing in 1 row, 1 columns:</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span>(<span class="kw">mfrow</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>,<span class="fl">1</span>))</pre></body></html></div>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># To return to figures printing in 1 row, 1 columns:</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mfrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span><span class="op">)</span>                   </code></pre></div>
 </div>
 </div>
 <div id="confidence-bands" class="section level1">
@@ -465,60 +473,64 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>If the period of analysis is to be anything other than a Water Year (paStart=10, paLong=12), the user must use the <code>setPA</code> function. For example if we want to do the analysis for the three months starting with April, the command would be <code>eList &lt;- setPA(eList, paStart = 4, paLong = 3)</code>.</p>
 <p>If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be <code>eList$INFO$windowY &lt;- 10</code>, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for <code>modelEstimation</code>).</p>
 <p>It is imperative that the standard WRTDS trend analysis be run prior to running the code for the confidence bands. If the user has made changes in smoothing parameters or modified the data in any way since the last time <code>modelEstimation</code> was run, the standard running of <code>modelEstimation</code> must be done and the output saved as <code>eList</code>. The commands would be:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">eList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/modelEstimation.html">modelEstimation</a></span>(<span class="no">eList</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/modelEstimation.html">modelEstimation</a></span><span class="op">(</span><span class="va">eList</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="simple-workflow" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simple-workflow" class="anchor"></a>Simple Workflow</h2>
 <p>This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRET</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRETci</span>)
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/">EGRET</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci">EGRETci</a></span><span class="op">)</span>
 
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 
-<span class="no">CIAnnualResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ciCalculations.html">ciCalculations</a></span>(<span class="no">eList</span>)
+<span class="va">CIAnnualResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ciCalculations.html">ciCalculations</a></span><span class="op">(</span><span class="va">eList</span><span class="op">)</span>
 
-<span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span>(<span class="no">eList</span>,<span class="no">CIAnnualResults</span>, <span class="kw">file</span><span class="kw">=</span><span class="st">"CIAnnualResults.RData"</span>)</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">eList</span>,<span class="va">CIAnnualResults</span>, file<span class="op">=</span><span class="st">"CIAnnualResults.RData"</span><span class="op">)</span></code></pre></div>
 <p>To run the <code>ciCalculations</code> function in batch mode, the only difference is that additional arguments are specified in the call to the function. For example the call to <code>ciCalculations</code> might read as follows:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">CIAnnualResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ciCalculations.html">ciCalculations</a></span>(<span class="no">eList</span>, <span class="kw">nBoot</span> <span class="kw">=</span> <span class="fl">100</span>, <span class="kw">blockLength</span> <span class="kw">=</span> <span class="fl">200</span>, <span class="kw">widthCI</span> <span class="kw">=</span> <span class="fl">90</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">CIAnnualResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ciCalculations.html">ciCalculations</a></span><span class="op">(</span><span class="va">eList</span>, nBoot <span class="op">=</span> <span class="fl">100</span>, blockLength <span class="op">=</span> <span class="fl">200</span>, widthCI <span class="op">=</span> <span class="fl">90</span><span class="op">)</span></code></pre></div>
 <p>As long as all required arguments (nBoot, blockLength, and widthCI) are specified there will be no interaction needed.</p>
 </div>
 <div id="parallel-computing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#parallel-computing" class="anchor"></a>Parallel Computing</h2>
 <p>Taking advantage of the <strong>foreach</strong> package to do parallel computing:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">foreach</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">doParallel</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iterators</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRET</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">EGRETci</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/foreach">foreach</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">doParallel</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/iterators">iterators</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/">EGRET</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci">EGRETci</a></span><span class="op">)</span>
 
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span>
-<span class="no">eList</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/modelEstimation.html">modelEstimation</a></span>(<span class="no">eList</span>)
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
+<span class="va">eList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/modelEstimation.html">modelEstimation</a></span><span class="op">(</span><span class="va">eList</span><span class="op">)</span> 
 
-<span class="no">nBoot</span> <span class="kw">&lt;-</span> <span class="fl">100</span>
-<span class="no">blockLength</span> <span class="kw">&lt;-</span> <span class="fl">200</span>
-<span class="no">coreOut</span> <span class="kw">&lt;-</span> <span class="fl">1</span> <span class="co">#Number of cores to leave out of processing tasks</span>
+<span class="va">nBoot</span> <span class="op">&lt;-</span> <span class="fl">100</span>
+<span class="va">blockLength</span> <span class="op">&lt;-</span> <span class="fl">200</span>
+<span class="va">coreOut</span> <span class="op">&lt;-</span> <span class="fl">1</span> <span class="co">#Number of cores to leave out of processing tasks</span>
 
-<span class="no">widthCI</span> <span class="kw">&lt;-</span> <span class="fl">90</span>
-<span class="no">ciLower</span> <span class="kw">&lt;-</span> (<span class="fl">50</span>-(<span class="no">widthCI</span>/<span class="fl">2</span>))/<span class="fl">100</span>
-<span class="no">ciUpper</span> <span class="kw">&lt;-</span> (<span class="fl">50</span>+(<span class="no">widthCI</span>/<span class="fl">2</span>))/<span class="fl">100</span>
-<span class="no">probs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">ciLower</span>,<span class="no">ciUpper</span>)
+<span class="va">widthCI</span> <span class="op">&lt;-</span> <span class="fl">90</span>
+<span class="va">ciLower</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">50</span><span class="op">-</span><span class="op">(</span><span class="va">widthCI</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>
+<span class="va">ciUpper</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fl">50</span><span class="op">+</span><span class="op">(</span><span class="va">widthCI</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">/</span><span class="fl">100</span>
+<span class="va">probs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">ciLower</span>,<span class="va">ciUpper</span><span class="op">)</span>
 
-<span class="no">nCores</span> <span class="kw">&lt;-</span> <span class="fu">detectCores</span>() - <span class="no">coreOut</span>
-<span class="no">cl</span> <span class="kw">&lt;-</span> <span class="fu">makeCluster</span>(<span class="no">nCores</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span>(<span class="no">cl</span>)
-<span class="no">repAnnual</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html">foreach</a></span>(<span class="kw">n</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="no">nBoot</span>,<span class="kw">.packages</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">'EGRETci'</span>)) <span class="kw">%dopar%</span> {
-   <span class="no">annualResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/bootAnnual.html">bootAnnual</a></span>(<span class="no">eList</span>,
-                               <span class="no">blockLength</span>,
-                               <span class="kw">startSeed</span> <span class="kw">=</span> <span class="no">n</span>)
-}
-<span class="fu">stopCluster</span>(<span class="no">cl</span>)
+<span class="va">nCores</span> <span class="op">&lt;-</span> <span class="fu">detectCores</span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="va">coreOut</span>
+<span class="va">cl</span> <span class="op">&lt;-</span> <span class="fu">makeCluster</span><span class="op">(</span><span class="va">nCores</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>
+<span class="va">repAnnual</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/foreach/man/foreach.html">foreach</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">nBoot</span>,.packages<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'EGRETci'</span><span class="op">)</span><span class="op">)</span> <span class="op">%dopar%</span> <span class="op">{</span>
+   <span class="va">annualResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bootAnnual.html">bootAnnual</a></span><span class="op">(</span><span class="va">eList</span>, 
+                               <span class="va">blockLength</span>,
+                               startSeed <span class="op">=</span> <span class="va">n</span><span class="op">)</span>  
+<span class="op">}</span>
+<span class="fu">stopCluster</span><span class="op">(</span><span class="va">cl</span><span class="op">)</span>               
 
 <span class="co"># save(repAnnual, file="repAnnual.RData")</span>
 
-<span class="no">CIAnnualResults</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ciBands.html">ciBands</a></span>(<span class="no">eList</span>, <span class="no">repAnnual</span>, <span class="no">probs</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span>(<span class="no">eList</span>,<span class="no">CIAnnualResults</span>, <span class="kw">file</span><span class="kw">=</span><span class="st">"CIAnnualResults.RData"</span>)</pre></body></html></div>
+<span class="va">CIAnnualResults</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ciBands.html">ciBands</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">repAnnual</span>, <span class="va">probs</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/save.html">save</a></span><span class="op">(</span><span class="va">eList</span>,<span class="va">CIAnnualResults</span>, file<span class="op">=</span><span class="st">"CIAnnualResults.RData"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="ci-result-plots" class="section level2">
 <h2 class="hasAnchor">
@@ -526,13 +538,15 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>Regardless of the way that the computations are done the outputs that are needed for the graphics are contained in eList and CIAnnualResults (which in either script will end up in a file called CIAnnualResults.RData). Once that file is loaded the graphics can be produced using the functions <code>plotConcHistBoot</code> and <code>plotFluxHistBoot</code>. Each of these functions only require two arguments (eList and CIAnnualResults). However, the user can specify a number of other arguments. These other arguments are the same ones used in the <code>plotConcHist</code> and <code>plotFluxHist</code> functions in the base <strong>EGRET</strong> package.</p>
 <p>The user can also view a table of the confidence interval values shown in these graphics simply by using the command <code>CIAnnualResults</code> (fluxes will be in units if kg/day).</p>
 <p>Here is a script for producing these graphics, using the example eList and CIAnnualResults data frames included in the package.</p>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">eList</span> <span class="kw">&lt;-</span> <span class="no">Choptank_eList</span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 
-<span class="no">CIAnnualResults</span> <span class="kw">&lt;-</span> <span class="no">Choptank_CIAnnualResults</span>
+<span class="va">CIAnnualResults</span> <span class="op">&lt;-</span> <span class="va">Choptank_CIAnnualResults</span>
 
-<span class="fu"><a href="../reference/plotConcHistBoot.html">plotConcHistBoot</a></span>(<span class="no">eList</span>, <span class="no">CIAnnualResults</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/plotConcHistBoot.html">plotConcHistBoot</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">CIAnnualResults</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="fu"><a href="../reference/plotFluxHistBoot.html">plotFluxHistBoot</a></span>(<span class="no">eList</span>, <span class="no">CIAnnualResults</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/plotFluxHistBoot.html">plotFluxHistBoot</a></span><span class="op">(</span><span class="va">eList</span>, <span class="va">CIAnnualResults</span><span class="op">)</span></code></pre></div>
 <p><img src="EGRETci_files/figure-html/unnamed-chunk-8-2.png" width="672"></p>
 </div>
 </div>
@@ -553,7 +567,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

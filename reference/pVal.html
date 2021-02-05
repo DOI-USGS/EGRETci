@@ -40,10 +40,10 @@
 
 
 <meta property="og:title" content="pVal — pVal" />
-<meta property="og:description" content="Computes the two-sided p value for the null hypothesis, where null 
-hypothesis is that the slope is zero, based on binomial distribution. 
-Should be noted that the result does not depend on the magnitude of the s 
-values only depends on the number of plus values and number of negative values." />
+<meta property="og:description" content="Computes the two-sided p value for the null hypothesis, where the null 
+hypothesis is that the slope is zero.  It is based on the binomial distribution. 
+Note that the result does not depend on the magnitude of the individual slope 
+values only depends on the number of positive slopes and number of negative slopes." />
 
 
 
@@ -75,7 +75,7 @@ values only depends on the number of plus values and number of negative values."
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ values only depends on the number of plus values and number of negative values."
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -109,7 +109,7 @@ values only depends on the number of plus values and number of negative values."
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/USGS-R/EGRETci/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -132,20 +132,20 @@ values only depends on the number of plus values and number of negative values."
     </div>
 
     <div class="ref-description">
-    <p>Computes the two-sided p value for the null hypothesis, where null 
-hypothesis is that the slope is zero, based on binomial distribution. 
-Should be noted that the result does not depend on the magnitude of the s 
-values only depends on the number of plus values and number of negative values.</p>
+    <p>Computes the two-sided p value for the null hypothesis, where the null 
+hypothesis is that the slope is zero.  It is based on the binomial distribution. 
+Note that the result does not depend on the magnitude of the individual slope 
+values only depends on the number of positive slopes and number of negative slopes.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>pVal</span>(<span class='no'>s</span>)</pre>
+    <pre class="usage"><span class='fu'>pVal</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>s</th>
-      <td><p>numeric vector of slope values from the bootstrap (already flipped)</p></td>
+      <td><p>numeric vector of slope values from the bootstrap</p></td>
     </tr>
     </table>
 
@@ -154,8 +154,9 @@ values only depends on the number of plus values and number of negative values.<
     <p>pVal numeric value</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>s</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(-<span class='fl'>1.0</span>, <span class='fl'>0</span>, <span class='fl'>0.5</span>, <span class='fl'>0.55</span>, <span class='fl'>3.0</span>)
-<span class='no'>pValue</span> <span class='kw'>&lt;-</span> <span class='fu'>pVal</span>(<span class='no'>s</span>)</div></pre>
+    <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='op'>-</span><span class='fl'>1.0</span>, <span class='fl'>0</span>, <span class='fl'>0.5</span>, <span class='fl'>0.55</span>, <span class='fl'>3.0</span><span class='op'>)</span>
+<span class='va'>pValue</span> <span class='op'>&lt;-</span> <span class='fu'>pVal</span><span class='op'>(</span><span class='va'>s</span><span class='op'>)</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -171,7 +172,7 @@ values only depends on the number of plus values and number of negative values.<
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

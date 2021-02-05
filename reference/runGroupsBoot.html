@@ -42,7 +42,8 @@
 <meta property="og:title" content="The bootstrap uncertainty analysis for runGroups results — runGroupsBoot" />
 <meta property="og:description" content="This function that does the uncertainty analysis for determining the change 
 between two groups of years.  The process is virtually 
-identical to what is used for runPairsBoot." />
+identical to what is used for runPairsBoot which looks at a change
+between a pair of years." />
 
 
 
@@ -74,7 +75,7 @@ identical to what is used for runPairsBoot." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
       </span>
     </div>
 
@@ -82,7 +83,7 @@ identical to what is used for runPairsBoot." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -108,7 +109,7 @@ identical to what is used for runPairsBoot." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/USGS-R/EGRETci/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -133,16 +134,12 @@ identical to what is used for runPairsBoot." />
     <div class="ref-description">
     <p>This function that does the uncertainty analysis for determining the change 
 between two groups of years.  The process is virtually 
-identical to what is used for <code><a href='runPairsBoot.html'>runPairsBoot</a></code>.</p>
+identical to what is used for <code><a href='runPairsBoot.html'>runPairsBoot</a></code> which looks at a change
+between a pair of years.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runGroupsBoot</span>(
-  <span class='no'>eList</span>,
-  <span class='no'>groupResults</span>,
-  <span class='kw'>nBoot</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>startSeed</span> <span class='kw'>=</span> <span class='fl'>494817</span>,
-  <span class='kw'>blockLength</span> <span class='kw'>=</span> <span class='fl'>200</span>
-)</pre>
+    <pre class="usage"><span class='fu'>runGroupsBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>groupResults</span>, nBoot <span class='op'>=</span> <span class='fl'>100</span>, startSeed <span class='op'>=</span> <span class='fl'>494817</span>,
+  blockLength <span class='op'>=</span> <span class='fl'>200</span>, jitterOn <span class='op'>=</span> <span class='cn'>FALSE</span>, V <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -167,38 +164,59 @@ identical to what is used for <code><a href='runPairsBoot.html'>runPairsBoot</a>
       <th>blockLength</th>
       <td><p>days, typically 200 is a good choice</p></td>
     </tr>
+    <tr>
+      <th>jitterOn</th>
+      <td><p>logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
+Default = FALSE.  See Details below.</p></td>
+    </tr>
+    <tr>
+      <th>V</th>
+      <td><p>numeric a multiplier for addition of jitter to the data, default = 0.2.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-of the bootstrapping tests. wordsOut is a character vector describing the results.
-xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-in flow normalized concentration or flux computed from each bootstrap replicate expressed as <!-- % change. --></p>
+    <p>eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.</p><ul>
+<li><p>bootOut is a data frame with the results of the bootstrap test.</p></li>
+<li><p>wordsOut is a character vector describing the results.</p></li>
+<li><p>xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration
+   and flow normalized flux computed from each of the bootstrap replicates.</p></li>
+<li><p>pConc and pFlux are vectors of length iBoot, of the change in flow normalized concentration
+   or flow normalized flux computed from each of the bootstrap replicates expressed as % change.</p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='runPairsBoot.html'>runPairsBoot</a></code>, <code><a href='https://rdrr.io/pkg/EGRET/man/runGroups.html'>runGroups</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>EGRET</span>)
-<span class='no'>eList</span> <span class='kw'>&lt;-</span> <span class='no'>Choptank_eList</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://pubs.usgs.gov/tm/04/a10/'>EGRET</a></span><span class='op'>)</span>
+<span class='va'>eList</span> <span class='op'>&lt;-</span> <span class='va'>Choptank_eList</span>
 
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>groupResults</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/EGRET/man/runGroups.html'>runGroups</a></span>(<span class='no'>eList</span>,
-                          <span class='kw'>group1firstYear</span> <span class='kw'>=</span> <span class='fl'>1995</span>,
-                          <span class='kw'>group1lastYear</span> <span class='kw'>=</span> <span class='fl'>2004</span>,
-                          <span class='kw'>group2firstYear</span> <span class='kw'>=</span> <span class='fl'>2005</span>,
-                          <span class='kw'>group2lastYear</span> <span class='kw'>=</span> <span class='fl'>2014</span>,
-                          <span class='kw'>windowSide</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>wall</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-                          <span class='kw'>sample1EndDate</span> <span class='kw'>=</span> <span class='st'>"2004-10-30"</span>,
-                          <span class='kw'>paStart</span> <span class='kw'>=</span> <span class='fl'>4</span>, <span class='kw'>paLong</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-                          <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>groupResults</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/EGRET/man/runGroups.html'>runGroups</a></span><span class='op'>(</span><span class='va'>eList</span>, 
+                          group1firstYear <span class='op'>=</span> <span class='fl'>1995</span>, 
+                          group1lastYear <span class='op'>=</span> <span class='fl'>2004</span>, 
+                          group2firstYear <span class='op'>=</span> <span class='fl'>2005</span>, 
+                          group2lastYear <span class='op'>=</span> <span class='fl'>2014</span>, 
+                          windowSide <span class='op'>=</span> <span class='fl'>7</span>, wall <span class='op'>=</span> <span class='cn'>TRUE</span>, 
+                          sample1EndDate <span class='op'>=</span> <span class='st'>"2004-10-30"</span>, 
+                          paStart <span class='op'>=</span> <span class='fl'>4</span>, paLong <span class='op'>=</span> <span class='fl'>2</span>, 
+                          verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='no'>boot_group_out</span> <span class='kw'>&lt;-</span> <span class='fu'>runGroupsBoot</span>(<span class='no'>eList</span>, <span class='no'>groupResults</span>)
+<span class='va'>boot_group_out</span> <span class='op'>&lt;-</span> <span class='fu'>runGroupsBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>groupResults</span><span class='op'>)</span>
 
-<span class='fu'><a href='plotHistogramTrend.html'>plotHistogramTrend</a></span>(<span class='no'>eList</span>, <span class='no'>boot_group_out</span>, <span class='kw'>caseSetUp</span><span class='kw'>=</span><span class='fl'>NA</span>)
-}</div></pre>
+<span class='fu'><a href='plotHistogramTrend.html'>plotHistogramTrend</a></span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>boot_group_out</span>, caseSetUp<span class='op'>=</span><span class='cn'>NA</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -214,7 +232,7 @@ in flow normalized concentration or flux computed from each bootstrap replicate 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

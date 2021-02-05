@@ -44,7 +44,9 @@
 pair of years.  It is very similar to the wBT function that runs the WRTDS 
 bootstrap test.  It differs from wBT in that it runs a specific number of 
 bootstrap replicates, unlike the wBT approach that will stop running replicates 
-based on the status of the test statistics along the way." />
+based on the status of the test statistics along the way.  Also, this code can be used with
+generalized flow normalization, which handles non-stationary discharge, 
+whereas wBT does not." />
 
 
 
@@ -76,7 +78,7 @@ based on the status of the test statistics along the way." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
       </span>
     </div>
 
@@ -84,7 +86,7 @@ based on the status of the test statistics along the way." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -110,7 +112,7 @@ based on the status of the test statistics along the way." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/USGS-R/EGRETci/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -137,16 +139,13 @@ based on the status of the test statistics along the way." />
 pair of years.  It is very similar to the <code><a href='wBT.html'>wBT</a></code> function that runs the WRTDS 
 bootstrap test.  It differs from <code><a href='wBT.html'>wBT</a></code> in that it runs a specific number of 
 bootstrap replicates, unlike the <code><a href='wBT.html'>wBT</a></code> approach that will stop running replicates 
-based on the status of the test statistics along the way.</p>
+based on the status of the test statistics along the way.  Also, this code can be used with
+generalized flow normalization, which handles non-stationary discharge, 
+whereas <code><a href='wBT.html'>wBT</a></code> does not.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>runPairsBoot</span>(
-  <span class='no'>eList</span>,
-  <span class='no'>pairResults</span>,
-  <span class='kw'>nBoot</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>startSeed</span> <span class='kw'>=</span> <span class='fl'>494817</span>,
-  <span class='kw'>blockLength</span> <span class='kw'>=</span> <span class='fl'>200</span>
-)</pre>
+    <pre class="usage"><span class='fu'>runPairsBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>pairResults</span>, nBoot <span class='op'>=</span> <span class='fl'>100</span>, startSeed <span class='op'>=</span> <span class='fl'>494817</span>,
+  blockLength <span class='op'>=</span> <span class='fl'>200</span>, jitterOn <span class='op'>=</span> <span class='cn'>FALSE</span>, V <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,32 +170,52 @@ based on the status of the test statistics along the way.</p>
       <th>blockLength</th>
       <td><p>days, typically 200 is a good choice</p></td>
     </tr>
+    <tr>
+      <th>jitterOn</th>
+      <td><p>logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.</p></td>
+    </tr>
+    <tr>
+      <th>V</th>
+      <td><p>numeric a multiplier for addition of jitter to the data, default = 0.2.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-of the bootstrapping tests. wordsOut is a character vector describing the results.
-xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-in flow normalized concentration or flux computed from each bootstrap replicate expressed as <!-- % change. --></p>
+    <p>eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.</p><ul>
+<li><p>bootOut is a data frame with the results of the bootstrap test.</p></li>
+<li><p>wordsOut is a character vector describing the results.</p></li>
+<li><p>xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration
+   and flow normalized flux computed from each of the bootstrap replicates.</p></li>
+<li><p>pConc and pFlux are vectors of length iBoot, of the change in flow normalized concentration
+   or flow normalized flux computed from each of the bootstrap replicates expressed as % change.</p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='runGroupsBoot.html'>runGroupsBoot</a></code>, <code><a href='https://rdrr.io/pkg/EGRET/man/runPairs.html'>runPairs</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>EGRET</span>)
-<span class='no'>eList</span> <span class='kw'>&lt;-</span> <span class='no'>Choptank_eList</span>
-<span class='no'>year1</span> <span class='kw'>&lt;-</span> <span class='fl'>1985</span>
-<span class='no'>year2</span> <span class='kw'>&lt;-</span> <span class='fl'>2009</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://pubs.usgs.gov/tm/04/a10/'>EGRET</a></span><span class='op'>)</span>
+<span class='va'>eList</span> <span class='op'>&lt;-</span> <span class='va'>Choptank_eList</span>
+<span class='va'>year1</span> <span class='op'>&lt;-</span> <span class='fl'>1985</span>
+<span class='va'>year2</span> <span class='op'>&lt;-</span> <span class='fl'>2009</span>
 
-<span class='kw'>if</span> (<span class='fl'>FALSE</span>) {
-<span class='no'>pairOut_2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/EGRET/man/runPairs.html'>runPairs</a></span>(<span class='no'>eList</span>, <span class='no'>year1</span>, <span class='no'>year2</span>, <span class='kw'>windowSide</span> <span class='kw'>=</span> <span class='fl'>7</span>)
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>pairOut_2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/EGRET/man/runPairs.html'>runPairs</a></span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>year1</span>, <span class='va'>year2</span>, windowSide <span class='op'>=</span> <span class='fl'>7</span><span class='op'>)</span>
 
-<span class='no'>boot_pair_out</span> <span class='kw'>&lt;-</span> <span class='fu'>runPairsBoot</span>(<span class='no'>eList</span>, <span class='no'>pairOut_2</span>)
+<span class='va'>boot_pair_out</span> <span class='op'>&lt;-</span> <span class='fu'>runPairsBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>pairOut_2</span><span class='op'>)</span>
 
-<span class='fu'><a href='plotHistogramTrend.html'>plotHistogramTrend</a></span>(<span class='no'>eList</span>, <span class='no'>boot_pair_out</span>, <span class='kw'>caseSetUp</span><span class='kw'>=</span><span class='fl'>NA</span>)
-}</div></pre>
+<span class='fu'><a href='plotHistogramTrend.html'>plotHistogramTrend</a></span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>boot_pair_out</span>, caseSetUp <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -212,7 +231,7 @@ in flow normalized concentration or flux computed from each bootstrap replicate 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

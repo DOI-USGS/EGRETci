@@ -40,7 +40,14 @@
 
 
 <meta property="og:title" content="WRTDSKalman Bootstrapping — genDailyBoot" />
-<meta property="og:description" content="Funtion to get" />
+<meta property="og:description" content="Function to get multiple bootstrap replicates at a daily time step using the WRTDS_K
+method.  It is done by doing bootstrap resampling of the original Sample data frame.
+The number of these replicate samples that are created is called nBoot and in each
+case the WRTDS model is estimated.  Then, for each of these models, there are
+nKalman time series of daily values computed, using all of the sample values in
+the original Sample data frame.  The total number of replicates of the complete
+process is nBoot * nKalman.  For example we might generate 500 replicates by setting
+nBoot = 20 and nKalman = 25." />
 
 
 
@@ -72,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
       </span>
     </div>
 
@@ -80,7 +87,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -106,7 +113,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/USGS-R/EGRETci/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -129,17 +136,18 @@
     </div>
 
     <div class="ref-description">
-    <p>Funtion to get</p>
+    <p>Function to get multiple bootstrap replicates at a daily time step using the WRTDS_K
+method.  It is done by doing bootstrap resampling of the original Sample data frame.
+The number of these replicate samples that are created is called nBoot and in each
+case the WRTDS model is estimated.  Then, for each of these models, there are
+nKalman time series of daily values computed, using all of the sample values in
+the original Sample data frame.  The total number of replicates of the complete
+process is nBoot * nKalman.  For example we might generate 500 replicates by setting
+nBoot = 20 and nKalman = 25.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>genDailyBoot</span>(
-  <span class='no'>eList</span>,
-  <span class='kw'>nBoot</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>nKalman</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>rho</span> <span class='kw'>=</span> <span class='fl'>0.9</span>,
-  <span class='kw'>niter</span> <span class='kw'>=</span> <span class='fl'>200</span>,
-  <span class='kw'>setSeed</span> <span class='kw'>=</span> <span class='fl'>NA</span>
-)</pre>
+    <pre class="usage"><span class='fu'>genDailyBoot</span><span class='op'>(</span><span class='va'>eList</span>, nBoot <span class='op'>=</span> <span class='fl'>10</span>, nKalman <span class='op'>=</span> <span class='fl'>10</span>, rho <span class='op'>=</span> <span class='fl'>0.9</span>, setSeed <span class='op'>=</span> <span class='cn'>NA</span>,
+  jitterOn <span class='op'>=</span> <span class='cn'>FALSE</span>, V <span class='op'>=</span> <span class='fl'>0.2</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -151,77 +159,66 @@ may have multiple values on a given day and it can also have censored values.</p
     </tr>
     <tr>
       <th>nBoot</th>
-      <td><p>number of times the bootstrap resampling and model estimating is done</p></td>
+      <td><p>number of times the bootstrap resampling and model estimating is done.</p></td>
     </tr>
     <tr>
       <th>nKalman</th>
-      <td><p>number of different realizations for each re-estimated model</p></td>
+      <td><p>number of different realizations of the daily time series for each re-estimated model.</p></td>
     </tr>
     <tr>
       <th>rho</th>
       <td><p>numeric the lag one autocorrelation. Default is 0.9.</p></td>
     </tr>
     <tr>
-      <th>niter</th>
-      <td><p>number of iterations. Default is 200.</p></td>
-    </tr>
-    <tr>
       <th>setSeed</th>
       <td><p>value. Defaults is <code>NA</code>, which will not specify a randomized seed.
 This can be used to make repeatable output.</p></td>
     </tr>
+    <tr>
+      <th>jitterOn</th>
+      <td><p>logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.</p></td>
+    </tr>
+    <tr>
+      <th>V</th>
+      <td><p>numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.</p></td>
+    </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>dailyBootOut a matrix of daily flux values (in kg/day).  
+The number of columns of the matrix is the number of replicates produced
+which is nBoot * nKalman
+The number of rows is the number of days in the record.  
+The set of days simulated is the same set of days that are in the eList$Daily data frame.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>eList</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>EGRET</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/EGRET/man/sampleData.html'>Choptank_eList</a></span>
-<span class='no'>dailyBoot</span> <span class='kw'>&lt;-</span> <span class='fu'>genDailyBoot</span>(<span class='no'>eList</span>, <span class='kw'>nBoot</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>nKalman</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; Boot:  1 </div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>There are 253 duplicated Sample dates.</span></div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>In model estimation, the survival regression function was run 7406 times (for different combinations of discharge and time).  In 15 of these runs it did not properly converge. This does not mean that the model is unacceptable, but it is a suggestion that there may be something odd about the data set. You may want to check for outliers, repeated values on a single date, or something else unusual about the data.</span></div><div class='output co'>#&gt; 
-#&gt;  made surfaces from boot sample 1 replicate     - Kalman index:  1 </div><div class='output co'>#&gt; <span class='message'>This function is currently in development</span></div><div class='output co'>#&gt; % complete:
-#&gt; 0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	10 	
-#&gt; 11 	12 	13 	14 	15 	16 	17 	18 	19 	20 	
-#&gt; 21 	22 	23 	24 	25 	26 	27 	28 	29 	30 	
-#&gt; 31 	32 	33 	34 	35 	36 	37 	38 	39 	40 	
-#&gt; 41 	42 	43 	44 	45 	46 	47 	48 	49 	50 	
-#&gt; 51 	52 	53 	54 	55 	56 	57 	58 	59 	60 	
-#&gt; 61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	
-#&gt; 71 	72 	73 	74 	75 	76 	77 	78 	79 	80 	
-#&gt; 81 	82 	83 	84 	85 	86 	87 	88 	89 	90 	
-#&gt; 91 	92 	93 	94 	95 	96 	97 	98 	99 	     - Kalman index:  2 </div><div class='output co'>#&gt; <span class='message'>This function is currently in development</span></div><div class='output co'>#&gt; % complete:
-#&gt; 0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	10 	
-#&gt; 11 	12 	13 	14 	15 	16 	17 	18 	19 	20 	
-#&gt; 21 	22 	23 	24 	25 	26 	27 	28 	29 	30 	
-#&gt; 31 	32 	33 	34 	35 	36 	37 	38 	39 	40 	
-#&gt; 41 	42 	43 	44 	45 	46 	47 	48 	49 	50 	
-#&gt; 51 	52 	53 	54 	55 	56 	57 	58 	59 	60 	
-#&gt; 61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	
-#&gt; 71 	72 	73 	74 	75 	76 	77 	78 	79 	80 	
-#&gt; 81 	82 	83 	84 	85 	86 	87 	88 	89 	90 	
-#&gt; 91 	92 	93 	94 	95 	96 	97 	98 	99 	Boot:  2 </div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>There are 197 duplicated Sample dates.</span></div><div class='output co'>#&gt; 
-#&gt;  made surfaces from boot sample 2 replicate     - Kalman index:  1 </div><div class='output co'>#&gt; <span class='message'>This function is currently in development</span></div><div class='output co'>#&gt; % complete:
-#&gt; 0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	10 	
-#&gt; 11 	12 	13 	14 	15 	16 	17 	18 	19 	20 	
-#&gt; 21 	22 	23 	24 	25 	26 	27 	28 	29 	30 	
-#&gt; 31 	32 	33 	34 	35 	36 	37 	38 	39 	40 	
-#&gt; 41 	42 	43 	44 	45 	46 	47 	48 	49 	50 	
-#&gt; 51 	52 	53 	54 	55 	56 	57 	58 	59 	60 	
-#&gt; 61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	
-#&gt; 71 	72 	73 	74 	75 	76 	77 	78 	79 	80 	
-#&gt; 81 	82 	83 	84 	85 	86 	87 	88 	89 	90 	
-#&gt; 91 	92 	93 	94 	95 	96 	97 	98 	99 	     - Kalman index:  2 </div><div class='output co'>#&gt; <span class='message'>This function is currently in development</span></div><div class='output co'>#&gt; % complete:
-#&gt; 0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	10 	
-#&gt; 11 	12 	13 	14 	15 	16 	17 	18 	19 	20 	
-#&gt; 21 	22 	23 	24 	25 	26 	27 	28 	29 	30 	
-#&gt; 31 	32 	33 	34 	35 	36 	37 	38 	39 	40 	
-#&gt; 41 	42 	43 	44 	45 	46 	47 	48 	49 	50 	
-#&gt; 51 	52 	53 	54 	55 	56 	57 	58 	59 	60 	
-#&gt; 61 	62 	63 	64 	65 	66 	67 	68 	69 	70 	
-#&gt; 71 	72 	73 	74 	75 	76 	77 	78 	79 	80 	
-#&gt; 81 	82 	83 	84 	85 	86 	87 	88 	89 	90 	
-#&gt; 91 	92 	93 	94 	95 	96 	97 	98 	99 	</div><div class='input'>
+<span class='va'>eList</span> <span class='op'>&lt;-</span> <span class='fu'>EGRET</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/EGRET/man/sampleData.html'>Choptank_eList</a></span>
+<span class='va'>dailyBootOut</span> <span class='op'>&lt;-</span> <span class='fu'>genDailyBoot</span><span class='op'>(</span><span class='va'>eList</span>, nBoot <span class='op'>=</span> <span class='fl'>2</span>, nKalman <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Boot:  1 </div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>There are 253 duplicated Sample dates.</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Ran out of iterations and did not converge</span></div><div class='output co'>#&gt; 
+#&gt;  made surfaces from boot sample 1 replicate     - Kalman index:  1 
+#&gt; % complete:
+#&gt; 100 	
+#&gt;      - Kalman index:  2 
+#&gt; % complete:
+#&gt; 100 	
+#&gt; Boot:  2 </div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>There are 232 duplicated Sample dates.</span></div><div class='output co'>#&gt; 
+#&gt;  made surfaces from boot sample 2 replicate     - Kalman index:  1 
+#&gt; % complete:
+#&gt; 100 	
+#&gt;      - Kalman index:  2 
+#&gt; % complete:
+#&gt; 100 	</div><div class='input'>
 
 </div></pre>
   </div>
@@ -239,7 +236,7 @@ This can be used to make repeatable output.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

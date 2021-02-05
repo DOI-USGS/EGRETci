@@ -4,41 +4,54 @@
 \alias{genDailyBoot}
 \title{WRTDSKalman Bootstrapping}
 \usage{
-genDailyBoot(
-  eList,
-  nBoot = 10,
-  nKalman = 10,
-  rho = 0.9,
-  setSeed = NA,
-  jitterOn = FALSE,
-  V = 0.2
-)
+genDailyBoot(eList, nBoot = 10, nKalman = 10, rho = 0.9, setSeed = NA,
+  jitterOn = FALSE, V = 0.2)
 }
 \arguments{
 \item{eList}{is the data with a fitted model already done. Note that the eList$Sample 
 may have multiple values on a given day and it can also have censored values.}
 
-\item{nBoot}{number of times the bootstrap resampling and model estimating is done}
+\item{nBoot}{number of times the bootstrap resampling and model estimating is done.}
 
-\item{nKalman}{number of different realizations for each re-estimated model}
+\item{nKalman}{number of different realizations of the daily time series for each re-estimated model.}
 
 \item{rho}{numeric the lag one autocorrelation. Default is 0.9.}
 
 \item{setSeed}{value. Defaults is \code{NA}, which will not specify a randomized seed.
 This can be used to make repeatable output.}
 
-\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+\item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.}
 
-\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
-means that the sd of the LnQ jitter is 0.02*sdLQ}
+\item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.}
+}
+\value{
+dailyBootOut a matrix of daily flux values (in kg/day).  
+The number of columns of the matrix is the number of replicates produced
+which is nBoot * nKalman
+The number of rows is the number of days in the record.  
+The set of days simulated is the same set of days that are in the eList$Daily data frame.
 }
 \description{
-Function to get bootstrapping results from WRTDS_K
+Function to get multiple bootstrap replicates at a daily time step using the WRTDS_K
+method.  It is done by doing bootstrap resampling of the original Sample data frame.
+The number of these replicate samples that are created is called nBoot and in each
+case the WRTDS model is estimated.  Then, for each of these models, there are
+nKalman time series of daily values computed, using all of the sample values in
+the original Sample data frame.  The total number of replicates of the complete
+process is nBoot * nKalman.  For example we might generate 500 replicates by setting
+nBoot = 20 and nKalman = 25.
+}
+\details{
+In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 }
 \examples{
 
 eList <- EGRET::Choptank_eList
-dailyBoot <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
+dailyBootOut <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
 
 
 }

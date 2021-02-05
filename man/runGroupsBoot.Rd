@@ -4,15 +4,8 @@
 \alias{runGroupsBoot}
 \title{The bootstrap uncertainty analysis for runGroups results}
 \usage{
-runGroupsBoot(
-  eList,
-  groupResults,
-  nBoot = 100,
-  startSeed = 494817,
-  blockLength = 200,
-  jitterOn = FALSE,
-  V = 0.2
-)
+runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
+  blockLength = 200, jitterOn = FALSE, V = 0.2)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
@@ -25,22 +18,34 @@ runGroupsBoot(
 
 \item{blockLength}{days, typically 200 is a good choice}
 
-\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+\item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
+Default = FALSE.  See Details below.}
 
-\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
-means that the sd of the LnQ jitter is 0.02*sdLQ}
+\item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.}
 }
 \value{
-eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-of the bootstrapping tests. wordsOut is a character vector describing the results.
-xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
+\itemize{
+  \item{bootOut is a data frame with the results of the bootstrap test.}
+  \item{wordsOut is a character vector describing the results.}
+  \item{xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration
+   and flow normalized flux computed from each of the bootstrap replicates.}
+  \item{pConc and pFlux are vectors of length iBoot, of the change in flow normalized concentration
+   or flow normalized flux computed from each of the bootstrap replicates expressed as \% change.}
+}
 }
 \description{
 This function that does the uncertainty analysis for determining the change 
 between two groups of years.  The process is virtually 
-identical to what is used for \code{\link{runPairsBoot}}.
+identical to what is used for \code{\link{runPairsBoot}} which looks at a change
+between a pair of years.
+}
+\details{
+In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 }
 \examples{
 library(EGRET)

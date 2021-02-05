@@ -13,12 +13,18 @@ makeMonths(dailyBootOut, eList)
 may have multiple values on a given day and it can also have censored values.}
 }
 \value{
-a list of 2 data frame with monthSeq column that corresponds to the months
-in the "MonthSeq" column in the Daily data frame. The remaining columns are
+a list of 2 data frames, one for average concentration, in mg/L
+and one for flux (in kg/day)
+In each data frame the first column is monthSeq that corresponds to the months
+in the "MonthSeq" column in the eList$Daily data frame. The remaining columns are
 quantiles of the flux or concentration (depending on the data frame).
 }
 \description{
-Month statistics
+Month statistics using WRTDSKalman bootstrapping approach.  The input to this
+function is the dailyBootOut matrix which contains nReplicate sets of 
+daily flux values for the period of interest.
+The results are in the form of quantiles of concentration and of flux 
+for each of these months.
 }
 \examples{
 eList <- EGRET::Choptank_eList

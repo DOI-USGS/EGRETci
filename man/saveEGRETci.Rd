@@ -15,8 +15,11 @@ saveEGRETci(eList, eBoot, caseSetUp, fileName = "")
 
 \item{fileName}{character. If left blank (empty quotes), the function will interactively ask for a name to save.}
 }
+\value{
+A .RData file containing three objects: eList, eBoot, and caseSetUp
+}
 \description{
-Saves critical information in a EGRETci workflow when analyzing trends over a set of two years.
+Saves critical information in a EGRETci workflow when analyzing trends between a starting and ending year.
 }
 \examples{
 library(EGRET)

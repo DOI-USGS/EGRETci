@@ -29,6 +29,7 @@ Walks user through the set-up for the WRTDS Bootstrap Test.  Establishes
 start and end year for the test period.  Sets the minimum number of 
 bootstrap replicates to be run, the maximum number of bootstrap replicates 
 to be run, and the block length (in days) for the block bootstrapping.
+The test is designed to evaluate the uncertainty about the trend between any pair of years.
 }
 \examples{
 library(EGRET)
@@ -37,7 +38,7 @@ eList <- Choptank_eList
 # Completely interactive:
 caseSetUp <- trendSetUp(eList)
 # Semi-interactive:
-caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
+caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
 }
 }
 \seealso{

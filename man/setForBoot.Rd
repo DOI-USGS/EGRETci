@@ -4,27 +4,21 @@
 \alias{setForBoot}
 \title{Allows user to set window parameters for the WRTDS model prior to running the bootstrap procedure}
 \usage{
-setForBoot(
-  eList,
-  caseSetUp,
-  windowY = 7,
-  windowQ = 2,
-  windowS = 0.5,
-  edgeAdjust = TRUE
-)
+setForBoot(eList, caseSetUp, windowY = 7, windowQ = 2, windowS = 0.5,
+  edgeAdjust = TRUE)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{caseSetUp}{data frame returned from \code{\link{trendSetUp}}}
+\item{caseSetUp}{data frame returned from \code{\link{trendSetUp}}.}
 
-\item{windowY}{numeric specifying the half-window width in the time dimension, in units of years, default is 7}
+\item{windowY}{numeric specifying the half-window width in the time dimension, in units of years, default is 7.}
 
-\item{windowQ}{numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2}
+\item{windowQ}{numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2.}
 
-\item{windowS}{numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5}
+\item{windowS}{numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5.}
 
-\item{edgeAdjust}{logical specifying whether to use the modified method for calculating the windows at the edge of the record.}
+\item{edgeAdjust}{logical specifying whether to use the modified method for calculating the windows at the edge of the record, default is TRUE.}
 }
 \value{
 eList list with Daily,Sample, INFO data frames and surface matrix.

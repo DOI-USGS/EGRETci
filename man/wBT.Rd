@@ -4,15 +4,8 @@
 \alias{wBT}
 \title{Run the WBT (WRTDS Bootstrap Test)}
 \usage{
-wBT(
-  eList,
-  caseSetUp,
-  saveOutput = TRUE,
-  fileName = "temp.txt",
-  startSeed = 494817,
-  jitterOn = FALSE,
-  V = 0.2
-)
+wBT(eList, caseSetUp, saveOutput = TRUE, fileName = "temp.txt",
+  startSeed = 494817, jitterOn = FALSE, V = 0.2)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -25,17 +18,21 @@ wBT(
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
-\item{jitterOn}{logical. If \code{TRUE}, the code will "jitter" the}
+\item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.}
 
-\item{V}{a multiplier for the sd of the LogQ jitter. for example V = 0.02,
-means that the sd of the LnQ jitter is 0.02*sdLQ}
+\item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.}
 }
 \value{
-eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-of the bootstrapping tests. wordsOut is a character vector describing the results.
-xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
+\tabular{ll}{
+Object \tab Description\cr
+bootOut \tab a data frame with the results of the bootstrap test. \cr
+wordsOut \tab a character vector describing the results. \cr
+xConc and xFlux \tab vectors of length iBoot, of the change in flow normalized concentration
+   and flow normalized flux computed from each of the bootstrap replicates. \cr
+pConc and pFlux \tab vectors of length iBoot, of the change in flow normalized concentration
+   or flow normalized flux computed from each of the bootstrap replicates expressed as % change. \cr
+}
 }
 \description{
 Runs the WBT for a given data set to evaluate the significance level and 
@@ -43,7 +40,16 @@ confidence intervals for the trends between two specified years.  The trends
 evaluated are trends in flow normalized concentration and flow normalized flux.  
 Function produces text outputs and a named list (eBoot) that contains all of the 
 relevant outputs. Check out \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}}
-for more bootstrapping options.
+for more bootstrapping options. 
+The wBT only runs stationary flow normalization (i.e. making the assumption that discharge is stationary).  
+The \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}} allow for generalized flow normalization (i.e. non-stationary discharge).
+}
+\details{
+In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+The standard deviation of the added jitter is V * standard deviation of Log Q.
+The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 }
 \examples{
 library(EGRET)

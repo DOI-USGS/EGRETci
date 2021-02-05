@@ -4,22 +4,33 @@
 #' pair of years.  It is very similar to the \code{\link{wBT}} function that runs the WRTDS 
 #' bootstrap test.  It differs from \code{\link{wBT}} in that it runs a specific number of 
 #' bootstrap replicates, unlike the \code{\link{wBT}} approach that will stop running replicates 
-#' based on the status of the test statistics along the way.
+#' based on the status of the test statistics along the way.  Also, this code can be used with
+#' generalized flow normalization, which handles non-stationary discharge, 
+#' whereas \code{\link{wBT}} does not. 
 #' 
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param pairResults data frame returned from \code{\link[EGRET]{runPairs}}
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
 #' @param blockLength days, typically 200 is a good choice
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
-#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
-#'  means that the sd of the LnQ jitter is 0.02*sdLQ
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.
 #' @export
-#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-#' of the bootstrapping tests. wordsOut is a character vector describing the results.
-#' xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-#' computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-#' in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change. 
+#' @details
+#' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+#' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+#' It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+#' The standard deviation of the added jitter is V * standard deviation of Log Q.
+#' The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
+#' @return eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
+#' \itemize{
+#'   \item{bootOut is a data frame with the results of the bootstrap test. }
+#'   \item{wordsOut is a character vector describing the results.}
+#'   \item{xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration
+#'    and flow normalized flux computed from each of the bootstrap replicates. }
+#'   \item{pConc and pFlux are vectors of length iBoot, of the change in flow normalized concentration
+#'    or flow normalized flux computed from each of the bootstrap replicates expressed as \% change.}
+#' }
 #' @seealso \code{\link{runGroupsBoot}}, \code{\link[EGRET]{runPairs}}
 #' @importFrom EGRET jitterSam
 #' @examples 
@@ -33,12 +44,12 @@
 #' 
 #' boot_pair_out <- runPairsBoot(eList, pairOut_2)
 #' 
-#' plotHistogramTrend(eList, boot_pair_out, caseSetUp=NA)
+#' plotHistogramTrend(eList, boot_pair_out, caseSetUp = NA)
 #' }
 runPairsBoot <- function(eList, pairResults, 
-                         nBoot=100, startSeed = 494817, 
+                         nBoot = 100, startSeed = 494817, 
                          blockLength = 200, jitterOn = FALSE, V = 0.2) {
-
+  
   interactive <- FALSE
   localINFO <- eList$INFO
   localDaily <- eList$Daily
@@ -69,10 +80,10 @@ runPairsBoot <- function(eList, pairResults,
   paLong <- attr(pairResults, "yearPair")[["paLong"]]
   year1 <- attr(pairResults, "yearPair")[["year1"]]
   year2 <- attr(pairResults, "yearPair")[["year2"]]
-
+  
   startEnd1 <- EGRET::startEnd(paStart, paLong, year1)
   startEnd2 <- EGRET::startEnd(paStart, paLong, year2)
-
+  
   if(startEnd2$startDate > range(eList$Sample$Date)[2]){
     stop("year2 is outside the Sample range")
   }
@@ -80,12 +91,12 @@ runPairsBoot <- function(eList, pairResults,
   if(startEnd1$endDate < range(eList$Sample$Date)[1]){
     stop("year1 is outside the Sample range")
   }
-    
+  
   start1 <- as.Date(startEnd1[["startDate"]])
   end1 <- as.Date(startEnd1[["endDate"]])
   start2 <- as.Date(startEnd2[["startDate"]])
   end2 <- as.Date(startEnd2[["endDate"]])
-
+  
   dateInfo <- attr(pairResults, "dateInfo")
   
   sample1StartDate <- attr(pairResults, "SampleBlocks")[["sample1StartDate"]]
@@ -125,11 +136,11 @@ runPairsBoot <- function(eList, pairResults,
                          as.Date(dateInfo$flowNormEnd[1]), ]
   Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & localDaily$Date <= 
                          as.Date(dateInfo$flowNormEnd[2]), ]
-
+  
   # bootstrap loop starts here
   nBootGood <- 0
   for (iBoot in 1:(2*nBoot)){
-
+    
     bootSample <- blockSample(localSample = localSample, blockLength = blockLength, startSeed = startSeed + iBoot)
     
     if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
@@ -140,18 +151,18 @@ runPairsBoot <- function(eList, pairResults,
                             bootSample$Date <= sample1EndDate,]
     
     possibleError3 <- tryCatch( surfaces1 <- suppressMessages(EGRET::estSurfaces(eListBoot, surfaceStart = start1, surfaceEnd = end1,edgeAdjust = edgeAdjust,
-                                                         localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
-                                                         verbose = FALSE)), error = function(e) e)
+                                                                                 localSample = Sample1, minNumObs = minNumObs, minNumUncen = minNumUncen,
+                                                                                 verbose = FALSE)), error = function(e) e)
     
     Sample2 <- bootSample[bootSample$Date >= sample2StartDate &
                             bootSample$Date <= sample2EndDate,]
     
     possibleError4 <- tryCatch( surfaces2 <- suppressMessages(EGRET::estSurfaces(eListBoot, surfaceStart = start2, surfaceEnd = end2,edgeAdjust = edgeAdjust,
-                                                         localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
-                                                         verbose = FALSE)), error = function(e) e)
+                                                                                 localSample = Sample2, minNumObs = minNumObs, minNumUncen = minNumUncen,
+                                                                                 verbose = FALSE)), error = function(e) e)
     if (!inherits(possibleError3, "error") & 
         !inherits(possibleError4, "error")) {
-  # note that all the flux calculations inside the bootstrap loop are in kg/day units    
+      # note that all the flux calculations inside the bootstrap loop are in kg/day units    
       DailyRS1FD1 <- EGRET::estDailyFromSurfaces(eListBoot, localsurfaces = surfaces1, localDaily = Daily1)
       annualFlex <- EGRET::setupYears(DailyRS1FD1, paLong = paLong, paStart = paStart)
       
@@ -170,7 +181,7 @@ runPairsBoot <- function(eList, pairResults,
       
       if(!is.na(xConc_here) & !is.na(xFlux_here)){
         nBootGood <- nBootGood + 1
-      
+        
         xConc[nBootGood] <- xConc_here
         xFlux[nBootGood] <- xFlux_here
         LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
@@ -178,14 +189,14 @@ runPairsBoot <- function(eList, pairResults,
         LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
         pFlux[nBootGood] <- (100 * exp(LFlux)) - 100
         cat("\n iBoot, xConc and xFlux",nBootGood, xConc[nBootGood], xFlux[nBootGood])
-    #  end of bootstrap replicates loop
+        #  end of bootstrap replicates loop
         if(nBootGood >= nBoot) {
           break()
         }
       }
     } 
   }
-
+  
   if(iBoot == 2*nBoot){
     message(iBoot, " iterations were run. They only achieved ", nBootGood, " sucessful runs.")
   } else if (iBoot > nBoot){
@@ -220,7 +231,7 @@ runPairsBoot <- function(eList, pairResults,
   upC95 <- quantConc[["97.5%"]]
   pValC <- pVal(xConc)
   cat("\n approximate two-sided p-value for Conc", format(pValC, 
-                                                           digits = 2, width = 9))
+                                                          digits = 2, width = 9))
   xConc <- as.numeric(na.omit(xConc))
   nBootGood <- length(xConc)
   posX <- ifelse(xConc > 0, 1, 0)
@@ -250,7 +261,7 @@ runPairsBoot <- function(eList, pairResults,
   upF95 <- quantFlux[["97.5%"]]
   pValF <- pVal(xFlux)
   cat("\n approximate two-sided p-value for Flux", format(pValF, 
-                                                           digits = 2, width = 9))
+                                                          digits = 2, width = 9))
   xFlux <- as.numeric(na.omit(xFlux))
   nBootGood <- length(xFlux)
   posX <- ifelse(xFlux > 0, 1, 0)
@@ -272,14 +283,14 @@ runPairsBoot <- function(eList, pairResults,
   likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
   wordsOut <- wordLike(likeList)
   cat("\n\n", format(wordsOut[1], width = 30), "\n", format(wordsOut[3], 
-                                                               width = 30))
-  cat("\n", format(wordsOut[2], width = 30), "\n", format(wordsOut[4], 
                                                             width = 30))
+  cat("\n", format(wordsOut[2], width = 30), "\n", format(wordsOut[4], 
+                                                          width = 30))
   pConc <- as.numeric(na.omit(pConc))
   pFlux <- as.numeric(na.omit(pFlux))
   pairsBootOut <- list(bootOut = bootOut, wordsOut = wordsOut, 
-                xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux,
-                startSeed = startSeed)
+                       xConc = xConc, xFlux = xFlux, pConc = pConc, pFlux = pFlux,
+                       startSeed = startSeed)
   attr(pairsBootOut, "year1") <- year1
   attr(pairsBootOut, "year2") <- year2
   return(pairsBootOut)

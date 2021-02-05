@@ -37,6 +37,7 @@ NULL
 #' start and end year for the test period.  Sets the minimum number of 
 #' bootstrap replicates to be run, the maximum number of bootstrap replicates 
 #' to be run, and the block length (in days) for the block bootstrapping.
+#' The test is designed to evaluate the uncertainty about the trend between any pair of years.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots  additional arguments to bring in to reduce interactive options 
@@ -61,16 +62,16 @@ NULL
 #' # Completely interactive:
 #' caseSetUp <- trendSetUp(eList)
 #' # Semi-interactive:
-#' caseSetUp <- trendSetUp(eList, nBoot=100, blockLength=200)
+#' caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
 #' }
 trendSetUp <- function(eList, ...){
   
   matchReturn <- list(...)
-
+  
   numSamples <- length(eList$Sample$Date)
   message("Sample set runs from ", as.integer(eList$Sample$DecYear[1])," to ",
           as.integer(eList$Sample$DecYear[numSamples]))
- 
+  
   if(!is.null(matchReturn$year1)){
     year1 <- matchReturn$year1
   } else {
@@ -104,7 +105,7 @@ trendSetUp <- function(eList, ...){
     message("Enter min (minimum number of replicates), between 9 and nBoot, values of 39 or greater produce more accurate CIs")
     bootBreak <- as.numeric(readline())
   }
-
+  
   bootBreak <- if(bootBreak>nBoot) nBoot else bootBreak
   
   message("bootBreak = ",bootBreak," this is the minimum number of replicates that will be run")
@@ -116,7 +117,7 @@ trendSetUp <- function(eList, ...){
     blockLength <- as.numeric(readline())
   }
   message("blockLength = ",blockLength," this is the number of days in a bootstrap block")
-
+  
   confStop <- 0.7
   
   if(year1 < floor(min(eList$Sample$DecYear, na.rm = TRUE))){
@@ -126,7 +127,7 @@ trendSetUp <- function(eList, ...){
   if(year2 > ceiling(max(eList$Sample$DecYear, na.rm = TRUE))){
     stop("year2 is greater than the last Sample year")
   }
-
+  
   caseSetUp <- data.frame(year1=year1,
                           yearData1=yearData1,
                           year2=year2,
@@ -144,7 +145,7 @@ trendSetUp <- function(eList, ...){
 #' Save EGRETci workspace after running wBT (the WRTDS bootstrap test)
 #'
 #'
-#' Saves critical information in a EGRETci workflow when analyzing trends over a set of two years.
+#' Saves critical information in a EGRETci workflow when analyzing trends between a starting and ending year.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param eBoot named list. Returned from \code{\link{wBT}}.
@@ -152,6 +153,8 @@ trendSetUp <- function(eList, ...){
 #' @param fileName character. If left blank (empty quotes), the function will interactively ask for a name to save.
 #' @export
 #' @seealso \code{\link{wBT}}, \code{\link{trendSetUp}}, \code{\link[EGRET]{modelEstimation}}
+#' @return
+#' A .RData file containing three objects: eList, eBoot, and caseSetUp
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
@@ -166,7 +169,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
     message("Enter a filename for output (it will go in the working directory)\n")
     fileName<-readline()    
   }
-
+  
   fullName<-paste0(fileName,".RData")
   save(eList, eBoot, caseSetUp, file = fullName)
   message("Saved to: ",getwd(),"/",fullName)
@@ -179,24 +182,35 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' evaluated are trends in flow normalized concentration and flow normalized flux.  
 #' Function produces text outputs and a named list (eBoot) that contains all of the 
 #' relevant outputs. Check out \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}}
-#' for more bootstrapping options.
+#' for more bootstrapping options. 
+#' The wBT only runs stationary flow normalization (i.e. making the assumption that discharge is stationary).  
+#' The \code{\link{runPairsBoot}} and \code{\link{runGroupsBoot}} allow for generalized flow normalization (i.e. non-stationary discharge).
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param caseSetUp data frame. Returned from \code{\link{trendSetUp}}.
 #' @param saveOutput logical. If \code{TRUE}, a text file will be saved in the working directory.
 #' @param fileName character. Name to save the output file if \code{saveOutput=TRUE}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @param jitterOn logical. If \code{TRUE}, the code will "jitter" the 
-#' @param V a multiplier for the sd of the LogQ jitter. for example V = 0.02,
-#'  means that the sd of the LnQ jitter is 0.02*sdLQ
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.
 #' @importFrom binom binom.bayes
 #' @importFrom stats quantile
 #' @export
-#' @return eBoot, a named list with bootOut,wordsOut,xConc,xFlux values. bootOut is a data frame with the results
-#' of the bootstrapping tests. wordsOut is a character vector describing the results.
-#' xConc, xFlux are vectors of length iBoot, of the change in flow normalized concentration or flux 
-#' computed by each bootstrap replicate (mg/L). pConc and pFlux are vectors of length iBoot, of the change 
-#' in flow normalized concentration or flux computed from each bootstrap replicate expressed as % change.
+#' @details
+#' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
+#' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
+#' It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
+#' The standard deviation of the added jitter is V * standard deviation of Log Q.
+#' The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
+#' @return eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
+#' \itemize{
+#'   \bootOut is a data frame with the results of the bootstrap test. 
+#'   \wordsOut is a character vector describing the results.
+#'   \xConc and xFlux are vectors of length iBoot, of the change in flow normalized concentration and flow normalized flux computed from each of the bootstrap replicates. 
+#'   \pConc and pFlux are vectors of length iBoot, of the change in flow normalized 
+concentration or flow normalized flux computed from each of the bootstrap replicates
+expressed as \% change.
+}
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}
 #' @examples
 #' library(EGRET)
@@ -210,9 +224,9 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #'   blockLength = 200)
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
-wBT<-function(eList,caseSetUp, 
-              saveOutput=TRUE, 
-              fileName="temp.txt", startSeed = 494817,
+wBT<-function(eList, caseSetUp, 
+              saveOutput = TRUE, 
+              fileName = "temp.txt", startSeed = 494817,
               jitterOn = FALSE, V = 0.2){
   
   #   This is the version of wBT that includes the revised calculation of the 
@@ -244,7 +258,7 @@ wBT<-function(eList,caseSetUp,
   bootBreak <- caseSetUp$bootBreak
   blockLength <- caseSetUp$blockLength
   periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = localINFO$paStart, 
-                                          PeriodLong = localINFO$paLong))
+                                                 PeriodLong = localINFO$paLong))
   confStop <- caseSetUp$confStop
   
   xConc <- rep(NA, nBoot)
@@ -261,7 +275,7 @@ wBT<-function(eList,caseSetUp,
     
     combo <- makeCombo(surfaces1, surfaces2)
     eListCombo <- suppressMessages(EGRET::as.egret(localINFO, localDaily, localSample, 
-                           combo))
+                                                   combo))
     res <- makeTwoYearsResults(eListCombo, year1, year2)
     regDeltaConc <- res[2] - res[1]
     estC <- regDeltaConc
@@ -330,7 +344,7 @@ wBT<-function(eList,caseSetUp,
     }
     nBootGood <- 0
     for (iBoot in 1:(2*nBoot)) {
-
+      
       bootSample <- blockSample(localSample = localSample, 
                                 blockLength = blockLength,
                                 startSeed = startSeed + iBoot)
@@ -420,7 +434,7 @@ wBT<-function(eList,caseSetUp,
     } else if (iBoot > nBoot){
       message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
     }
-
+    
     rejectC <- lowConc * highConc > 0
     rejectF <- lowFlux * highFlux > 0
     cat("\n\nShould we reject Ho that Flow Normalized Concentration Trend = 0 ?", 
@@ -544,9 +558,9 @@ wBT<-function(eList,caseSetUp,
     
   }
 }
-  
 
-  
+
+
 
 
 estSliceSurfacesSimpleAlt <- function(eList,year){
@@ -583,7 +597,7 @@ estSliceSurfacesSimpleAlt <- function(eList,year){
   vectorIndex <- paVector(year,localINFO$paStart,localINFO$paLong,vectorYear)
   # Tack on one data point on either side
   vectorIndex <- c(vectorIndex[1]-1,vectorIndex,vectorIndex[length(vectorIndex)]+1)
-
+  
   vectorIndex <- vectorIndex[vectorIndex != 0]
   
   vectorYear <- vectorYear[vectorIndex]
@@ -597,19 +611,19 @@ estSliceSurfacesSimpleAlt <- function(eList,year){
   
   if(utils::packageVersion("EGRET") >= "2.6.1"){
     resultSurvReg <- EGRET::runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
-                                DecLow = DecLow,DecHigh = DecHigh, 
-                                Sample = localSample,windowY = windowY,windowQ = windowQ,
-                                windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
-                                verbose =FALSE,edgeAdjust = edgeAdjust)
+                                       DecLow = DecLow,DecHigh = DecHigh, 
+                                       Sample = localSample,windowY = windowY,windowQ = windowQ,
+                                       windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
+                                       verbose =FALSE,edgeAdjust = edgeAdjust)
   } else {
     message("Consider updating the EGRET package")
     resultSurvReg <- EGRET::runSurvReg(estPtYear = estPtYear,estPtLQ = estPtLogQ,
-                                numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
-                                Sample = localSample,windowY = windowY,windowQ = windowQ,
-                                windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
-                                interactive =  FALSE,edgeAdjust = edgeAdjust)
+                                       numDays = numDays,DecLow = DecLow,DecHigh = DecHigh, 
+                                       Sample = localSample,windowY = windowY,windowQ = windowQ,
+                                       windowS = windowS,minNumObs = minNumObs,minNumUncen = minNumUncen,
+                                       interactive =  FALSE,edgeAdjust = edgeAdjust)
   }
-
+  
   
   for(iQ in 1:14) {
     for(iY in 1:length(vectorIndex)){ 
@@ -647,7 +661,7 @@ paVector <- function(year,paStart,paLong, vectorYear){
   endMaxYear <- as.POSIXct(paste0(year,"-12-31 23:59"))
   
   minTime_dec <- minYear_int + as.numeric(difftime(minTime, minYear, units = "secs"))/as.numeric(difftime(endMinYear, minYear, units = "secs"))
-
+  
   maxTime_dec <- year + as.numeric(difftime(maxTime, maxYear, units = "secs"))/as.numeric(difftime(endMaxYear, maxYear, units = "secs"))
   
   vectorIndex <- which(vectorYear >= minTime_dec & vectorYear <= maxTime_dec)
@@ -657,26 +671,26 @@ paVector <- function(year,paStart,paLong, vectorYear){
 
 
 makeCombo <- function (surfaces1,surfaces2) {
-	surfaces1[is.na(surfaces1)]<-0
-	surfaces2[is.na(surfaces2)]<-0
-	combo <- surfaces1 + surfaces2
-	combo[combo == 0] <- NA
-	return(combo)
+  surfaces1[is.na(surfaces1)]<-0
+  surfaces2[is.na(surfaces2)]<-0
+  combo <- surfaces1 + surfaces2
+  combo[combo == 0] <- NA
+  return(combo)
 }
 
 makeTwoYearsResults <- function(eList,year1,year2){
-
+  
   paStart <- eList$INFO$paStart
   paLong <- eList$INFO$paLong
-	returnDaily <- EGRET::estDailyFromSurfaces(eList)
+  returnDaily <- EGRET::estDailyFromSurfaces(eList)
   
-	bootAnnRes<- EGRET::setupYears(localDaily=returnDaily, 
+  bootAnnRes<- EGRET::setupYears(localDaily=returnDaily, 
                                  paStart=paStart, 
                                  paLong=paLong)
-	twoYearsResults <- c(bootAnnRes$FNConc[!is.na(bootAnnRes$FNConc)],
-	                     bootAnnRes$FNFlux[!is.na(bootAnnRes$FNFlux)])
-
-	return(twoYearsResults)
+  twoYearsResults <- c(bootAnnRes$FNConc[!is.na(bootAnnRes$FNConc)],
+                       bootAnnRes$FNFlux[!is.na(bootAnnRes$FNFlux)])
+  
+  return(twoYearsResults)
 }
 
 #' Allows user to set window parameters for the WRTDS model prior to running the bootstrap procedure
@@ -684,11 +698,11 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' Adds window parameters to INFO file in eList.
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param caseSetUp data frame returned from \code{\link{trendSetUp}}
-#' @param windowY numeric specifying the half-window width in the time dimension, in units of years, default is 7
-#' @param windowQ numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2
-#' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5
-#' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record.  
+#' @param caseSetUp data frame returned from \code{\link{trendSetUp}}.
+#' @param windowY numeric specifying the half-window width in the time dimension, in units of years, default is 7.
+#' @param windowQ numeric specifying the half-window width in the discharge dimension, units are natural log units, default is 2.
+#' @param windowS numeric specifying the half-window with in the seasonal dimension, in units of years, default is 0.5.
+#' @param edgeAdjust logical specifying whether to use the modified method for calculating the windows at the edge of the record, default is TRUE.  
 #' @keywords WRTDS flow
 #' @return eList list with Daily,Sample, INFO data frames and surface matrix.
 #' @export
@@ -701,39 +715,39 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' }
 setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2, 
                       windowS = 0.5, edgeAdjust=TRUE) {
-#  does the setup functions usually done by modelEstimation
-	localINFO <- eList$INFO
-	localDaily <- eList$Daily
+  #  does the setup functions usually done by modelEstimation
+  localINFO <- eList$INFO
+  localDaily <- eList$Daily
   localSample <- eList$Sample
-
-	numDays <- length(localDaily$DecYear)
-	DecLow <- localDaily$DecYear[1]
-	DecHigh <- localDaily$DecYear[numDays]
-	numSamples <- length(localSample$Julian)
+  
+  numDays <- length(localDaily$DecYear)
+  DecLow <- localDaily$DecYear[1]
+  DecHigh <- localDaily$DecYear[numDays]
+  numSamples <- length(localSample$Julian)
   
   if(is.null(localINFO$windowY)){
     localINFO$windowY <- windowY
   }
   
-	if(is.null(localINFO$windowQ)){
-	  localINFO$windowQ <- windowQ
-	}
+  if(is.null(localINFO$windowQ)){
+    localINFO$windowQ <- windowQ
+  }
   
-	if(is.null(localINFO$windowS)){
-	  localINFO$windowS <- windowS
-	}
+  if(is.null(localINFO$windowS)){
+    localINFO$windowS <- windowS
+  }
   
-	if(is.null(localINFO$edgeAdjust)){
-	  localINFO$edgeAdjust <-edgeAdjust
-	}
+  if(is.null(localINFO$edgeAdjust)){
+    localINFO$edgeAdjust <-edgeAdjust
+  }
   
-	if (is.null(localINFO$minNumObs)) {
-	  localINFO$minNumObs <- min(100, numSamples - 20)
-	}
-	if (is.null(localINFO$minNumUncen)) {
-	  # localINFO$minNumUncen <- 0.5
-	  localINFO$minNumUncen <- min(100, numSamples - 20)
-	}
+  if (is.null(localINFO$minNumObs)) {
+    localINFO$minNumObs <- min(100, numSamples - 20)
+  }
+  if (is.null(localINFO$minNumUncen)) {
+    # localINFO$minNumUncen <- 0.5
+    localINFO$minNumUncen <- min(100, numSamples - 20)
+  }
   
   surfaceIndexParameters <- EGRET::surfaceIndex(localDaily)
   if(utils::packageVersion("EGRET") > '2.6.1'){
@@ -751,31 +765,32 @@ setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2,
     localINFO$stepYear <- surfaceIndexParameters[5]
     localINFO$nVectorYear <- surfaceIndexParameters[6]
   }
-
+  
   localINFO$numDays <- numDays
   localINFO$DecLow <- DecLow
   localINFO$DecHigh <- DecHigh
   localINFO$edgeAdjust <- edgeAdjust
-    
+  
   eList$INFO <- localINFO
   return(eList)
 }
 
 #' blockSample
 #'
-#' Get a random subset of the Sample data frame based on the user-specified blockLength 
-#' for use in bootstrap estimation process. The subset is a random subset of blocks of 
-#' data from Sample dataframe.  The subset is based on the random selection (with 
-#' replacement) of starting dates from the full Sample data frame.  The Sample selected 
-#' has the same number of observations as the original Sample (some 
-#' observations are are included once, some included multiple times, and some are not 
-#' included).
+#' Get a bootstrap replicate of the Sample data frame based on the user-specified blockLength. 
+#' The bootstrap replicate is made up randomly selected blocks of 
+#' data from Sample data frame.  Each block includes all the samples in a standard period of time (the blockLength measured in days).
+#' The blocks are created based on the random selection (with 
+#' replacement) of starting dates from the full Sample data frame.  The bootstrap replicate  
+#' has the same number of observations as the original Sample, but some 
+#' observations are included once, some are included multiple times, and some are not 
+#' included at all.
 #'
 #' @param localSample Sample data frame
-#' @param blockLength integer size of subset expressed in days.
-#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @keywords WRTDS flow
-#' @return newSample data frame in same format as Sample data frame
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param startSeed setSeed value. This is used to make repeatable output. Default = NA.
+#' @keywords WRTDS water quality
+#' @return newSample data frame in same format as Sample data frame.  It has the same number of rows as the Sample data frame.
 #' @export
 #' @examples
 #' library(EGRET)
@@ -800,9 +815,9 @@ blockSample <- function(localSample, blockLength, startSeed = NA){
     blockStart <- max(randomDate,dayOne)
     blockEnd <- min(lastJulian,randomDate+blockLength-1)
     oneYear <- localSample[which(localSample$Julian >= blockStart & 
-                        localSample$Julian < blockEnd),]
+                                   localSample$Julian < blockEnd),]
     newSample <- rbind(oneYear, newSample)
-        
+    
   }
   newSample <- newSample[-c((nrow(localSample)+1):nrow(newSample)),]
   newSample <- newSample[order(newSample$Julian),]
@@ -811,12 +826,12 @@ blockSample <- function(localSample, blockLength, startSeed = NA){
 
 
 wordLike <- function(likeList){
-	firstPart <- c("Upward trend in concentration is",
+  firstPart <- c("Upward trend in concentration is",
                  "Downward trend in concentration is",
                  "Upward trend in flux is",
                  "Downward trend in flux is")
   
-	secondPart <- c("highly unlikely",
+  secondPart <- c("highly unlikely",
                   "very unlikely",
                   "unlikely",
                   "about as likely as not",
@@ -824,21 +839,21 @@ wordLike <- function(likeList){
                   "very likely",
                   "highly likely")
   
-	breaks <- c(0, 0.05, 0.1, 0.33, 0.67, 0.9, 0.95, 1)
+  breaks <- c(0, 0.05, 0.1, 0.33, 0.67, 0.9, 0.95, 1)
   
-	levelLike <- cut(likeList,breaks=breaks,labels=FALSE)
-	wordLikeFour <- paste(firstPart,secondPart[levelLike])
-	return(wordLikeFour)
+  levelLike <- cut(likeList,breaks=breaks,labels=FALSE)
+  wordLikeFour <- paste(firstPart,secondPart[levelLike])
+  return(wordLikeFour)
 }
 
 #' pVal
 #'
-#' Computes the two-sided p value for the null hypothesis, where null 
-#' hypothesis is that the slope is zero, based on binomial distribution. 
-#' Should be noted that the result does not depend on the magnitude of the s 
-#' values only depends on the number of plus values and number of negative values.
+#' Computes the two-sided p value for the null hypothesis, where the null 
+#' hypothesis is that the slope is zero.  It is based on the binomial distribution. 
+#' Note that the result does not depend on the magnitude of the individual slope 
+#' values only depends on the number of positive slopes and number of negative slopes.
 #'
-#' @param s numeric vector of slope values from the bootstrap (already flipped)
+#' @param s numeric vector of slope values from the bootstrap 
 #' @export
 #' @return pVal numeric value
 #' @importFrom stats na.omit
@@ -847,8 +862,9 @@ wordLike <- function(likeList){
 #' pValue <- pVal(s)
 pVal <- function(s){
   # this function computes the two-sided p value for the null hypothesis
-  # s are the slope values from the bootstrap (already flipped)
+  # s are the slope values from the bootstrap 
   s <- na.omit(s)
+  s <- subset(s, abs(s) > 0)
   s <- sort(s)
   m <- length(s)
   xvec <- ifelse(s>0,1,0)

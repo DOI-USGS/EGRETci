@@ -36,6 +36,7 @@ jobs:
           options(pkgType = "binary")
           install.packages(c("remotes"))
           remotes::install_deps(dependencies = TRUE)
+          remotes::install_github("USGS-R/EGRET", force = TRUE)
           remotes::install_cran("covr")
         shell: Rscript {0}
 

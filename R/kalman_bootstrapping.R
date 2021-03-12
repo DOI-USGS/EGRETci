@@ -35,8 +35,9 @@
 #' @examples 
 #' 
 #' eList <- EGRET::Choptank_eList
+#' \donttest{
 #' dailyBootOut <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
-#' 
+#' }
 #' 
 genDailyBoot <- function(eList, nBoot = 10, nKalman = 10, 
                          rho = 0.9, setSeed = NA,

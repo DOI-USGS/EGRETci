@@ -32,7 +32,8 @@ Suggests:
     doParallel,
     iterators,
     rmarkdown,
-    pkgdown
+    pkgdown,
+    covr
 LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr
@@ -46,4 +47,3 @@ Copyright: This software is in the public domain because it contains materials
     http://www.usgs.gov/visual-id/credit_usgs.html#copyright
 RoxygenNote: 7.1.1
 Roxygen: list(old_usage = TRUE)
-

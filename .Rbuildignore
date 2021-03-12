@@ -10,3 +10,10 @@ vignettes/^\*\.html$
 vignettes/^\*\.R$
 ^docs$
 test_stuff
+^\.github$
+^codecov\.yml$
+_pkgdown.yml
+pkgdown/favicon/*
+^Meta$
+^doc$
+.git

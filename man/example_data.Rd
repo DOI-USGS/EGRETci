@@ -5,6 +5,7 @@
 \alias{Choptank_eBoot}
 \alias{Choptank_caseSetUp}
 \alias{Choptank_CIAnnualResults}
+\alias{Choptank_dailyBootOut}
 \alias{Choptank_repAnnual}
 \title{Example eBoot}
 \description{

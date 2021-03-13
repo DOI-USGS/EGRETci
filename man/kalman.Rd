@@ -51,7 +51,8 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 \examples{
 
 eList <- EGRET::Choptank_eList
+\donttest{
 dailyBootOut <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
-
+}
 
 }

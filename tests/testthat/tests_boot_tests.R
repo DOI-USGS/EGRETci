@@ -226,7 +226,8 @@ test_that("runGroupBoot", {
                             paStart = 4, paLong = 2,
                             verbose = FALSE)
 
-  boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
+  boot_group_out <- suppressWarnings(runGroupsBoot(eList, groupResults, nBoot = 3, 
+                                  jitterOn = TRUE))
   
   expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
                     "pConc","pFlux","startSeed") %in% names(boot_group_out)))
@@ -234,12 +235,12 @@ test_that("runGroupBoot", {
   expect_true(boot_group_out$bootOut$rejectC)
   expect_true(all(c("Upward trend in concentration is likely",  
                     "Downward trend in concentration is unlikely",
-                    "Upward trend in flux is about as likely as not",             
-                    "Downward trend in flux is about as likely as not") %in% boot_group_out$wordsOut))
+                    "Upward trend in flux is likely",             
+                    "Downward trend in flux is unlikely") %in% boot_group_out$wordsOut))
   
-  expect_equal(round(boot_group_out$xConc[1:2], digits = 2), c(0.1,0.2))
+  expect_equal(round(boot_group_out$xConc[1:2], digits = 2), c(0.1,0.21))
   expect_equal(round(boot_group_out$xFlux[1:2], digits = 2), c(0.00,0.01))
-  expect_equal(round(boot_group_out$pConc[1:2], digits = 2), c(8.96,17.77))
-  expect_equal(round(boot_group_out$pFlux[1:2], digits = 2), c(-0.34,7.92))
+  expect_equal(round(boot_group_out$pConc[1:2], digits = 2), c(8.24,18.73))
+  expect_equal(round(boot_group_out$pFlux[1:2], digits = 2), c(0.08,7.75))
   
 })

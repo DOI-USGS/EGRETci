@@ -19,9 +19,9 @@ Description: Collection of functions to evaluate uncertainty of results from
     is Hirsch et al. (2015) <doi:10.1016/j.envsoft.2015.07.017>.
 License: CC0
 Depends:
-    R (>= 3.0)
+    R (>= 3.5.0)
 Imports:
-    EGRET(>= 3.0.0),
+    EGRET(> 3.0.4),
     binom,
     stats,
     graphics,

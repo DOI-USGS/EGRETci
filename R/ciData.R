@@ -19,6 +19,11 @@ NULL
 NULL
 
 #' @rdname example_data
+#' @name Choptank_dailyBootOut
+#' @docType data
+NULL
+
+#' @rdname example_data
 #' @name Choptank_repAnnual
 #' @docType data
 #' @keywords water quality data

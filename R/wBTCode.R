@@ -42,7 +42,7 @@ NULL
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param \dots  additional arguments to bring in to reduce interactive options 
 #' (year1, year2, nBoot, bootBreak, blockLength)
-#' @keywords WRTDS, water quality
+#' @keywords WRTDS water-quality
 #' @return caseSetUp data frame with columns year1, yearData1, year2, yearData2, 
 #' numSamples, nBoot, bootBreak, blockLength, confStop. These correspond to:
 #' \tabular{ll}{

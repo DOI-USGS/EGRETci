@@ -4,7 +4,7 @@
 \alias{makeDailyPI}
 \title{Make Daily Prediction Intervals}
 \usage{
-makeDailyPI(dailyBootOut, eList, paLong = 12, paStart = 10, fluxUnit = 3)
+makeDailyPI(dailyBootOut, eList, fluxUnit = 3)
 }
 \arguments{
 \item{dailyBootOut}{data frame returned from \code{\link{genDailyBoot}}}
@@ -12,18 +12,13 @@ makeDailyPI(dailyBootOut, eList, paLong = 12, paStart = 10, fluxUnit = 3)
 \item{eList}{named list with at least the Daily, Sample, and INFO 
 dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
 
-\item{paLong}{numeric integer specifying the length of the period of analysis, in months, 1<=paLong<=12, default is 12}
-
-\item{paStart}{numeric integer specifying the starting month for the period of analysis, 1<=paStart<=12, default is 10}
-
 \item{fluxUnit}{number representing entry in pre-defined fluxUnit class array. 
 \code{\link[EGRET]{printFluxUnitCheatSheet}}}
 }
 \value{
 a list of 2 data frames, one for average concentration, in mg/L
 and one for flux (unit depends on fluxUnit argument)
-In each data frame the first column is monthSeq that corresponds to the months
-in the "DecYear" column in the eList$Daily data frame. The remaining columns are
+In each data frame the first column is Date. The remaining columns are
 quantiles of the flux or concentration (depending on the data frame).
 }
 \description{

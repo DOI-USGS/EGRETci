@@ -22,8 +22,7 @@ dataframes. Created from the EGRET package, after running \code{\link[EGRET]{mod
 \value{
 a list of 2 data frames, one for average concentration, in mg/L
 and one for flux (unit depends on fluxUnit argument)
-In each data frame the first column is monthSeq that corresponds to the months
-in the "DecYear" column in the eList$Daily data frame. The remaining columns are
+In each data frame the first column is DecYear. The remaining columns are
 quantiles of the flux or concentration (depending on the data frame).
 }
 \description{

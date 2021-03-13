@@ -44,6 +44,5 @@ caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
 \seealso{
 \code{\link{setForBoot}}, \code{\link{wBT}}
 }
-\keyword{WRTDS,}
-\keyword{quality}
-\keyword{water}
+\keyword{WRTDS}
+\keyword{water-quality}

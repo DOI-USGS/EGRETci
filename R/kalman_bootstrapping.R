@@ -69,7 +69,7 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
     # but the Kalman filtering is done with the full Sample set
     for(iKalman in 1:nKalman) {
       cat("     - Kalman index: ", iKalman, "\n")
-      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, niter = 1, seed = seed + iKalman)
+      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, niter = 1, seed = setSeed + iKalman)
       
       iter <- ((iBoot-1) * nKalman) + iKalman 
       dailyBootOut[,iter] <- eListK$Daily$GenFlux

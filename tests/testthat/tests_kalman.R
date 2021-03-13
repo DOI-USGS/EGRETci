@@ -63,7 +63,7 @@ test_that("Annual PI", {
   dailyBoot <- Choptank_dailyBootOut
   annual_PI <- makeAnnualPI(dailyBoot, eList)
   
-  expect_true(all(names(daily_PI) %in% c("flux", "conc")))  
+  expect_true(all(names(annual_PI) %in% c("flux", "conc")))  
   df_flux <- annual_PI$flux
   df_conc <- annual_PI$conc
   

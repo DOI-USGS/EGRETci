@@ -226,7 +226,8 @@ test_that("runGroupBoot", {
                             paStart = 4, paLong = 2,
                             verbose = FALSE)
 
-  boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
+  boot_group_out <- suppressWarnings(runGroupsBoot(eList, groupResults, nBoot = 3, 
+                                  jitterOn = TRUE))
   
   expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
                     "pConc","pFlux","startSeed") %in% names(boot_group_out)))

@@ -289,5 +289,7 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
   attr(groupBootOut, "group1lastYear") <- group1lastYear
   attr(groupBootOut, "group2firstYear") <- group2firstYear
   attr(groupBootOut, "group2lastYear") <- group2lastYear
+  attr(groupBootOut, "paStart") <- paStart
+  attr(groupBootOut, "paLong") <- paLong
   return(groupBootOut)
 }

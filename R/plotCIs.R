@@ -483,13 +483,21 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
                                 flux = TRUE, xMin = NA, xMax = NA, xStep = NA, 
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   
-  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = eList$INFO$paStart, 
-                                                 PeriodLong = eList$INFO$paLong))
+  
+  if(all(c("paStart", "paLong") %in% names(attributes(eBoot)))){
+    paStart <- attr(eBoot, "paStart")
+    paLong <- attr(eBoot, "paLong")
+  } else {
+    paStart <- eList$INFO$paStart
+    paLong <- eList$INFO$paLong
+  }
+  
+  periodName <- EGRET::setSeasonLabel(data.frame(PeriodStart = paStart, 
+                                                 PeriodLong = paLong))
   
   if(any(c("yearPair","group1firstYear") %in% names(attributes(eBoot))) |  "segmentInfo" %in% names(attributes(eList$INFO))){
     periodName <- paste(periodName, "*")
   }
-  
   
   if (flux) {
     change <- 100 * eBoot$bootOut$estF/eBoot$bootOut$baseFlux

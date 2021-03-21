@@ -293,5 +293,9 @@ runPairsBoot <- function(eList, pairResults,
                        startSeed = startSeed)
   attr(pairsBootOut, "year1") <- year1
   attr(pairsBootOut, "year2") <- year2
+  
+  attr(pairsBootOut, "paStart") <- paStart
+  attr(pairsBootOut, "paLong") <- paLong
+  
   return(pairsBootOut)
 }

@@ -61,7 +61,13 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
     if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
     
     eListBoot <- EGRET::as.egret(localINFO, localDaily, bootSample)
-    surfaces1 <- EGRET::estSurfaces(eListBoot, verbose = FALSE)
+    surfaces1 <- EGRET::estSurfaces(eListBoot, verbose = FALSE,
+                                    windowY = localINFO$windowY, 
+                                    windowQ = localINFO$windowQ, 
+                                    windowS = localINFO$windowS, 
+                                    minNumObs = localINFO$minNumObs, 
+                                    minNumUncen = localINFO$minNumUncen, 
+                                    edgeAdjust = localINFO$edgeAdjust)
     eListBoot <- EGRET::as.egret(localINFO, localDaily, localSample, 
                                  surfaces1)
     cat("\n made surfaces from boot sample", iBoot,"replicate")

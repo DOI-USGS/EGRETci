@@ -67,7 +67,8 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
                                     windowS = localINFO$windowS, 
                                     minNumObs = localINFO$minNumObs, 
                                     minNumUncen = localINFO$minNumUncen, 
-                                    edgeAdjust = localINFO$edgeAdjust)
+                                    edgeAdjust = ifelse(is.null(localINFO$edgeAdjust),
+                                                        TRUE, localINFO$edgeAdjust))
     eListBoot <- EGRET::as.egret(localINFO, localDaily, localSample, 
                                  surfaces1)
     cat("\n made surfaces from boot sample", iBoot,"replicate")

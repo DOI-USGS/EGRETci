@@ -31,6 +31,9 @@ calculates the quantiles for an annual (based on paStart/paLong) aggregation.
 }
 \examples{
 eList <- EGRET::Choptank_eList
+# This example is only based on 4 iterations
+# Actual prediction intervals should be calculated on
+# a much large set set should be used. 
 dailyBoot <- Choptank_dailyBootOut
 annualPcts <- makeAnnualPI(dailyBoot, eList)
 head(annualPcts[["flux"]])

@@ -53,6 +53,13 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
   if(!is.na(setSeed)){
     set.seed(setSeed)
   }
+  
+  if(!all(c("windowY", "windowQ", "windowS",
+           "minNumObs", "minNumUncen") %in%
+         names(localINFO))){
+    stop("Run EGRET::setUpEstimation on eList before running genDailyBoot")
+  }
+  
   dailyBootOut <- matrix(data = NA, nrow = nDaily, ncol = nTotalReps)
   for(iBoot in 1: nBoot){
     cat("Boot: ", iBoot, "\n")

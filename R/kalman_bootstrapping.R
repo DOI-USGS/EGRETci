@@ -62,7 +62,7 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
   
   dailyBootOut <- matrix(data = NA, nrow = nDaily, ncol = nTotalReps)
   for(iBoot in 1: nBoot){
-    cat("Boot: ", iBoot, "\n")
+    message("Boot: ", iBoot)
     bootSample <- blockSample(localSample, 200)
     
     if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
@@ -78,12 +78,13 @@ genDailyBoot <- function(eList, nBoot = 10, nKalman = 10,
                                                         TRUE, localINFO$edgeAdjust))
     eListBoot <- EGRET::as.egret(localINFO, localDaily, localSample, 
                                  surfaces1)
-    cat("\n made surfaces from boot sample", iBoot,"replicate")
+    message("made surfaces from boot sample", iBoot,"replicate")
     # note that we use the surfaces object made with the bootstrap sample
     # but the Kalman filtering is done with the full Sample set
     for(iKalman in 1:nKalman) {
-      cat("     - Kalman index: ", iKalman, "\n")
-      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, niter = 1, seed = setSeed + iKalman)
+      message("     - Kalman index: ", iKalman)
+      eListK <- EGRET::WRTDSKalman(eListBoot, rho = rho, verbose = FALSE,
+                                   niter = 1, seed = setSeed + iKalman)
       
       iter <- ((iBoot-1) * nKalman) + iKalman 
       dailyBootOut[,iter] <- eListK$Daily$GenFlux

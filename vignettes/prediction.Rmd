@@ -21,17 +21,22 @@ This script provides a set of examples of how to use WRTDS_Kalman outputs to cha
 
 2. The WRTDS_Kalman estimates need to be computed.  This is done with the command:
 ```{r eval=FALSE}
+library(EGRET)
+library(EGRETci)
+
+eListK <- readRDS("Pinehurst_eListK.rds")
+
 eListK <- WRTDSKalman(eList)
 ```
 
-```{r eval=TRUE}
+```{r eval=TRUE, echo=FALSE}
 library(EGRET)
 library(EGRETci)
 eListK <- readRDS("Pinehurst_eListK.rds")
 ```
 
 3. Then we want to create a large number of bootstrap replicates of the daily record of concentration and flux.  We do that with the command like this:
-```{r eval=TRUE}
+```{r eval=TRUE, message=FALSE}
 dailyBootOut <- genDailyBoot(eListK, 
                              nBoot = 25, nKalman = 20, rho = 0.9)
 ```

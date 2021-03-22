@@ -32,7 +32,7 @@ eListK <- readRDS("Pinehurst_eListK.rds")
 
 3. Then we want to create a large number of bootstrap replicates of the daily record of concentration and flux.  We do that with the command like this:
 ```{r eval=TRUE}
-dailyBootOut <- genDailyBoot(eList, 
+dailyBootOut <- genDailyBoot(eListK, 
                              nBoot = 25, nKalman = 20, rho = 0.9)
 ```
   + nBoot is the number of bootstrap replicates that is run, each one is used to estimate the WRTDS model (we can think of this as the estimation error)

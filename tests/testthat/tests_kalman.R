@@ -24,12 +24,12 @@ test_that("Monthly PI", {
   df_conc <- month_PI$conc
   expect_equal(nrow(df_flux), length(unique(eList$Daily$MonthSeq)))
   
-  expect_true(all(names(df_flux) %in% c("monthSeq", "p1", "p2.5",
+  expect_true(all(names(df_flux) %in% c("monthSeq", "DecYear", "p1", "p2.5",
                                         "p5", "p10", "p25", "p50",
                                         "p75", "p90", "p95", "p97.5",
                                         "p99")))
   
-  expect_true(all(names(df_conc) %in% c("monthSeq", "p1", "p2.5",
+  expect_true(all(names(df_conc) %in% c("monthSeq", "DecYear", "p1", "p2.5",
                                         "p5", "p10", "p25", "p50",
                                         "p75", "p90", "p95", "p97.5",
                                         "p99")))
@@ -46,12 +46,12 @@ test_that("Daily PI", {
   df_conc <- daily_PI$conc
   expect_equal(nrow(df_flux), nrow(eList$Daily))
   
-  expect_true(all(names(df_flux) %in% c("Date", "p1", "p2.5",
+  expect_true(all(names(df_flux) %in% c("Date", "DecYear", "p1", "p2.5",
                                         "p5", "p10", "p25", "p50",
                                         "p75", "p90", "p95", "p97.5",
                                         "p99")))
   
-  expect_true(all(names(df_conc) %in% c("Date", "p1", "p2.5",
+  expect_true(all(names(df_conc) %in% c("Date", "DecYear", "p1", "p2.5",
                                         "p5", "p10", "p25", "p50",
                                         "p75", "p90", "p95", "p97.5",
                                         "p99")))

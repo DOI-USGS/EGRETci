@@ -27,6 +27,9 @@ calculates the quantiles for a daily aggregation.
 }
 \examples{
 eList <- EGRET::Choptank_eList
+# This example is only based on 4 iterations
+# Actual prediction intervals should be calculated on
+# a much large set set should be used. 
 dailyBoot <- Choptank_dailyBootOut
 dailyPcts <- makeDailyPI(dailyBoot, eList)
 head(dailyPcts[["flux"]])

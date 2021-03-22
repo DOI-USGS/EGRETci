@@ -20,6 +20,9 @@
 #' @export
 #' @examples 
 #' eList <- EGRET::Choptank_eList
+#' # This example is only based on 4 iterations
+#' # Actual prediction intervals should be calculated on
+#' # a much large set set should be used. 
 #' dailyBoot <- Choptank_dailyBootOut
 #' monthPcts <- makeMonthPI(dailyBoot, eList)
 #' head(monthPcts[["flux"]])
@@ -46,6 +49,9 @@ makeMonthPI <- function(dailyBootOut, eList, fluxUnit = 3){
     aveFlow <- aggregate(eList$Daily$Q, by = list(eList$Daily$MonthSeq), mean)$x
     monthsConc[,iter] <- monthsFlux[,iter] / (86.4 * aveFlow)
   }
+  
+  DecYear <- aggregate(eList$Daily$DecYear, by = list(eList$Daily$MonthSeq), mean)$x
+  
   # now do the percentiles by month
   probs <- c(0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.90, 0.95, 0.975, 0.99)
   monthFluxPcts <- matrix(data = NA, nrow = nMonths, ncol = 11)
@@ -55,11 +61,11 @@ makeMonthPI <- function(dailyBootOut, eList, fluxUnit = 3){
     monthConcPcts[iMonth,] <- quantile(monthsConc[iMonth,], probs = probs, type = 6, na.rm = TRUE)
   }
   
-  
   lastMonth <- firstMonth + length(monthFluxPcts[,1]) - 1
   monthSeqVec <- seq(firstMonth, lastMonth)
-  
+
   month_flux_results <- data.frame(monthSeq = monthSeqVec,
+                                   DecYear = DecYear,
                                    p1 = monthFluxPcts[,1],
                                    p2.5 = monthFluxPcts[,2],
                                    p5 = monthFluxPcts[,3],
@@ -73,6 +79,7 @@ makeMonthPI <- function(dailyBootOut, eList, fluxUnit = 3){
                                    p99 = monthFluxPcts[,11])
   
   month_conc_results <- data.frame(monthSeq = monthSeqVec,
+                                   DecYear = DecYear,
                                    p1 = monthConcPcts[,1],
                                    p2.5 = monthConcPcts[,2],
                                    p5 = monthConcPcts[,3],
@@ -129,6 +136,9 @@ monthSeqToDec <- function(monthSeq){
 #' @export
 #' @examples 
 #' eList <- EGRET::Choptank_eList
+#' # This example is only based on 4 iterations
+#' # Actual prediction intervals should be calculated on
+#' # a much large set set should be used. 
 #' dailyBoot <- Choptank_dailyBootOut
 #' annualPcts <- makeAnnualPI(dailyBoot, eList)
 #' head(annualPcts[["flux"]])
@@ -138,6 +148,7 @@ makeAnnualPI <- function(dailyBootOut, eList,
                         paLong = 12, paStart = 10, fluxUnit = 3){
   
   nIter <- length(dailyBootOut[1,])
+
   localDaily <- eList$Daily
   Annual_results <- data.frame()
   
@@ -220,6 +231,9 @@ makeAnnualPI <- function(dailyBootOut, eList,
 #' @export
 #' @examples 
 #' eList <- EGRET::Choptank_eList
+#' # This example is only based on 4 iterations
+#' # Actual prediction intervals should be calculated on
+#' # a much large set set should be used. 
 #' dailyBoot <- Choptank_dailyBootOut
 #' dailyPcts <- makeDailyPI(dailyBoot, eList)
 #' head(dailyPcts[["flux"]])
@@ -246,6 +260,7 @@ makeDailyPI <- function(dailyBootOut, eList, fluxUnit = 3){
   }
 
   daily_flux_results <- data.frame(Date = eList$Daily$Date,
+                                   DecYear = eList$Daily$DecYear,
                                    p1 = dailyFluxPcts[,1],
                                    p2.5 = dailyFluxPcts[,2],
                                    p5 = dailyFluxPcts[,3],
@@ -259,6 +274,7 @@ makeDailyPI <- function(dailyBootOut, eList, fluxUnit = 3){
                                    p99 = dailyFluxPcts[,11])
   
   daily_conc_results <- data.frame(Date = eList$Daily$Date,
+                                   DecYear = eList$Daily$DecYear,
                                    p1 = dailyConcPcts[,1],
                                    p2.5 = dailyConcPcts[,2],
                                    p5 = dailyConcPcts[,3],

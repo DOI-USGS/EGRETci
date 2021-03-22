@@ -189,7 +189,7 @@ test_that("runPairsBoot", {
 
   pairOut_2 <- EGRET::runPairs(eList, year1, year2, windowSide = 7)
 
-  boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 3)
+  boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 3, jitterOn = TRUE)
   
   expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
                     "pConc","pFlux","startSeed") %in% names(boot_pair_out)))
@@ -200,10 +200,10 @@ test_that("runPairsBoot", {
                     "Upward trend in flux is likely",             
                     "Downward trend in flux is unlikely") %in% boot_pair_out$wordsOut))
   
-  expect_equal(round(boot_pair_out$xConc[1:2], digits = 2), c(0.39,0.41))
+  expect_equal(round(boot_pair_out$xConc[1:2], digits = 2), c(0.38,0.40))
   expect_equal(round(boot_pair_out$xFlux[1:2], digits = 2), c(0.05,0.06))
-  expect_equal(round(boot_pair_out$pConc[1:2], digits = 2), c(37.30,40.55))
-  expect_equal(round(boot_pair_out$pFlux[1:2], digits = 2), c(44.48,54.51))
+  expect_equal(round(boot_pair_out$pConc[1:2], digits = 2), c(36.68,40.19))
+  expect_equal(round(boot_pair_out$pFlux[1:2], digits = 2), c(48.39,56.03))
   
 })
 

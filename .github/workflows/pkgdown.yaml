@@ -17,7 +17,7 @@ jobs:
       - name: Query dependencies
         run: |
           install.packages(c('remotes'))
-          remotes_install("USGS-R/EGRET")
+          remotes::install_github("USGS-R/EGRET")
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         shell: Rscript {0}
 

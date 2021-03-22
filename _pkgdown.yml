@@ -1,0 +1,17 @@
+template:
+  params:
+    ganalytics: UA-53797708-7
+navbar:
+  type: default
+  left:
+  - text: Introduction
+    href: articles/EGRETci.html
+  - text: Function Help Pages
+    href: reference/index.html
+  - text: Enhancements
+    href: articles/Enhancements.html
+  - text: WRTDS Kalman Prediction Intervals
+    href: articles/prediction.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/USGS-R/EGRETci

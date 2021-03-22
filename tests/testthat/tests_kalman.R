@@ -46,7 +46,7 @@ test_that("Daily PI", {
   df_conc <- daily_PI$conc
   expect_equal(nrow(df_flux), nrow(eList$Daily))
   
-  expect_true(all(names(df_flux) %in% c("Date", "p1", "p2.5",
+  expect_true(all(names(df_flux) %in% c("Date", "DecYear", "p1", "p2.5",
                                         "p5", "p10", "p25", "p50",
                                         "p75", "p90", "p95", "p97.5",
                                         "p99")))

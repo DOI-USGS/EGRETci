@@ -210,22 +210,9 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 <span class='va'>eList</span> <span class='op'>&lt;-</span> <span class='fu'>EGRET</span><span class='fu'>::</span><span class='va'><a href='https://rdrr.io/pkg/EGRET/man/sampleData.html'>Choptank_eList</a></span>
 <span class='co'># \donttest{</span>
 <span class='va'>dailyBootOut</span> <span class='op'>&lt;-</span> <span class='fu'>genDailyBoot</span><span class='op'>(</span><span class='va'>eList</span>, nBoot <span class='op'>=</span> <span class='fl'>2</span>, nKalman <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Boot:  1 </div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>There are 253 duplicated Sample dates.</span></div><div class='output co'>#&gt; 
-#&gt;  made surfaces from boot sample 1 replicate     - Kalman index:  1 
-#&gt; % complete:
-#&gt; 100 	
-#&gt;      - Kalman index:  2 
-#&gt; % complete:
-#&gt; 100 	
-#&gt; Boot:  2 </div><div class='output co'>#&gt; <span class='message'></span>
-#&gt; <span class='message'>There are 236 duplicated Sample dates.</span></div><div class='output co'>#&gt; 
-#&gt;  made surfaces from boot sample 2 replicate     - Kalman index:  1 
-#&gt; % complete:
-#&gt; 100 	
-#&gt;      - Kalman index:  2 
-#&gt; % complete:
-#&gt; 100 	</div><div class='input'><span class='co'># }</span>
+</div><div class='output co'>#&gt; <span class='message'>Boot: 1</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>There are 253 duplicated Sample dates.</span></div><div class='output co'>#&gt; <span class='message'>made surfaces from boot sample1replicate</span></div><div class='output co'>#&gt; <span class='message'>     - Kalman index: 1</span></div><div class='output co'>#&gt; <span class='message'>     - Kalman index: 2</span></div><div class='output co'>#&gt; <span class='message'>Boot: 2</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>There are 236 duplicated Sample dates.</span></div><div class='output co'>#&gt; <span class='message'>made surfaces from boot sample2replicate</span></div><div class='output co'>#&gt; <span class='message'>     - Kalman index: 1</span></div><div class='output co'>#&gt; <span class='message'>     - Kalman index: 2</span></div><div class='input'><span class='co'># }</span>
 
 </div></pre>
   </div>

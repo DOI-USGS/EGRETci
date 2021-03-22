@@ -17,3 +17,5 @@ pkgdown/favicon/*
 ^Meta$
 ^doc$
 .git
+vignettes/prediction.Rmd
+vignettes/Pinehurst_eListK.rds

@@ -1,4 +1,4 @@
-# EGRETci
+# EGRETci <img src="man/figures/egret-02.png" alt="EGRETci" height="150px" align="right" />
 
 [![R build
 status](https://github.com/USGS-R/EGRETci/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/EGRETci/actions)

@@ -66,7 +66,7 @@ yMax <- 1.1 * max(annPct$flux$p95)
 nYears <- length(annPct$flux$p95)
 AnnualResults <- setupYears(eListK$Daily)
 kFlux <- data.frame(AnnualResults$DecYear,AnnualResults$GenFlux)
-title <- "South Fork CDA River near Pinehurst, ID\nAnnual Total Phosphorus Flux\nWith 90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nAnnual Total Phosphorus Flux\nWith 90% Prediction Intervals"
 plot(kFlux[,1], kFlux[,2],ylim = c(0,yMax), yaxs = "i",main = title, xlab = "Year", 
      ylab = "Annual Mean Flux, in kg per day", pch = 19, cex = 0.7, las = 1, tck = 0.02)
 axis(3, labels = FALSE, tck = 0.02)
@@ -92,7 +92,7 @@ ylim <- c(yMin, yMax)
 nYears <- length(annPct$flux$p95)
 AnnualResults <- setupYears(eListK$Daily)
 kFlux <- data.frame(AnnualResults$DecYear,AnnualResults$GenFlux)
-title <- "South Fork CDA River near Pinehurst, ID\nAnnual Total Phosphorus Flux\nWith 90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nAnnual Total Phosphorus Flux\nWith 90% Prediction Intervals"
 plot(kFlux[,1], kFlux[,2],ylim = ylim, yaxs = "i",main = title, xlab = "Year", 
      ylab = "Annual Mean Flux, in kg per day", pch = 19, cex = 0.7, las = 1, tck = 0.02, log = "y")
 axis(3, labels = FALSE, tck = 0.02)
@@ -115,7 +115,7 @@ nMonths <- length(MonthlyResults$DecYear)
 monthPct <- makeMonthPI(dailyBootOut, eListK)
 yMaxMonth <- 1.15 * max(monthPct$flux$p95)
 yMinMonth <- 0.85 * min(monthPct$flux$p5)
-title <- "South Fork CDA River near Pinehurst, ID\nMonthly Total Phosphorus Flux\nWith 90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nMonthly Total Phosphorus Flux\nWith 90% Prediction Intervals"
 plot(kFluxMonth[,1], kFluxMonth[,2],ylim = c(yMinMonth,yMaxMonth), yaxs = "i",main = title, xlab = "Year", las = 1, tck = 0.02,
      ylab = "Monthly Mean Flux, in kg per day", pch = 19, cex = 0.5, log = "y")
 axis(3, labels = FALSE, tck = 0.02)
@@ -137,7 +137,7 @@ dayPct <- makeDailyPI(dailyBootOut, eListK)
 yMaxDay <- 1.15 * max(dayPct$flux$p95)
 yMinDay <- 0.85 * min(dayPct$flux$p5)
 xlim <- c(1996, 1996.6)
-title <- "South Fork CDA River near Pinehurst, ID\nDaily Total Phosphorus Flux\nWith 90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nDaily Total Phosphorus Flux\nWith 90% Prediction Intervals"
 plot(kFluxDay[,1], kFluxDay[,2],ylim = c(yMinDay,yMaxDay), xlim = xlim, yaxs = "i",main = title, xlab = "Year",
      ylab = "Daily Flux, in kg per day", pch = 19, cex = 0.5, log = "y", las = 1, tck = 0.02)
 axis(3, labels = FALSE, tck = 0.02)
@@ -155,7 +155,7 @@ We can look at another time slice of the same length at a more recent time.  Not
 
 ```{r echo = TRUE}
 xlim <- c(2017, 2017.6)
-title <- "South Fork CDA River near Pinehurst, ID\nDaily Total Phosphorus Flux\nWith 90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nDaily Total Phosphorus Flux\nWith 90% Prediction Intervals"
 plot(kFluxDay[,1], kFluxDay[,2],ylim = c(yMinDay,yMaxDay), xlim = xlim, yaxs = "i",main = title, xlab = "Year",
      ylab = "Daily Flux, in kg per day", pch = 19, cex = 0.5, log = "y", las = 1, tck = 0.02)
 axis(3, labels = FALSE, tck = 0.02)
@@ -175,7 +175,7 @@ xlim <- c(2000,2020)
 kConcDay <- data.frame(eListK$Daily$DecYear, eListK$Daily$GenConc)
 yMaxDay <- 1.15 * max(dayPct$conc$p95)
 yMinDay <- 0.85 * min(dayPct$conc$p5)
-title <- "South Fork CDA River near Pinehurst, ID\nDaily Total Phosphorus Concentration\nWith 90% Prediction Intervals (pretend there was a standard of 0.1 mg/L)"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nDaily Total Phosphorus Concentration\nWith 90% Prediction Intervals (pretend there was a standard of 0.1 mg/L)"
 plot(kConcDay[,1], kConcDay[,2],ylim = c(yMinDay,yMaxDay), xlim = xlim, yaxs = "i",main = title, xlab = "Year",
      ylab = "Concentration, in mg/L", pch = 19, cex = 0.2, log = "y", xaxs = "i", las = 1, cex.main = 0.7, tck = 0.02)
 axis(3, labels = FALSE, tck = 0.02)
@@ -199,7 +199,7 @@ What we will show here is first, our best estimate of the cumulative flux which 
 nIter <- length(dailyBootOut[1,])
 nDays <- length(dailyBootOut[,1])
 dailyBootSum <- dailyBootOut
-title <- "South Fork CDA River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\nShowing the best estimate from WRTDSKalman"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\nShowing the best estimate from WRTDSKalman"
 cumulative <- cumsum(eListK$Daily$GenFlux)
 
 nLines <- nIter / 10
@@ -219,7 +219,7 @@ plot(eListK$Daily$DecYear, cumulative/1000,
 axis(3, labels = FALSE, tck = 0.02)
 axis(4, labels = FALSE, tck = 0.02)
 # now showing the random iterations 
-title <- "South Fork CDA River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\nonly showing one tenth of the iterations"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\nonly showing one tenth of the iterations"
 plot(eListK$Daily$DecYear, dailyBootSum[,1]/1000, 
      ylim = c(0, yMax/1000), yaxs = "i", main = title,
      ylab = "Cumulative flux, in metric tons",
@@ -246,7 +246,7 @@ nDays <- length(dailyBootOut[,1])
 dailyLow <- rep(NA,nDays)
 dailyMid <- rep(NA,nDays)
 dailyHigh <- rep(NA,nDays)
-title <- "South Fork CDA River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\n90% Prediction Intervals"
+title <- "South Fork Coeur d'Alene River near Pinehurst, ID\nCumulative Daily Total Phosphorus Flux\n90% Prediction Intervals"
 
 for(i in 1: nDays) {
   v <- quantile(dailyBootSum[i,], probs = c(0.05, 0.5, 0.95), type = 6)

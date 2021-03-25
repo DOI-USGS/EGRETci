@@ -1,3 +1,10 @@
+.onAttach <- function(libname, pkgname) {
+  if (!interactive()) return()
+  EGRET_version = utils::packageVersion("EGRETci")
+  packageStartupMessage("EGRET ", EGRET_version,"
+Extended Documentation: usgs-r.github.io/EGRETci")
+}
+
 #' EGRETci package for bootstrap hypothesis tests and confidence interval analysis for WRTDS (Weighted 
 #' Regressions on Time, Discharge, and Season) statistical models. This 
 #' package is designed to be used in conjunction with the EGRET package, 

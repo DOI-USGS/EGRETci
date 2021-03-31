@@ -33,7 +33,7 @@ for each of these months.
 eList <- EGRET::Choptank_eList
 # This example is only based on 4 iterations
 # Actual prediction intervals should be calculated on
-# a much large set set should be used. 
+# a much larger number of iterations (several hundred). 
 dailyBoot <- Choptank_dailyBootOut
 monthPcts <- makeMonthPI(dailyBoot, eList)
 head(monthPcts[["flux"]])

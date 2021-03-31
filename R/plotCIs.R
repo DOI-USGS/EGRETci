@@ -573,6 +573,8 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' ciCalculations
 #'
 #' Interactive function to calculate confidence bands for flow normalized concentration or flow normalized flux.
+#'   It returns the data frame CIAnnualResults, which is used as input to the functions
+#'   plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output. 
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
@@ -597,7 +599,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' Argument values suggested.  
 #' To test the code nBoot = 10 is sufficient, but for meaningful results nBoot = 100 or even nBoot = 500 are more appropriate.
 #' blockLength = 200
-#' widthCI = 90 (90% confidence interval)
+#' widthCI = 90 (90\% confidence interval)
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList

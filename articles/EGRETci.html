@@ -88,7 +88,7 @@
       <h1 data-toc-skip>Introduction to EGRET Confidence Intervals</h1>
                         <h4 data-toc-skip class="author">Robert M. Hirsch, Laura A. De Cicco</h4>
             
-            <h4 data-toc-skip class="date">25 March, 2021</h4>
+            <h4 data-toc-skip class="date">31 March, 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/USGS-R/EGRETci/blob/master/vignettes/EGRETci.Rmd" class="external-link"><code>vignettes/EGRETci.Rmd</code></a></small>
       <div class="hidden name"><code>EGRETci.Rmd</code></div>
@@ -100,14 +100,14 @@
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>This package <strong>EGRETci</strong> implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in the <em>A bootstrap method for estimating uncertainty of water quality trends</em> by Hirsch, Archfield, and De Cicco in the journal Environmental Modelling and Software:</p>
-<p><a href="http://authors.elsevier.com/sd/article/S1364815215300220" class="external-link uri">http://authors.elsevier.com/sd/article/S1364815215300220</a></p>
-<p>The <strong>EGRETci</strong> package is designed for interactive or batch use. Instructions for both are included here in the vignette. The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS. Users should consult the <strong>EGRET</strong> vignette for more background on those issues.</p>
-<p>The <strong>EGRETci</strong> package is designed to carry out three specific types of tasks.</p>
+<p>This package <strong>EGRETci</strong> implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the <strong>EGRET</strong> package. The various functions included here are all discussed in the <a href="http://authors.elsevier.com/sd/article/S1364815215300220" class="external-link"><em>A bootstrap method for estimating uncertainty of water quality trends</em> Hirsch, Archfield, and De Cicco, 2015</a></p>
+<p>The <strong>EGRETci</strong> package is designed for interactive or batch use. Instructions for both are included here in the vignette. The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS. Users should consult the <strong>EGRET</strong> vignette for more background on those issues. For more extensive documentation refer to <a href="http://usgs-r.github.io/EGRETci/" class="external-link">EGRETci</a></p>
+<p>The <strong>EGRETci</strong> package is designed to carry out four types of tasks.</p>
 <ol style="list-style-type: decimal">
 <li><p>Evaluate a water quality trend over a specific span of years and produce a variety of tabular results. This is done with a short workflow involving the functions: <code>trendSetUp</code> and <code>wBT</code>. The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot. The contents of eBoot are described below.</p></li>
 <li><p>Plot histograms of values for the trend magnitudes, expressed in percent change over the specified period, for flow-normalized concentration and flow-normalized flux. This is done with the function <code>plotHistogramTrend</code>. It depends on outputs contained in eBoot. Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period). Such analyses would require a small amount of script writing by the user.</p></li>
 <li><p>Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux. This is done using a function called <code>ciCalculations</code> and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (<code>plotConcHistBoot</code>, and <code>plotFluxHistBoot</code>).</p></li>
+<li><p>Create prediction intervals around estimated concentration or flux values for specific days, months, or years. The estimates of interest here are the (WRTDS_K)[<a href="http://usgs-r.github.io/EGRETci/" class="external-link uri">http://usgs-r.github.io/EGRETci/</a>]. A detailed description of how these estimates can be made is provided in the vignette on <a href="https://usgs-r.github.io/EGRETci/articles/prediction.html" class="external-link">WRTDS Kalman Prediction Intervals</a>.</p></li>
 </ol>
 <div id="required-data-frames" class="section level2">
 <h2 class="hasAnchor">

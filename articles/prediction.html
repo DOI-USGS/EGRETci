@@ -116,7 +116,7 @@
 <li>Then we want to create a large number of bootstrap replicates of the daily record of concentration and flux. We do that with the command like this:</li>
 </ol>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">dailyBootOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/genDailyBoot.html">genDailyBoot</a></span><span class="op">(</span><span class="va">eListK</span>, 
+<code class="sourceCode R"><span class="va">dailyBootOut</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/kalman.html">genDailyBoot</a></span><span class="op">(</span><span class="va">eListK</span>, 
                              nBoot <span class="op">=</span> <span class="fl">25</span>, nKalman <span class="op">=</span> <span class="fl">20</span>, rho <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span></code></pre></div>
 <ul>
 <li>nBoot is the number of bootstrap replicates that is run, each one is used to estimate the WRTDS model (we can think of this as the estimation error)</li>

@@ -39,7 +39,7 @@ The  **EGRETci** package is designed for interactive or batch use.  Instructions
 3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
 
-4)  Create prediction intervals around estimated concentration or flux values for specific days, months, or years.  The estimates of interest here are the (WRTDS_K)[http://usgs-r.github.io/EGRETci/].  A detailed description of how these estimates can be made is provided in the vignette on [WRTDS Kalman Prediction Intervals](https://usgs-r.github.io/EGRETci/articles/prediction.html).
+4)  Create prediction intervals around estimated concentration or flux values for specific days, months, or years.  The estimates of interest here are the [WRTDS_K](http://usgs-r.github.io/EGRETci/).  A detailed description of how these estimates can be made is provided in the vignette on [WRTDS Kalman Prediction Intervals](https://usgs-r.github.io/EGRETci/articles/prediction.html).
 
 ## Required Data Frames
 

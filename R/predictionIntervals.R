@@ -22,7 +22,7 @@
 #' eList <- EGRET::Choptank_eList
 #' # This example is only based on 4 iterations
 #' # Actual prediction intervals should be calculated on
-#' # a much large set set should be used. 
+#' # a much larger number of iterations (several hundred). 
 #' dailyBoot <- Choptank_dailyBootOut
 #' monthPcts <- makeMonthPI(dailyBoot, eList)
 #' head(monthPcts[["flux"]])
@@ -118,7 +118,8 @@ monthSeqToDec <- function(monthSeq){
 #' Make Annual Prediction Intervals
 #' 
 #' This function takes the output from \code{\link{genDailyBoot}} and 
-#' calculates the quantiles for an annual (based on paStart/paLong) aggregation.
+#' calculates the quantiles for an annual (based on paStart/paLong) aggregation. 
+#' This means that the function can be used for seasons.
 #' 
 #' @param dailyBootOut data frame returned from \code{\link{genDailyBoot}}
 #' @param fluxUnit number representing entry in pre-defined fluxUnit class array. 
@@ -138,7 +139,7 @@ monthSeqToDec <- function(monthSeq){
 #' eList <- EGRET::Choptank_eList
 #' # This example is only based on 4 iterations
 #' # Actual prediction intervals should be calculated on
-#' # a much large set set should be used. 
+#' # a much larger number of iterations (several hundred).  
 #' dailyBoot <- Choptank_dailyBootOut
 #' annualPcts <- makeAnnualPI(dailyBoot, eList)
 #' head(annualPcts[["flux"]])
@@ -233,7 +234,7 @@ makeAnnualPI <- function(dailyBootOut, eList,
 #' eList <- EGRET::Choptank_eList
 #' # This example is only based on 4 iterations
 #' # Actual prediction intervals should be calculated on
-#' # a much large set set should be used. 
+#' # a much larger number of iterations (several hundred).
 #' dailyBoot <- Choptank_dailyBootOut
 #' dailyPcts <- makeDailyPI(dailyBoot, eList)
 #' head(dailyPcts[["flux"]])

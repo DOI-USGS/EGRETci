@@ -30,6 +30,8 @@ CIAnnualResults a data frame with the following columns
 }
 \description{
 Interactive function to calculate confidence bands for flow normalized concentration or flow normalized flux.
+  It returns the data frame CIAnnualResults, which is used as input to the functions
+  plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output.
 }
 \details{
 In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
@@ -41,7 +43,7 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 Argument values suggested.  
 To test the code nBoot = 10 is sufficient, but for meaningful results nBoot = 100 or even nBoot = 500 are more appropriate.
 blockLength = 200
-widthCI = 90 (90% confidence interval)
+widthCI = 90 (90\% confidence interval)
 }
 \examples{
 library(EGRET)

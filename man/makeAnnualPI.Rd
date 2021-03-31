@@ -27,13 +27,14 @@ quantiles of the flux or concentration (depending on the data frame).
 }
 \description{
 This function takes the output from \code{\link{genDailyBoot}} and 
-calculates the quantiles for an annual (based on paStart/paLong) aggregation.
+calculates the quantiles for an annual (based on paStart/paLong) aggregation. 
+This means that the function can be used for seasons.
 }
 \examples{
 eList <- EGRET::Choptank_eList
 # This example is only based on 4 iterations
 # Actual prediction intervals should be calculated on
-# a much large set set should be used. 
+# a much larger number of iterations (several hundred).  
 dailyBoot <- Choptank_dailyBootOut
 annualPcts <- makeAnnualPI(dailyBoot, eList)
 head(annualPcts[["flux"]])

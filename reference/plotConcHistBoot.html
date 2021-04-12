@@ -109,7 +109,7 @@ plotConcHist." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.4</span>
       </span>
     </div>
 
@@ -255,7 +255,8 @@ it will accept any additional arguments that are listed for the EGRET function
 <span class='va'>CIAnnualResults</span> <span class='op'>&lt;-</span> <span class='va'>Choptank_CIAnnualResults</span>
 <span class='fu'>plotConcHistBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>CIAnnualResults</span><span class='op'>)</span>
 </div><div class='img'><img src='plotConcHistBoot-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'>plotConcHistBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>CIAnnualResults</span>, yearStart<span class='op'>=</span><span class='fl'>1990</span>, yearEnd<span class='op'>=</span><span class='fl'>2002</span><span class='op'>)</span>
-</div><div class='img'><img src='plotConcHistBoot-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+</div><div class='img'><img src='plotConcHistBoot-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># Very long-running function:</span>
+<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
 <span class='va'>CIAnnualResults</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ciCalculations.html'>ciCalculations</a></span><span class='op'>(</span><span class='va'>eList</span>, nBoot <span class='op'>=</span> <span class='fl'>100</span>, blockLength <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>
 <span class='fu'>plotConcHistBoot</span><span class='op'>(</span><span class='va'>eList</span>, <span class='va'>CIAnnualResults</span><span class='op'>)</span>
 <span class='op'>}</span>

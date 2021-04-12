@@ -604,9 +604,9 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' \donttest{
-#' # run interactively, using stationary flow normalization
+#' # If run interactively, using stationary flow normalization
 #' # in this format it will prompt for nBoot, blockLength and widthCI.
-#' CIAnnualResults <- ciCalculations(eList)
+#' # CIAnnualResults <- ciCalculations(eList)
 #'
 #' # run in batch mode, using non-stationary flow normalization
 #' # In this example nBoot is set very small, useful for an initial trial run.

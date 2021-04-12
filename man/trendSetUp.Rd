@@ -32,14 +32,21 @@ to be run, and the block length (in days) for the block bootstrapping.
 The test is designed to evaluate the uncertainty about the trend between any pair of years.
 }
 \examples{
-library(EGRET)
-eList <- Choptank_eList
-\donttest{
+eList <- EGRET::Choptank_eList
+
 # Completely interactive:
-caseSetUp <- trendSetUp(eList)
+# caseSetUp <- trendSetUp(eList)
 # Semi-interactive:
-caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
-}
+# caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
+
+# fully scripted:
+caseSetUp <- trendSetUp(eList,
+  year1=1985, 
+  year2=2005,
+  nBoot = 50, 
+  bootBreak = 39,
+  blockLength = 200)
+
 }
 \seealso{
 \code{\link{setForBoot}}, \code{\link{wBT}}

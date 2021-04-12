@@ -27,12 +27,17 @@ eList list with Daily,Sample, INFO data frames and surface matrix.
 Adds window parameters to INFO file in eList.
 }
 \examples{
-library(EGRET)
-eList <- Choptank_eList
-\donttest{
-caseSetUp <- trendSetUp(eList)
+eList <- EGRET::Choptank_eList
+
+caseSetUp <- trendSetUp(eList,
+  year1=1985, 
+  year2=2005,
+  nBoot = 50, 
+  bootBreak = 39,
+  blockLength = 200)
+
 bootSetUp <- setForBoot(eList,caseSetUp)
-}
+
 }
 \keyword{WRTDS}
 \keyword{flow}

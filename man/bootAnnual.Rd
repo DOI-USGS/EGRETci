@@ -33,7 +33,7 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\donttest{
+\dontrun{
 annualResults <- bootAnnual(eList)
 }
 }

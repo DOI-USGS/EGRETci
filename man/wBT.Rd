@@ -52,15 +52,15 @@ The standard deviation of the added jitter is V * standard deviation of Log Q.
 The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 }
 \examples{
-library(EGRET)
-eList <- Choptank_eList
-\donttest{
-  caseSetUp <- trendSetUp(eList,
-  year1=1985, 
-  year2=2005,
-  nBoot = 50, 
-  bootBreak = 39,
-  blockLength = 200)
+eList <- EGRET::Choptank_eList
+caseSetUp <- trendSetUp(eList,
+                        year1 = 1985, 
+                        year2 = 2005,
+                        nBoot = 50, 
+                        bootBreak = 39,
+                        blockLength = 200)
+# Very long-running function:                     
+\dontrun{
 eBoot <- wBT(eList,caseSetUp)
 }
 }

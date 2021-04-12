@@ -35,8 +35,11 @@
 #' @examples 
 #' 
 #' eList <- EGRET::Choptank_eList
-#' \donttest{
-#' dailyBootOut <- genDailyBoot(eList, nBoot = 2, nKalman = 2)
+#' # Very long running function:
+#' \dontrun{
+#' dailyBootOut <- genDailyBoot(eList,
+#'                              nBoot = 20,
+#'                              nKalman = 25)
 #' }
 #' 
 genDailyBoot <- function(eList, nBoot = 10, nKalman = 10, 

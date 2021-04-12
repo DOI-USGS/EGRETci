@@ -63,7 +63,7 @@ eList <- Choptank_eList
 CIAnnualResults <- Choptank_CIAnnualResults
 plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 
-\donttest{
+\dontrun{
 CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 }

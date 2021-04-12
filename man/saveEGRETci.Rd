@@ -22,9 +22,8 @@ A .RData file containing three objects: eList, eBoot, and caseSetUp
 Saves critical information in a EGRETci workflow when analyzing trends between a starting and ending year.
 }
 \examples{
-library(EGRET)
-eList <- Choptank_eList
-\donttest{
+eList <- EGRET::Choptank_eList
+\dontrun{
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)
 saveEGRETci(eList, eBoot, caseSetUp)

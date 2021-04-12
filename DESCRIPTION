@@ -1,7 +1,7 @@
 Package: EGRETci
 Type: Package
 Title: Exploration and Graphics for RivEr Trends Confidence Intervals
-Version: 2.0.3.9000
+Version: 2.0.4
 Authors@R: c(person("Laura", "DeCicco", role = c("aut","cre"),
     email = "ldecicco@usgs.gov",
     comment=c(ORCID="0000-0002-3915-9487")),
@@ -21,7 +21,7 @@ License: CC0
 Depends:
     R (>= 3.5.0)
 Imports:
-    EGRET(> 3.0.4),
+    EGRET(>= 3.0.5),
     binom,
     stats,
     graphics,

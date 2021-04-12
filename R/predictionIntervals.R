@@ -236,10 +236,11 @@ makeAnnualPI <- function(dailyBootOut, eList,
 #' # Actual prediction intervals should be calculated on
 #' # a much larger number of iterations (several hundred).
 #' dailyBoot <- Choptank_dailyBootOut
+#' \donttest{
 #' dailyPcts <- makeDailyPI(dailyBoot, eList)
 #' head(dailyPcts[["flux"]])
 #' head(dailyPcts[["conc"]])
-#' 
+#' }
 makeDailyPI <- function(dailyBootOut, eList, fluxUnit = 3){
   
   nDaily <- length(dailyBootOut[,1])

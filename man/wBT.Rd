@@ -54,7 +54,7 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
+\donttest{
   caseSetUp <- trendSetUp(eList,
   year1=1985, 
   year2=2005,

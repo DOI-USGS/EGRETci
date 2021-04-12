@@ -34,7 +34,7 @@ The test is designed to evaluate the uncertainty about the trend between any pai
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
+\donttest{
 # Completely interactive:
 caseSetUp <- trendSetUp(eList)
 # Semi-interactive:

@@ -30,7 +30,7 @@ Extended Documentation: usgs-r.github.io/EGRETci")
 #' @author Robert M. Hirsch \email{rhirsch@@usgs.gov}, Laura De Cicco \email{ldecicco@@usgs.gov}
 #' @references Hirsch, R.M., and De Cicco, L.A., 2015, User guide to Exploration and Graphics for RivEr Trends 
 #' (EGRET) and dataRetrieval: R packages for hydrologic data: U.S. Geological Survey Techniques and Methods book 4, 
-#' chap. A10, 94 p., \url{https://doi.org/10.3133/tm4A10}
+#' chap. A10, 94 p., \doi{10.3133/tm4A10}
 #' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
 #' A bootstrap method for estimating uncertainty of water quality trends.  
 #' Environmental Modelling & Software, 73, 148-166. 
@@ -65,7 +65,7 @@ NULL
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #' # Completely interactive:
 #' caseSetUp <- trendSetUp(eList)
 #' # Semi-interactive:
@@ -165,7 +165,7 @@ trendSetUp <- function(eList, ...){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
 #' saveEGRETci(eList, eBoot, caseSetUp)
@@ -225,7 +225,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #'   caseSetUp <- trendSetUp(eList,
 #'   year1=1985, 
 #'   year2=2005,
@@ -719,7 +719,7 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #' caseSetUp <- trendSetUp(eList)
 #' bootSetUp <- setForBoot(eList,caseSetUp)
 #' }

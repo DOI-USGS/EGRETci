@@ -64,7 +64,7 @@ eList <- Choptank_eList
 CIAnnualResults <- Choptank_CIAnnualResults
 plotConcHistBoot(eList, CIAnnualResults)
 plotConcHistBoot(eList, CIAnnualResults, yearStart=1990, yearEnd=2002)
-\dontrun{
+\donttest{
 CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 plotConcHistBoot(eList, CIAnnualResults)
 }

@@ -29,7 +29,7 @@ Adds window parameters to INFO file in eList.
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
+\donttest{
 caseSetUp <- trendSetUp(eList)
 bootSetUp <- setForBoot(eList,caseSetUp)
 }

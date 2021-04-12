@@ -31,8 +31,9 @@ eList <- EGRET::Choptank_eList
 # Actual prediction intervals should be calculated on
 # a much larger number of iterations (several hundred).
 dailyBoot <- Choptank_dailyBootOut
+\donttest{
 dailyPcts <- makeDailyPI(dailyBoot, eList)
 head(dailyPcts[["flux"]])
 head(dailyPcts[["conc"]])
-
+}
 }

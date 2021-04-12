@@ -48,7 +48,7 @@ widthCI = 90 (90\% confidence interval)
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
+\donttest{
 # run interactively, using stationary flow normalization
 # in this format it will prompt for nBoot, blockLength and widthCI.
 CIAnnualResults <- ciCalculations(eList)

@@ -24,7 +24,7 @@ Saves critical information in a EGRETci workflow when analyzing trends between a
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\dontrun{
+\donttest{
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)
 saveEGRETci(eList, eBoot, caseSetUp)

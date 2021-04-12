@@ -37,7 +37,7 @@
 #' CIAnnualResults <- Choptank_CIAnnualResults
 #' plotConcHistBoot(eList, CIAnnualResults)
 #' plotConcHistBoot(eList, CIAnnualResults, yearStart=1990, yearEnd=2002)
-#' \dontrun{
+#' \donttest{
 #' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 #' plotConcHistBoot(eList, CIAnnualResults)
 #' }
@@ -155,7 +155,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' CIAnnualResults <- Choptank_CIAnnualResults
 #' plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 #' 
-#' \dontrun{
+#' \donttest{
 #' CIAnnualResults <- ciCalculations(eList, nBoot = 100, blockLength = 200)
 #' plotFluxHistBoot(eList, CIAnnualResults, fluxUnit=5)
 #' }
@@ -259,7 +259,7 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #' annualResults <- bootAnnual(eList)
 #' }
 bootAnnual <- function(eList, blockLength = 200, startSeed = 494817,
@@ -359,7 +359,7 @@ bootAnnual <- function(eList, blockLength = 200, startSeed = 494817,
 #' eList <- Choptank_eList
 #' nBoot <- 100
 #' blockLength <- 200
-#' \dontrun{
+#' \donttest{
 #' 
 #' repAnnualResults <- vector(mode = "list", length = nBoot)
 #' for(n in 1:nBoot){
@@ -461,7 +461,7 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
 #' caseSetUp <- Choptank_caseSetUp
 #' plotHistogramTrend(eList, eBoot, caseSetUp, flux = FALSE)
 #' 
-#' \dontrun{
+#' \donttest{
 #' # Using wBT:	
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
@@ -603,7 +603,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
+#' \donttest{
 #' # run interactively, using stationary flow normalization
 #' # in this format it will prompt for nBoot, blockLength and widthCI.
 #' CIAnnualResults <- ciCalculations(eList)

@@ -25,7 +25,7 @@ library(EGRET)
 eList <- Choptank_eList
 nBoot <- 100
 blockLength <- 200
-\dontrun{
+\donttest{
 
 repAnnualResults <- vector(mode = "list", length = nBoot)
 for(n in 1:nBoot){

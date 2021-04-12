@@ -54,7 +54,7 @@ eBoot <- Choptank_eBoot
 caseSetUp <- Choptank_caseSetUp
 plotHistogramTrend(eList, eBoot, caseSetUp, flux = FALSE)
 
-\donttest{
+\dontrun{
 # Using wBT:	
 caseSetUp <- trendSetUp(eList)
 eBoot <- wBT(eList,caseSetUp)

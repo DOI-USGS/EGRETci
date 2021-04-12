@@ -63,14 +63,21 @@ NULL
 #' @export
 #' @seealso \code{\link{setForBoot}}, \code{\link{wBT}}
 #' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \donttest{
+#' eList <- EGRET::Choptank_eList
+#' 
 #' # Completely interactive:
-#' caseSetUp <- trendSetUp(eList)
+#' # caseSetUp <- trendSetUp(eList)
 #' # Semi-interactive:
-#' caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
-#' }
+#' # caseSetUp <- trendSetUp(eList, nBoot = 100, blockLength = 200)
+#' 
+#' # fully scripted:
+#' caseSetUp <- trendSetUp(eList,
+#'   year1=1985, 
+#'   year2=2005,
+#'   nBoot = 50, 
+#'   bootBreak = 39,
+#'   blockLength = 200)
+#' 
 trendSetUp <- function(eList, ...){
   
   matchReturn <- list(...)
@@ -163,9 +170,8 @@ trendSetUp <- function(eList, ...){
 #' @return
 #' A .RData file containing three objects: eList, eBoot, and caseSetUp
 #' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \donttest{
+#' eList <- EGRET::Choptank_eList
+#' \dontrun{
 #' caseSetUp <- trendSetUp(eList)
 #' eBoot <- wBT(eList,caseSetUp)
 #' saveEGRETci(eList, eBoot, caseSetUp)
@@ -223,15 +229,15 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' 
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}
 #' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \donttest{
-#'   caseSetUp <- trendSetUp(eList,
-#'   year1=1985, 
-#'   year2=2005,
-#'   nBoot = 50, 
-#'   bootBreak = 39,
-#'   blockLength = 200)
+#' eList <- EGRET::Choptank_eList
+#' caseSetUp <- trendSetUp(eList,
+#'                         year1 = 1985, 
+#'                         year2 = 2005,
+#'                         nBoot = 50, 
+#'                         bootBreak = 39,
+#'                         blockLength = 200)
+#' # Very long-running function:                     
+#' \dontrun{
 #' eBoot <- wBT(eList,caseSetUp)
 #' }
 wBT<-function(eList, caseSetUp, 
@@ -717,12 +723,17 @@ makeTwoYearsResults <- function(eList,year1,year2){
 #' @return eList list with Daily,Sample, INFO data frames and surface matrix.
 #' @export
 #' @examples
-#' library(EGRET)
-#' eList <- Choptank_eList
-#' \donttest{
-#' caseSetUp <- trendSetUp(eList)
+#' eList <- EGRET::Choptank_eList
+#' 
+#' caseSetUp <- trendSetUp(eList,
+#'   year1=1985, 
+#'   year2=2005,
+#'   nBoot = 50, 
+#'   bootBreak = 39,
+#'   blockLength = 200)
+#' 
 #' bootSetUp <- setForBoot(eList,caseSetUp)
-#' }
+#' 
 setForBoot<-function (eList,caseSetUp, windowY = 7, windowQ = 2, 
                       windowS = 0.5, edgeAdjust=TRUE) {
   #  does the setup functions usually done by modelEstimation

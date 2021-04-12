@@ -51,7 +51,7 @@ The default for V is 0.2.  Larger values should generally be avoided, and smalle
 library(EGRET)
 eList <- Choptank_eList
 
-\donttest{
+\dontrun{
 groupResults <- runGroups(eList, 
                           group1firstYear = 1995, 
                           group1lastYear = 2004, 

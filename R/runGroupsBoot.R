@@ -35,7 +35,7 @@
 #' library(EGRET)
 #' eList <- Choptank_eList
 #' 
-#' \donttest{
+#' \dontrun{
 #' groupResults <- runGroups(eList, 
 #'                           group1firstYear = 1995, 
 #'                           group1lastYear = 2004, 

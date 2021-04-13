@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.4.0001</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@
       <h1 data-toc-skip>Introduction to EGRET Confidence Intervals</h1>
                         <h4 data-toc-skip class="author">Robert M. Hirsch, Laura A. De Cicco</h4>
             
-            <h4 data-toc-skip class="date">12 April, 2021</h4>
+            <h4 data-toc-skip class="date">13 April, 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/USGS-R/EGRETci/blob/master/vignettes/EGRETci.Rmd" class="external-link"><code>vignettes/EGRETci.Rmd</code></a></small>
       <div class="hidden name"><code>EGRETci.Rmd</code></div>
@@ -338,7 +338,7 @@
 <p>Once all of the parameters have been set (which requires no action by the user if the defaults are to be used) the set of commands for interactive processing would be this (using the example data set Choptank_eList):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 
 <span class="co">#Interactive function to set up trend analysis:</span>
@@ -389,7 +389,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>To run the <code>wBT</code> in batch mode the only difference from this script is that the call to <code>trendSetUp</code> should include all the needed bootstrap parameters. So, let’s assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50, and all other smoothing parameters at their default values. And we want to run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minimum of 39 replicates, and a block length of 200. The script would be:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/setPA.html" class="external-link">setPA</a></span><span class="op">(</span><span class="va">eList</span>, paStart <span class="op">=</span> <span class="fl">12</span>, paLong <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
 <span class="va">eList</span><span class="op">$</span><span class="va">INFO</span><span class="op">$</span><span class="va">windowY</span> <span class="op">&lt;-</span> <span class="fl">10</span>
@@ -413,7 +413,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>This initial run will give the analyst the basic information needed to set up a good set of values for xMin, xMax and xStep.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 
 <span class="co"># Example data included in package:</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span> <span class="co"># Example data from EGRET package</span>
@@ -485,7 +485,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <p>This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 
@@ -506,7 +506,7 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">doParallel</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/RevolutionAnalytics/iterators" class="external-link">iterators</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/modelEstimation.html" class="external-link">modelEstimation</a></span><span class="op">(</span><span class="va">eList</span><span class="op">)</span> 

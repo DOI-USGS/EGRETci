@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.4.0001</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@
 <p>Here we will run a trivially small example of <strong>runPairsBoot</strong> based on the problem set up in the second example of runPairs in the <code>EGRET</code> 3.0 enhancements User Guide.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://pubs.usgs.gov/tm/04/a10/" class="external-link">EGRET</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USGS-R/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://code.usgs.gov/water/EGRETci" class="external-link">EGRETci</a></span><span class="op">)</span>
 <span class="va">eList</span> <span class="op">&lt;-</span> <span class="va">Choptank_eList</span>
 <span class="va">pairResults2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EGRET/man/runPairs.html" class="external-link">runPairs</a></span><span class="op">(</span><span class="va">eList</span>, year1 <span class="op">=</span> <span class="fl">1985</span>, year2 <span class="op">=</span> <span class="fl">2010</span>, 
                          windowSide <span class="op">=</span> <span class="fl">7</span>, flowBreak <span class="op">=</span> <span class="cn">TRUE</span>, 
@@ -144,49 +144,49 @@
 <code class="sourceCode R"><span class="va">bootPairOut2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/runPairsBoot.html">runPairsBoot</a></span><span class="op">(</span><span class="va">eList</span>, 
                              <span class="va">pairResults2</span>, 
                              nBoot <span class="op">=</span> <span class="fl">10</span><span class="op">)</span> </code></pre></div>
-<pre><code>## 
-##  iBoot, xConc and xFlux 1 0.4048814 0.03866322
-##  iBoot, xConc and xFlux 2 0.4186308 0.04813132
-##  iBoot, xConc and xFlux 3 0.4114679 0.04757094
-##  iBoot, xConc and xFlux 4 0.4314246 0.04415677
-##  iBoot, xConc and xFlux 5 0.3456514 0.03323089
-##  iBoot, xConc and xFlux 6 0.4639338 0.04792485
-##  iBoot, xConc and xFlux 7 0.3480087 0.03212271
-##  iBoot, xConc and xFlux 8 0.3694464 0.03815445
-##  iBoot, xConc and xFlux 9 0.3502027 0.04509857
-##  iBoot, xConc and xFlux 10 0.4180412 0.04559656
-##    Choptank River 
-##    Inorganic nitrogen (nitrate and nitrite)
-##    Season Consisting of Apr May Jun Jul Aug 
-## 
-## 
-##  Change estimates are for  2010  minus  1985
-##  Sample data set was partitioned with a wall at  1995-05-31 
-## 
-## 
-## 
-## Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
-##  best estimate of change in concentration is   0.412 mg/L
-##   Lower and Upper 90% CIs    0.346    0.464
-##  also 95% CIs    0.346    0.464 
-##  and 50% CIs    0.350    0.422
-##  approximate two-sided p-value for Conc      0.18
-## * Note p-value should be considered to be &lt; stated value
-##  Likelihood that Flow Normalized Concentration is trending up = 0.955  is trending down = 0.0455
-## 
-## Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
-##  best estimate of change in flux is   0.0456 10^6 kg/year
-##   Lower and Upper 90% CIs   0.0321   0.0481
-##  also 95% CIs   0.0321   0.0481 
-##  and 50% CIs   0.0369   0.0477
-##  approximate two-sided p-value for Flux      0.18
-## * Note p-value should be considered to be &lt; stated value
-##  Likelihood that Flow Normalized Flux is trending up = 0.955  is trending down = 0.0455
-## 
-##  Upward trend in concentration is highly likely 
-##  Upward trend in flux is highly likely
-##  Downward trend in concentration is highly unlikely 
-##  Downward trend in flux is highly unlikely</code></pre>
+<pre><code>
+ iBoot, xConc and xFlux 1 0.4048814 0.03866322
+ iBoot, xConc and xFlux 2 0.4186308 0.04813132
+ iBoot, xConc and xFlux 3 0.4114679 0.04757094
+ iBoot, xConc and xFlux 4 0.4314246 0.04415677
+ iBoot, xConc and xFlux 5 0.3456514 0.03323089
+ iBoot, xConc and xFlux 6 0.4639338 0.04792485
+ iBoot, xConc and xFlux 7 0.3480087 0.03212271
+ iBoot, xConc and xFlux 8 0.3694464 0.03815445
+ iBoot, xConc and xFlux 9 0.3502027 0.04509857
+ iBoot, xConc and xFlux 10 0.4180412 0.04559656
+   Choptank River 
+   Inorganic nitrogen (nitrate and nitrite)
+   Season Consisting of Apr May Jun Jul Aug 
+
+
+ Change estimates are for  2010  minus  1985
+ Sample data set was partitioned with a wall at  1995-05-31 
+
+
+
+Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
+ best estimate of change in concentration is   0.412 mg/L
+  Lower and Upper 90% CIs    0.346    0.464
+ also 95% CIs    0.346    0.464 
+ and 50% CIs    0.350    0.422
+ approximate two-sided p-value for Conc      0.18
+* Note p-value should be considered to be &lt; stated value
+ Likelihood that Flow Normalized Concentration is trending up = 0.955  is trending down = 0.0455
+
+Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
+ best estimate of change in flux is   0.0456 10^6 kg/year
+  Lower and Upper 90% CIs   0.0321   0.0481
+ also 95% CIs   0.0321   0.0481 
+ and 50% CIs   0.0369   0.0477
+ approximate two-sided p-value for Flux      0.18
+* Note p-value should be considered to be &lt; stated value
+ Likelihood that Flow Normalized Flux is trending up = 0.955  is trending down = 0.0455
+
+ Upward trend in concentration is highly likely 
+ Upward trend in flux is highly likely
+ Downward trend in concentration is highly unlikely 
+ Downward trend in flux is highly unlikely</code></pre>
 <p>The output is pretty self-explanatory and the latter part of it is identical to the summary information provided by <strong>wBT</strong>.</p>
 <p>The object returned by <strong>runPairsBoot</strong> is virtually the same as the <strong>eBoot</strong> object returned by <strong>wBT</strong>. It contains the data frame called <strong>bootOut</strong> which contains all the results of the test that are shown in the console. One new feature here is <strong>bootOut$nBootGood</strong>. Because there is a small chance that the bootstrap results will contain a small number of iterations that fail to complete it may end up with a number of valid replicates that is less than <strong>nBoot</strong>. The number of usable replicates is <strong>nBootGood</strong>. The other parts of the returned object are the same as those returned from <strong>wBT</strong>.</p>
 <p>One of the outputs we can use to describe the results of the test is the histogram of percentage changes. These can be done with the <strong>plotHistogramTrend</strong> function just as they have been in the <code>EGRETci</code> 1.0.3 software. The only difference in the call to the function is that we don’t use <strong>caseSetUp</strong> in <strong>runPairs</strong> so that argument is set to <strong>caseSetUp = NA</strong>.</p>

@@ -1,6 +1,8 @@
 context("Kalman tests")
 
 test_that("Kalman Bootstrapping", {
+  skip_on_cran()
+  
   eList <- EGRET::Choptank_eList
   dailyBootOut <- genDailyBoot(eList, nBoot = 2, jitterOn = TRUE,
                                nKalman = 2, setSeed = 1)
@@ -15,6 +17,9 @@ test_that("Kalman Bootstrapping", {
 
 
 test_that("Monthly PI", {
+  
+  skip_on_cran()
+  
   eList <- EGRET::Choptank_eList
   dailyBoot <- Choptank_dailyBootOut
   month_PI <- makeMonthPI(dailyBoot, eList)
@@ -37,6 +42,9 @@ test_that("Monthly PI", {
 })
 
 test_that("Daily PI", {
+  
+  skip_on_cran()
+  
   eList <- EGRET::Choptank_eList
   dailyBoot <- Choptank_dailyBootOut
   daily_PI <- makeDailyPI(dailyBoot, eList)
@@ -59,6 +67,9 @@ test_that("Daily PI", {
 })
 
 test_that("Annual PI", {
+  
+  skip_on_cran()
+  
   eList <- EGRET::Choptank_eList
   dailyBoot <- Choptank_dailyBootOut
   annual_PI <- makeAnnualPI(dailyBoot, eList)

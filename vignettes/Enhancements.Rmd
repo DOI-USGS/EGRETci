@@ -91,11 +91,59 @@ eList <- Choptank_eList
 pairResults2 <- readRDS("pairResults2.rds")
 ```
 
-```{r}
+```{r echo=TRUE, eval=FALSE}
 bootPairOut2 <- runPairsBoot(eList, 
                              pairResults2, 
                              nBoot = 10) 
 ```
+
+
+```
+
+ iBoot, xConc and xFlux 1 0.4048814 0.03866322
+ iBoot, xConc and xFlux 2 0.4186308 0.04813132
+ iBoot, xConc and xFlux 3 0.4114679 0.04757094
+ iBoot, xConc and xFlux 4 0.4314246 0.04415677
+ iBoot, xConc and xFlux 5 0.3456514 0.03323089
+ iBoot, xConc and xFlux 6 0.4639338 0.04792485
+ iBoot, xConc and xFlux 7 0.3480087 0.03212271
+ iBoot, xConc and xFlux 8 0.3694464 0.03815445
+ iBoot, xConc and xFlux 9 0.3502027 0.04509857
+ iBoot, xConc and xFlux 10 0.4180412 0.04559656
+   Choptank River 
+   Inorganic nitrogen (nitrate and nitrite)
+   Season Consisting of Apr May Jun Jul Aug 
+
+
+ Change estimates are for  2010  minus  1985
+ Sample data set was partitioned with a wall at  1995-05-31 
+
+
+
+Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
+ best estimate of change in concentration is   0.412 mg/L
+  Lower and Upper 90% CIs    0.346    0.464
+ also 95% CIs    0.346    0.464 
+ and 50% CIs    0.350    0.422
+ approximate two-sided p-value for Conc      0.18
+* Note p-value should be considered to be < stated value
+ Likelihood that Flow Normalized Concentration is trending up = 0.955  is trending down = 0.0455
+
+Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
+ best estimate of change in flux is   0.0456 10^6 kg/year
+  Lower and Upper 90% CIs   0.0321   0.0481
+ also 95% CIs   0.0321   0.0481 
+ and 50% CIs   0.0369   0.0477
+ approximate two-sided p-value for Flux      0.18
+* Note p-value should be considered to be < stated value
+ Likelihood that Flow Normalized Flux is trending up = 0.955  is trending down = 0.0455
+
+ Upward trend in concentration is highly likely 
+ Upward trend in flux is highly likely
+ Downward trend in concentration is highly unlikely 
+ Downward trend in flux is highly unlikely
+ ```
+ 
 
 The output is pretty self-explanatory and the latter part of it is identical to the summary information provided by **wBT**.
 

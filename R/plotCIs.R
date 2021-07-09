@@ -392,16 +392,23 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
   }
   
   AnnualResults <- EGRET::setupYears(eList$Daily, paLong = paLong, paStart=paStart)
-  
+  AnnualResults$year <- as.integer(AnnualResults$DecYear)
+  names(AnnualResults)[which(names(AnnualResults) %in% c("FNFlux", "FNConc"))] <- c("FNFlux_1", "FNConc_1")
+  AnnualResults <- AnnualResults[c("year", "DecYear", "FNFlux_1", "FNConc_1")]
   nBoot <- length(repAnnualResults)
   numYears <- nrow(repAnnualResults[[1]])
   yearStart <- repAnnualResults[[1]][1,1]
   blockLength <- attr(repAnnualResults[[1]], "blockLength")
   
   manyAnnualResults <- array(NA, dim=c(numYears,2,nBoot))
+  
   for (i in 1:nBoot){
-    manyAnnualResults[,1,i] <- 2*log(AnnualResults$FNConc) - log(repAnnualResults[[i]]$FNConc)
-    manyAnnualResults[,2,i] <- 2*log(AnnualResults$FNFlux) - log(repAnnualResults[[i]]$FNFlux)
+    df_1 <- repAnnualResults[[i]]
+    df_1 <- merge(df_1, 
+                  AnnualResults, by = "year", all.x = TRUE)
+    
+    manyAnnualResults[,1,i] <- 2*log(df_1$FNConc_1) - log(df_1$FNConc)
+    manyAnnualResults[,2,i] <- 2*log(df_1$FNConc_1) - log(df_1$FNFlux)
   }
   
   CIAnnualResults <- data.frame(matrix(ncol = 5, nrow = numYears))

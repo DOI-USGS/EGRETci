@@ -408,7 +408,7 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
                   AnnualResults, by = "year", all.x = TRUE)
     
     manyAnnualResults[,1,i] <- 2*log(df_1$FNConc_1) - log(df_1$FNConc)
-    manyAnnualResults[,2,i] <- 2*log(df_1$FNConc_1) - log(df_1$FNFlux)
+    manyAnnualResults[,2,i] <- 2*log(df_1$FNFlux_1) - log(df_1$FNFlux)
   }
   
   CIAnnualResults <- data.frame(matrix(ncol = 5, nrow = numYears))

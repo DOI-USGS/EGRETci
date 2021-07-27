@@ -34,7 +34,7 @@ for(n in 1:nBoot){
 }
 
 CIAnnualResults <- ciBands(eList, repAnnualResults)
-
+plotConcHistBoot(eList, CIAnnualResults)
 }
 
 }

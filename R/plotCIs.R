@@ -369,7 +369,7 @@ bootAnnual <- function(eList, blockLength = 200, startSeed = 494817,
 #' }
 #' 
 #' CIAnnualResults <- ciBands(eList, repAnnualResults)
-#' 
+#' plotConcHistBoot(eList, CIAnnualResults)
 #' }
 #' 
 ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
@@ -393,7 +393,9 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
   
   AnnualResults <- EGRET::setupYears(eList$Daily, paLong = paLong, paStart=paStart)
   AnnualResults$year <- as.integer(AnnualResults$DecYear)
-  names(AnnualResults)[which(names(AnnualResults) %in% c("FNFlux", "FNConc"))] <- c("FNFlux_1", "FNConc_1")
+  names(AnnualResults)[which(names(AnnualResults) %in% c("FNFlux"))] <- c("FNFlux_1")
+  names(AnnualResults)[which(names(AnnualResults) %in% c("FNConc"))] <- c("FNConc_1")
+  
   AnnualResults <- AnnualResults[c("year", "DecYear", "FNFlux_1", "FNConc_1")]
   nBoot <- length(repAnnualResults)
   numYears <- nrow(repAnnualResults[[1]])
@@ -403,9 +405,10 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
   manyAnnualResults <- array(NA, dim=c(numYears,2,nBoot))
   
   for (i in 1:nBoot){
+    cat(i, "\n")
     df_1 <- repAnnualResults[[i]]
     df_1 <- merge(df_1, 
-                  AnnualResults, by = "year", all.x = TRUE)
+                  AnnualResults, by = "year", all = TRUE)
     
     manyAnnualResults[,1,i] <- 2*log(df_1$FNConc_1) - log(df_1$FNConc)
     manyAnnualResults[,2,i] <- 2*log(df_1$FNFlux_1) - log(df_1$FNFlux)
@@ -705,6 +708,7 @@ ciCalculations <- function (eList,
   }
   
   for(n in 1:nBoot){
+    cat(n, "\n")
     repAnnualResults[[n]] <- bootAnnual(eList, blockLength, startSeed+n, verbose = verbose, 
                                         jitterOn = jitterOn, V = V)
   }

@@ -1,13 +1,4 @@
-# EGRETci <img src="man/figures/egret-02.png" alt="EGRETci" height="150px" align="right" />
-
-[![R build
-status](https://github.com/USGS-R/EGRETci/workflows/R-CMD-check/badge.svg)](https://github.com/USGS-R/EGRETci/actions)
-[![CRAN version](http://www.r-pkg.org/badges/version/EGRETci)](https://cran.r-project.org/package=EGRETci)
-[![](http://cranlogs.r-pkg.org/badges/EGRETci)](https://cran.r-project.org/package=EGRETci)
-[![](http://cranlogs.r-pkg.org/badges/grand-total/EGRETci)](https://cran.r-project.org/package=EGRETci)
-[![codecov](https://codecov.io/gh/USGS-R/EGRETci/branch/master/graph/badge.svg)](https://codecov.io/gh/USGS-R/EGRETci)
-[![status](https://img.shields.io/badge/USGS-Research-blue.svg)](https://owi.usgs.gov/R/packages.html#research)
-
+# EGRETci <img src="man/figures/egret-02.png" alt="EGRET" style="width:90px;height:auto;" align="right" class="logo" />
 
 This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.
 

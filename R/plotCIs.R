@@ -583,7 +583,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 
 #' ciCalculations
 #'
-#' Interactive function to calculate confidence bands for flow normalized concentration or flow normalized flux.
+#' Function to calculate confidence bands for flow normalized concentration or flow normalized flux.
 #'   It returns the data frame CIAnnualResults, which is used as input to the functions
 #'   plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output. 
 #'
@@ -592,7 +592,12 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @param verbose logical specifying whether or not to display progress messag, default = TRUE
 #' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
 #' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.  
-#' @param \dots optionally include nBoot, blockLength, or widthCI
+#' @param nBoot number of times the bootstrap resampling and model estimating is done.
+#' Default is 100, but that will take a long time. Testing should initially be done using
+#' a smaller number like 10.
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param widthCI numeric, the width of the confidence intervals. 0.9 means the 
+#' confidence intervals will be calculated with 90%.
 #' @export
 #' @return CIAnnualResults a data frame with the following columns
 #'   Year, mean decYear value for the year being reported
@@ -614,11 +619,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \dontrun{
-#' # If run interactively, using stationary flow normalization
-#' # in this format it will prompt for nBoot, blockLength and widthCI.
-#' # CIAnnualResults <- ciCalculations(eList)
-#'
+#' \donttest{
+#' CIAnnualResults <- ciCalculations(eList,
+#'                                   nBoot = 10)
+#' plotConcHistBoot(eList, CIAnnualResults)
+#' 
 #' # run in batch mode, using non-stationary flow normalization
 #' # In this example nBoot is set very small, useful for an initial trial run.
 #' # A meaningful application would use nBoot values such as 100 or even 500. 
@@ -631,39 +636,17 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'  plotConcHistBoot(seriesOut_2, CIAnnualResults)
 #' 
 #' }
-ciCalculations <- function (eList, 
+ciCalculations <- function(eList, 
                             startSeed = 494817,
                             verbose = TRUE,
-                            jitterOn = FALSE, V = 0.2,
-                            ...){
-  
-  matchReturn <- list(...)
+                            jitterOn = FALSE, 
+                            V = 0.2,
+                            nBoot = 100,
+                            blockLength = 200,
+                            widthCI = 90){
   
   INFO <- eList$INFO
-  
-  if(!is.null(matchReturn$nBoot)){
-    nBoot <- matchReturn$nBoot
-  } else {
-    message("Enter nBoot, the number of bootstrap replicates to be used, typically 100")
-    nBoot <- as.numeric(readline())
-    cat("nBoot = ",nBoot," this is the number of replicates that will be run\n")
-  }
-  
-  if(!is.null(matchReturn$blockLength)){
-    blockLength <- matchReturn$blockLength
-  } else {
-    message("Enter blockLength, in days, typically 200 is a good choice")
-    blockLength <- as.numeric(readline())
-  }
-  
-  if(!is.null(matchReturn$widthCI)){
-    widthCI <- matchReturn$widthCI
-  } else {
-    message("Enter confidence interval, for example 90 represents a 90% confidence interval,")
-    message("the low and high returns are 5 and 95 % respectively")
-    widthCI <-  as.numeric(readline())
-  }
-  
+
   ciLower <- (50-(widthCI/2))/100
   ciUpper <- (50+(widthCI/2))/100
   probs <- c(ciLower,ciUpper)

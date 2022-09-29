@@ -16,7 +16,7 @@ runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
-\item{blockLength}{days, typically 200 is a good choice}
+\item{blockLength}{integer size of subset, expressed in days.  200 days has been found to be a good choice.}
 
 \item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
 Default = FALSE.  See Details below.}

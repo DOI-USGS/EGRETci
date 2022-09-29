@@ -9,7 +9,7 @@
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
 #' @param groupResults data frame returned from \code{\link[EGRET]{runGroups}}
 #' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
-#' @param blockLength days, typically 200 is a good choice
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
 #' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
 #'   Default = FALSE.  See Details below.

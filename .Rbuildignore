@@ -19,3 +19,7 @@ pkgdown/favicon/*
 .git
 vignettes/prediction.Rmd
 vignettes/Pinehurst_eListK.rds
+^ci$
+deploy_simple.R
+cobertura.xml
+test-out.xml

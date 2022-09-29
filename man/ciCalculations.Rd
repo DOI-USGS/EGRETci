@@ -23,10 +23,11 @@ ciCalculations(eList, startSeed = 494817, verbose = TRUE,
 Default is 100, but that will take a long time. Testing should initially be done using
 a smaller number like 10.}
 
-\item{blockLength}{integer size of subset, expressed in days.  200 days has been found to be a good choice.}
+\item{blockLength}{integer size of subset, expressed in days.  200 days has 
+been found to be a good choice.}
 
 \item{widthCI}{numeric, the width of the confidence intervals. 0.9 means the 
-confidence intervals will be calculated with 90%.}
+confidence intervals will be calculated with 90\%.}
 }
 \value{
 CIAnnualResults a data frame with the following columns
@@ -37,9 +38,10 @@ CIAnnualResults a data frame with the following columns
   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
 }
 \description{
-Function to calculate confidence bands for flow normalized concentration or flow normalized flux.
-  It returns the data frame CIAnnualResults, which is used as input to the functions
-  plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output.
+Function to calculate confidence bands for flow normalized concentration or 
+flow normalized flux.It returns the data frame CIAnnualResults, which is used
+as input to the functions \code{plotConcHistBoot}, and
+\code{plotFluxHistBoot} which produce the graphical output.
 }
 \details{
 In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
@@ -56,7 +58,7 @@ widthCI = 90 (90\% confidence interval)
 \examples{
 library(EGRET)
 eList <- Choptank_eList
-\donttest{
+\dontrun{
 CIAnnualResults <- ciCalculations(eList,
                                   nBoot = 10)
 plotConcHistBoot(eList, CIAnnualResults)

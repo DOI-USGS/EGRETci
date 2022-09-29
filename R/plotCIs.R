@@ -583,9 +583,10 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 
 #' ciCalculations
 #'
-#' Function to calculate confidence bands for flow normalized concentration or flow normalized flux.
-#'   It returns the data frame CIAnnualResults, which is used as input to the functions
-#'   plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output. 
+#' Function to calculate confidence bands for flow normalized concentration or 
+#' flow normalized flux.It returns the data frame CIAnnualResults, which is used
+#' as input to the functions \code{plotConcHistBoot}, and
+#' \code{plotFluxHistBoot} which produce the graphical output. 
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
@@ -595,16 +596,20 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' @param nBoot number of times the bootstrap resampling and model estimating is done.
 #' Default is 100, but that will take a long time. Testing should initially be done using
 #' a smaller number like 10.
-#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param blockLength integer size of subset, expressed in days.  200 days has 
+#' been found to be a good choice.
 #' @param widthCI numeric, the width of the confidence intervals. 0.9 means the 
-#' confidence intervals will be calculated with 90%.
+#' confidence intervals will be calculated with 90\%.
+#' 
 #' @export
+#' 
 #' @return CIAnnualResults a data frame with the following columns
 #'   Year, mean decYear value for the year being reported
 #'   FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
 #'   FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
 #'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg 
+#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
+#'    
 #' @details
 #' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
 #' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
@@ -616,10 +621,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' To test the code nBoot = 10 is sufficient, but for meaningful results nBoot = 100 or even nBoot = 500 are more appropriate.
 #' blockLength = 200
 #' widthCI = 90 (90\% confidence interval)
+#' 
 #' @examples
 #' library(EGRET)
 #' eList <- Choptank_eList
-#' \donttest{
+#' \dontrun{
 #' CIAnnualResults <- ciCalculations(eList,
 #'                                   nBoot = 10)
 #' plotConcHistBoot(eList, CIAnnualResults)

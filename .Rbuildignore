@@ -23,3 +23,5 @@ vignettes/Pinehurst_eListK.rds
 deploy_simple.R
 cobertura.xml
 test-out.xml
+^pkgdown$
+

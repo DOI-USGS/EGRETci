@@ -3,22 +3,21 @@
     "name": "EGRETci",
     "organization": "U.S. Geological Survey",
     "description": "A bootstrap method for estimating uncertainty of water quality trends",
-    "version": "2.0.4",
-    "status": "Production",
-
+    "version": "main",
+    "status": "Development",
     "permissions": {
       "usageType": "openSource",
       "licenses": [
         {
           "name": "Public Domain, CC0-1.0",
-          "URL": "https://code.usgs.gov/water/EGRETci/blob/master/LICENSE.note"
+          "URL": "https://code.usgs.gov/water/EGRETci/-/raw/main/LICENSE.md"
         }
-      ]
-    },
 
+        ]
+    },
     "homepageURL": "https://code.usgs.gov/water/EGRETci",
-    "downloadURL": "https://code.usgs.gov/water/EGRETci/-/archive/v2.0.4/EGRETci-v2.0.4.zip",
-    "disclaimerURL": "https://code.usgs.gov/water/EGRETci/blob/master/DISCLAIMER.md",
+    "downloadURL": "https://code.usgs.gov/water/EGRETci/-/archive/main/EGRETci-main.zip",
+    "disclaimerURL": "https://code.usgs.gov/water/EGRETci/-/raw/main/DISCLAIMER.md",
     "repositoryURL": "https://code.usgs.gov/water/EGRETci.git",
     "vcs": "git",
 
@@ -41,7 +40,7 @@
     },
 
     "date": {
-      "metadataLastUpdated": "2021-04-12"
+      "metadataLastUpdated": "2022-12-09"
     }
   }
 ]

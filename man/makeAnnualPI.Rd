@@ -4,7 +4,8 @@
 \alias{makeAnnualPI}
 \title{Make Annual Prediction Intervals}
 \usage{
-makeAnnualPI(dailyBootOut, eList, paLong = 12, paStart = 10, fluxUnit = 3)
+makeAnnualPI(dailyBootOut, eList, paLong = 12, paStart = 10,
+  fluxUnit = 3)
 }
 \arguments{
 \item{dailyBootOut}{data frame returned from \code{\link{genDailyBoot}}}

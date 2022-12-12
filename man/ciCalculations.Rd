@@ -5,7 +5,8 @@
 \title{ciCalculations}
 \usage{
 ciCalculations(eList, startSeed = 494817, verbose = TRUE,
-  jitterOn = FALSE, V = 0.2, ...)
+  jitterOn = FALSE, V = 0.2, nBoot = 100, blockLength = 200,
+  widthCI = 90)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.}
@@ -18,7 +19,15 @@ ciCalculations(eList, startSeed = 494817, verbose = TRUE,
 
 \item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.}
 
-\item{\dots}{optionally include nBoot, blockLength, or widthCI}
+\item{nBoot}{number of times the bootstrap resampling and model estimating is done.
+Default is 100, but that will take a long time. Testing should initially be done using
+a smaller number like 10.}
+
+\item{blockLength}{integer size of subset, expressed in days.  200 days has 
+been found to be a good choice.}
+
+\item{widthCI}{numeric, the width of the confidence intervals. 0.9 means the 
+confidence intervals will be calculated with 90\%.}
 }
 \value{
 CIAnnualResults a data frame with the following columns
@@ -29,9 +38,10 @@ CIAnnualResults a data frame with the following columns
   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
 }
 \description{
-Interactive function to calculate confidence bands for flow normalized concentration or flow normalized flux.
-  It returns the data frame CIAnnualResults, which is used as input to the functions
-  plotConcHistBoot( ), and plotFluxHistBoot( ) which produce the graphical output.
+Function to calculate confidence bands for flow normalized concentration or 
+flow normalized flux.It returns the data frame CIAnnualResults, which is used
+as input to the functions \code{plotConcHistBoot}, and
+\code{plotFluxHistBoot} which produce the graphical output.
 }
 \details{
 In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
@@ -49,9 +59,9 @@ widthCI = 90 (90\% confidence interval)
 library(EGRET)
 eList <- Choptank_eList
 \dontrun{
-# If run interactively, using stationary flow normalization
-# in this format it will prompt for nBoot, blockLength and widthCI.
-# CIAnnualResults <- ciCalculations(eList)
+CIAnnualResults <- ciCalculations(eList,
+                                  nBoot = 10)
+plotConcHistBoot(eList, CIAnnualResults)
 
 # run in batch mode, using non-stationary flow normalization
 # In this example nBoot is set very small, useful for an initial trial run.

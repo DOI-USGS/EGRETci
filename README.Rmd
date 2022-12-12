@@ -1,0 +1,61 @@
+---
+title: "README"
+output:
+  md_document:
+    variant: markdown_github
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
+# EGRETci <img src="man/figures/egret-02.png" alt="EGRET" style="width:90px;height:auto;" align="right" class="logo" />
+
+This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.
+
+See: [http://authors.elsevier.com/sd/article/S1364815215300220](http://authors.elsevier.com/sd/article/S1364815215300220) for more details.
+
+The **EGRETci** package is designed to carry out three specific types of tasks.
+
+1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving the functions: `trendSetUp` and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
+
+2)  Plot histograms of values for the trend magnitudes, expressed in percent change over the specified period, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.  Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period).  Such analyses would require a small amount of script writing by the user.
+
+3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
+
+## How to cite EGRETci:
+
+```{r }
+citation(package = "EGRETci")
+```
+
+
+### Reporting bugs
+
+Please consider reporting bugs and asking questions on the Issues page:
+[https://github.com/USGS-R/EGRETci/issues](https://github.com/USGS-R/EGRET/issues)
+
+
+### Code of Conduct
+
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/EGRETci/blob/master/CONDUCT.md) for more information.
+
+
+## Model Archive
+
+When using the `WRTDS` model (and corresponding confidence intervals), it is important to be able to reproduce the results in the future. The following version of R and package dependencies were used most recently to pass the embedded tests within this package. There is no guarantee of reproducible results using future versions of R or updated versions of package dependencies; however, we will make diligent efforts to test and update future modeling environments.
+
+```{r eval=TRUE}
+sessioninfo::session_info()
+```
+
+
+
+```{r disclaimer, child="DISCLAIMER.md", eval=TRUE}
+```

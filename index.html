@@ -4,7 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Collection of functions to evaluate uncertainty of results from
+    water quality analysis using the Weighted Regressions on Time Discharge and
+    Season (WRTDS) method. This package is an add-on to the EGRET package that
+    performs the WRTDS analysis. The WRTDS modeling
+    method was initially introduced and discussed in Hirsch et al. (2010) &lt;doi:10.1111/j.1752-1688.2010.00482.x&gt;,
+    and expanded in Hirsch and De Cicco (2015) &lt;doi:10.3133/tm4A10&gt;. The 
+    paper describing the uncertainty and confidence interval calculations 
+    is Hirsch et al. (2015) &lt;doi:10.1016/j.envsoft.2015.07.017&gt;.">
 <title>Exploration and Graphics for RivEr Trends Confidence Intervals • EGRETci</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,12 +20,12 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Exploration and Graphics for RivEr Trends Confidence Intervals">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<meta property="og:title" content="Exploration and Graphics for RivEr Trends Confidence Intervals">
 <meta property="og:description" content="Collection of functions to evaluate uncertainty of results from
     water quality analysis using the Weighted Regressions on Time Discharge and
     Season (WRTDS) method. This package is an add-on to the EGRET package that
@@ -38,65 +46,61 @@
   gtag('config', 'UA-53797708-7');
 </script>
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">EGRETci</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.4.0001</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
+    <a class="navbar-brand me-2" href="index.html">EGRETci</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="articles/EGRETci.html">Introduction</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.4.0001</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="articles/EGRETci.html">Introduction</a>
 </li>
-<li>
-  <a href="reference/index.html">Function Help Pages</a>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Function Help Pages</a>
 </li>
-<li>
-  <a href="articles/Enhancements.html">Enhancements</a>
+<li class="nav-item">
+  <a class="nav-link" href="articles/Enhancements.html">Enhancements</a>
 </li>
-<li>
-  <a href="articles/prediction.html">WRTDS Kalman Prediction Intervals</a>
+<li class="nav-item">
+  <a class="nav-link" href="articles/prediction.html">WRTDS Kalman Prediction Intervals</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/USGS-R/EGRETci" class="external-link">
-    <span class="fa fa-github fa-lg"></span>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://code.usgs.gov/water/EGRETci">
+    <span class="fa fa-gitlab fa-lg"></span>
      
   </a>
 </li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="egretci-">EGRETci <img src="reference/figures/egret-02.png" alt="EGRET" style="width:90px;height:auto;" align="right" class="logo"><a class="anchor" aria-label="anchor" href="#egretci-"></a>
+</h1>
 </div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="egretci-">EGRETci <img src="reference/figures/egret-02.png" alt="EGRETci" height="150px" align="right"><a class="anchor" aria-label="anchor" href="#egretci-"></a>
-</h1></div>
-
 <p>This package <strong>EGRETci</strong> implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the <strong>EGRET</strong> package.</p>
-<p>See: <a href="http://authors.elsevier.com/sd/article/S1364815215300220" class="external-link">http://authors.elsevier.com/sd/article/S1364815215300220</a> for more details.</p>
+<p>See: <a href="http://authors.elsevier.com/sd/article/S1364815215300220" class="external-link uri">http://authors.elsevier.com/sd/article/S1364815215300220</a> for more details.</p>
 <p>The <strong>EGRETci</strong> package is designed to carry out three specific types of tasks.</p>
 <ol style="list-style-type: decimal">
 <li><p>Evaluate a water quality trend over a specific span of years and produce a variety of tabular results. This is done with a short workflow involving the functions: <code>trendSetUp</code> and <code>wBT</code>. The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot. The contents of eBoot are described below.</p></li>
@@ -106,36 +110,28 @@
 <div class="section level2">
 <h2 id="how-to-cite-egretci">How to cite EGRETci:<a class="anchor" aria-label="anchor" href="#how-to-cite-egretci"></a>
 </h2>
-<pre><code>citation(package = "EGRETci")
-
-To cite EGRETci in publications, please use:
-
-  Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method for
-  estimating uncertainty of water quality trends", Environmental
-  Modelling &amp; Software, Vol 73, Nov 2015, p 148-166. doi:
-  j.envsoft.2015.07.017
-
-A BibTeX entry for LaTeX users is
-
-  @Article{,
-    author = {Robert M. Hirsch and Stacey A. Archfield and Laura A. {De Cicco}},
-    title = {A bootstrap method for estimating uncertainty of water quality trends},
-    journal = {Journal of Environmental Modelling and Software},
-    year = {2015},
-  }
-</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"EGRETci"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; To cite EGRETci in publications, please use:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method</span></span>
+<span><span class="co">#&gt;   for estimating uncertainty of water quality trends", Environmental</span></span>
+<span><span class="co">#&gt;   Modelling &amp; Software, Vol 73, Nov 2015, p 148-166. doi:</span></span>
+<span><span class="co">#&gt;   10.1016/j.envsoft.2015.07.017</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   @Article{,</span></span>
+<span><span class="co">#&gt;     author = {Robert M. Hirsch and Stacey A. Archfield and Laura A. {De Cicco}},</span></span>
+<span><span class="co">#&gt;     title = {A bootstrap method for estimating uncertainty of water quality trends},</span></span>
+<span><span class="co">#&gt;     journal = {Journal of Environmental Modelling and Software},</span></span>
+<span><span class="co">#&gt;     year = {2015},</span></span>
+<span><span class="co">#&gt;   }</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="reporting-bugs">Reporting bugs<a class="anchor" aria-label="anchor" href="#reporting-bugs"></a>
 </h3>
 <p>Please consider reporting bugs and asking questions on the Issues page: <a href="https://github.com/USGS-R/EGRET/issues" class="external-link">https://github.com/USGS-R/EGRETci/issues</a></p>
-<p>Follow <code>@USGS_R</code> on Twitter for updates on USGS R packages:</p>
-<p><a href="https://twitter.com/USGS_R" class="external-link"><img src="https://img.shields.io/twitter/follow/USGS_R.svg?style=social&amp;label=Follow%20USGS_R" alt="Twitter Follow"></a></p>
-</div>
-<div class="section level3">
-<h3 id="subscribe">Subscribe<a class="anchor" aria-label="anchor" href="#subscribe"></a>
-</h3>
-<p>Please email questions, comments, and feedback to: <a href="mailto:egret_comments@usgs.gov" class="email">egret_comments@usgs.gov</a></p>
-<p>Additionally, to subscribe to an email list concerning updates to these R packages, please send a request to <a href="mailto:egret_comments@usgs.gov" class="email">egret_comments@usgs.gov</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
@@ -147,83 +143,55 @@ A BibTeX entry for LaTeX users is
 <h2 id="model-archive">Model Archive<a class="anchor" aria-label="anchor" href="#model-archive"></a>
 </h2>
 <p>When using the <code>WRTDS</code> model (and corresponding confidence intervals), it is important to be able to reproduce the results in the future. The following version of R and package dependencies were used most recently to pass the embedded tests within this package. There is no guarantee of reproducible results using future versions of R or updated versions of package dependencies; however, we will make diligent efforts to test and update future modeling environments.</p>
-<pre><code>devtools::session_info()
-Session info ----------------------------------------------------------------------
- setting  value                       
- version  R version 3.4.1 (2017-06-30)
- system   x86_64, mingw32             
- ui       RStudio (1.0.143)           
- language (EN)                        
- collate  English_United States.1252  
- tz       America/Chicago             
- date     2017-07-27                  
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">sessioninfo</span><span class="fu">::</span><span class="fu"><a href="https://r-lib.github.io/sessioninfo/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="co">#&gt; ─ Session info ───────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;  setting  value</span></span>
+<span><span class="co">#&gt;  version  R version 4.2.2 (2022-10-31 ucrt)</span></span>
+<span><span class="co">#&gt;  os       Windows 10 x64 (build 19044)</span></span>
+<span><span class="co">#&gt;  system   x86_64, mingw32</span></span>
+<span><span class="co">#&gt;  ui       RTerm</span></span>
+<span><span class="co">#&gt;  language (EN)</span></span>
+<span><span class="co">#&gt;  collate  English_United States.utf8</span></span>
+<span><span class="co">#&gt;  ctype    English_United States.utf8</span></span>
+<span><span class="co">#&gt;  tz       America/Chicago</span></span>
+<span><span class="co">#&gt;  date     2022-12-09</span></span>
+<span><span class="co">#&gt;  pandoc   2.19.2 @ C:/Program Files/RStudio/bin/quarto/bin/tools/ (via rmarkdown)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ─ Packages ───────────────────────────────────────────────────────────────────</span></span>
+<span><span class="co">#&gt;  package     * version date (UTC) lib source</span></span>
+<span><span class="co">#&gt;  cli           3.4.1   2022-09-23 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  digest        0.6.30  2022-10-18 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  evaluate      0.18    2022-11-07 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  glue          1.6.2   2022-02-24 [1] CRAN (R 4.1.3)</span></span>
+<span><span class="co">#&gt;  htmltools     0.5.4   2022-12-07 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  knitr         1.41    2022-11-18 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  lifecycle     1.0.3   2022-10-07 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.1.3)</span></span>
+<span><span class="co">#&gt;  rlang         1.0.6   2022-09-24 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  rmarkdown     2.18    2022-11-09 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  rstudioapi    0.14    2022-08-22 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  stringi       1.7.8   2022-07-11 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt;  stringr       1.5.0   2022-12-02 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  vctrs         0.5.1   2022-11-16 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  xfun          0.35    2022-11-16 [1] CRAN (R 4.2.2)</span></span>
+<span><span class="co">#&gt;  yaml          2.3.6   2022-10-18 [1] CRAN (R 4.2.1)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  [1] C:/Users/ldecicco/Documents/R/win-library/4.2</span></span>
+<span><span class="co">#&gt;  [2] C:/Program Files/R/R-4.2.2/library</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; ──────────────────────────────────────────────────────────────────────────────</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level1">
+<h1 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
+</h1>
+<p>This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the software.</p>
+</div>
 
-Packages --------------------------------------------------------------------------
- package       * version    date       source        
- assertthat      0.2.0      2017-04-11 CRAN (R 3.4.0)
- base          * 3.4.1      2017-06-30 local         
- bindr           0.1        2016-11-13 CRAN (R 3.4.0)
- bindrcpp        0.2        2017-06-17 CRAN (R 3.4.0)
- binom           1.1-1      2014-01-02 CRAN (R 3.4.0)
- codetools       0.2-15     2016-10-05 CRAN (R 3.4.1)
- compiler        3.4.1      2017-06-30 local         
- curl            2.8.1      2017-07-21 CRAN (R 3.4.1)
- dataRetrieval   2.7.2      2017-05-23 CRAN (R 3.4.1)
- datasets      * 3.4.1      2017-06-30 local         
- devtools        1.13.2     2017-06-02 CRAN (R 3.4.1)
- digest          0.6.12     2017-01-27 CRAN (R 3.4.0)
- dotCall64       0.9-04     2016-10-07 CRAN (R 3.4.1)
- dplyr           0.7.2      2017-07-20 CRAN (R 3.4.1)
- EGRET           2.6.0      2017-07-27 CRAN (R 3.4.1)    
- EGRETci       * 1.0.5      2017-07-24 CRAN (R 3.4.1)      
- fields          9.0        2017-06-06 CRAN (R 3.4.0)
- foreach         1.4.3      2015-10-13 CRAN (R 3.4.0)
- glue            1.1.1      2017-06-21 CRAN (R 3.4.0)
- graphics      * 3.4.1      2017-06-30 local         
- grDevices     * 3.4.1      2017-06-30 local         
- grid            3.4.1      2017-06-30 local         
- hms             0.3        2016-11-22 CRAN (R 3.4.0)
- httr            1.2.1      2016-07-03 CRAN (R 3.3.1)
- iterators       1.0.8      2015-10-13 CRAN (R 3.4.0)
- jsonlite        1.5        2017-06-01 CRAN (R 3.4.0)
- lattice         0.20-35    2017-03-25 CRAN (R 3.4.1)
- lubridate       1.6.0      2016-09-13 CRAN (R 3.4.0)
- magrittr        1.5        2014-11-22 CRAN (R 3.4.0)
- maps            3.2.0      2017-06-08 CRAN (R 3.4.0)
- Matrix          1.2-10     2017-05-03 CRAN (R 3.4.1)
- memoise         1.1.0      2017-04-21 CRAN (R 3.4.0)
- methods       * 3.4.1      2017-06-30 local         
- parallel        3.4.1      2017-06-30 local         
- pkgconfig       2.0.1      2017-03-21 CRAN (R 3.4.0)
- plyr            1.8.4      2016-06-08 CRAN (R 3.3.1)
- R6              2.2.2      2017-06-17 CRAN (R 3.4.0)
- Rcpp            0.12.12    2017-07-15 CRAN (R 3.4.1)
- readr           1.1.1      2017-05-16 CRAN (R 3.4.0)
- reshape2        1.4.2      2016-10-22 CRAN (R 3.4.0)
- rlang           0.1.1      2017-05-18 CRAN (R 3.4.1)
- spam            2.1-1      2017-07-03 CRAN (R 3.4.1)
- splines         3.4.1      2017-06-30 local         
- stats         * 3.4.1      2017-06-30 local         
- stringi         1.1.5      2017-04-07 CRAN (R 3.4.0)
- stringr         1.2.0      2017-02-18 CRAN (R 3.4.0)
- survival        2.41-3     2017-04-04 CRAN (R 3.4.0)
- tibble          1.3.3      2017-05-28 CRAN (R 3.4.0)
- tools           3.4.1      2017-06-30 local         
- utils         * 3.4.1      2017-06-30 local         
- withr           1.0.2      2016-06-20 CRAN (R 3.3.1)
- xml2            1.1.1      2017-01-24 CRAN (R 3.4.0)
-</code></pre>
-</div>
-<div class="section level2">
-<h2 id="disclaimer">Disclaimer<a class="anchor" aria-label="anchor" href="#disclaimer"></a>
-</h2>
-<p>This software has been approved for release by the U.S. Geological Survey (USGS). Although the software has been subjected to rigorous review, the USGS reserves the right to update the software as needed pursuant to further analysis and review. No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. Furthermore, the software is released on condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from its authorized or unauthorized use.</p>
-</div>
-</div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=EGRETci" class="external-link">View on CRAN</a></li>
@@ -256,39 +224,87 @@ Packages -----------------------------------------------------------------------
 </ul>
 </div>
 
-<div class="dev-status">
-<h2 data-toc-skip>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/USGS-R/EGRETci/actions" class="external-link"><img src="https://github.com/USGS-R/EGRETci/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://cran.r-project.org/package=EGRETci" class="external-link"><img src="http://www.r-pkg.org/badges/version/EGRETci" alt="CRAN version"></a></li>
-<li><a href="https://cran.r-project.org/package=EGRETci" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/EGRETci"></a></li>
-<li><a href="https://cran.r-project.org/package=EGRETci" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/grand-total/EGRETci"></a></li>
-<li><a href="https://codecov.io/gh/USGS-R/EGRETci" class="external-link"><img src="https://codecov.io/gh/USGS-R/EGRETci/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://owi.usgs.gov/R/packages.html#research" class="external-link"><img src="https://img.shields.io/badge/USGS-Research-blue.svg" alt="status"></a></li>
-</ul>
-</div>
 
-  </div>
+
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
-  <p></p>
-<p>Developed by Laura DeCicco, Robert Hirsch.</p>
-</div>
+    <footer></footer>
+</div> <!-- / div for your main content-->
 
-<div class="pkgdown">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
-</div>
+<!-- BEGIN USGS Footer Template -->
 
-      </footer>
+<footer class="footer"><div class="tmp-container">
+		<!-- .footer-wrap -->
+			<!-- .footer-doi -->
+			<div class="footer-doi">
+				<!-- footer nav links -->
+				<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/privacy" class="external-link">DOI Privacy Policy</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/policies-and-notices" class="external-link">Legal</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/accessibility-and-us-geological-survey" class="external-link">Accessibility</a></li>
+					<li class="leaf menu-links menu-level-1"><a href="https://www.usgs.gov/sitemap" class="external-link">Site Map</a></li>
+					<li class="last leaf menu-links menu-level-1"><a href="https://answers.usgs.gov/" class="external-link">Contact USGS</a></li>
+				</ul>
+<!--/ footer nav links -->
 </div>
+			<!-- /.footer-doi -->
 
+			<hr>
+<!-- .footer-utl-links --><div class="footer-doi">
+			<ul class="menu nav">
+<li class="first leaf menu-links menu-level-1"><a href="https://www.doi.gov/" class="external-link">U.S. Department of the Interior</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doioig.gov/" class="external-link">DOI Inspector General</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/" class="external-link">White House</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.whitehouse.gov/omb/management/egov/" class="external-link">E-gov</a></li>
+				<li class="leaf menu-links menu-level-1"><a href="https://www.doi.gov/pmb/eeo/no-fear-act" class="external-link">No Fear Act</a></li>
+				<li class="last leaf menu-links menu-level-1"><a href="https://www.usgs.gov/about/organization/science-support/foia" class="external-link">FOIA</a></li>
+			</ul>
+</div>			
+		<!-- /.footer-utl-links -->
+		<!-- .footer-social-links -->
+		<div class="footer-social-links">
+			<ul class="social">
+<li class="follow">Follow</li>
+				<li class="twitter">
+					<a href="https://twitter.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-twitter-square"><span class="only">Twitter</span></i>
+					</a>
+				</li>
+				<li class="facebook">
+					<a href="https://facebook.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-facebook-square"><span class="only">Facebook</span></i>
+					</a>
+				</li>
+				<li class="github">
+					<a href="https://github.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-github"><span class="only">GitHub</span></i>
+					</a>
+				</li>
+				<li class="flickr">
+					<a href="https://flickr.com/usgeologicalsurvey" target="_blank" class="external-link">
+						<i class="fa fa-flickr"><span class="only">Flickr</span></i>
+					</a>
+				</li>
+				<li class="youtube">
+					<a href="http://youtube.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-youtube-play"><span class="only">YouTube</span></i>
+					</a>
+				</li>
+				<li class="instagram">
+					<a href="https://instagram.com/usgs" target="_blank" class="external-link">
+						<i class="fa fa-instagram"><span class="only">Instagram</span></i>
+					</a>
+				</li>
+			</ul>
+</div>
+		<!-- /.footer-social-links -->
+	</div>
+		<!-- /.footer-wrap -->	
+</footer><!-- END USGS Footer Template- --><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKQR8KP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
   
-
-
-  
-
   </body>
+<!-- closing div for body -->
 </html>

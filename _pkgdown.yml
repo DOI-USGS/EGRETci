@@ -1,3 +1,4 @@
+url: http://usgs-r.github.io/EGRETci/
 template:
   params:
     ganalytics: UA-53797708-7
@@ -29,3 +30,4 @@ navbar:
   right:
   - icon: fa-gitlab fa-lg
     href: https://code.usgs.gov/water/EGRETci
+

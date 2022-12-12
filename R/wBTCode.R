@@ -224,7 +224,7 @@ saveEGRETci <- function(eList, eBoot, caseSetUp, fileName = ""){
 #' xConc and xFlux \tab vectors of length iBoot, of the change in flow normalized concentration
 #'    and flow normalized flux computed from each of the bootstrap replicates. \cr
 #' pConc and pFlux \tab vectors of length iBoot, of the change in flow normalized concentration
-#'    or flow normalized flux computed from each of the bootstrap replicates expressed as % change. \cr
+#'    or flow normalized flux computed from each of the bootstrap replicates expressed as \% change. \cr
 #' } 
 #' 
 #' @seealso \code{\link{trendSetUp}}, \code{\link{setForBoot}}, \code{\link{runGroupsBoot}}, \code{\link{runPairsBoot}}

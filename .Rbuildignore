@@ -19,3 +19,5 @@ pkgdown/favicon/*
 .git
 vignettes/prediction.Rmd
 vignettes/Pinehurst_eListK.rds
+^_pkgdown\.yml$
+^pkgdown$

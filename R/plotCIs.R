@@ -75,21 +75,40 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
   title <- paste(eList$INFO$shortName, " ", eList$INFO$paramShortName, 
                  "\n", periodName, "\n",title3)
   
+  dataStart <- min(eList$Sample$DecYear, na.rm = TRUE)
+  dataStartPad <- dataStart - 0.5
+  
+  if(is.na(yearStart)){
+    yearStart <- dataStartPad
+  } else {
+    yearStart <- max(yearStart, dataStartPad)
+    
+  }
+  
+  dataEnd <- max(eList$Sample$DecYear, na.rm = TRUE)
+  dataEndPad <- dataEnd + 0.5
+  
+  if(is.na(yearEnd)){
+    yearEnd <- dataEndPad
+  } else {
+    yearEnd <- min(yearEnd, dataEndPad)
+  }
+  
   if(is.na(concMax)){
     numYears <- length(localAnnualResults$DecYear)
     
     subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
     
-    if(is.na(yearStart)){
-      yearStart <- min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
-    }
-    
-    if(is.na(yearEnd)){
-      yearEnd <- max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNConc)], na.rm = TRUE)
-    }
-    
     annConc <- subAnnualResults$Conc
-    concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,annConc), na.rm=TRUE)
+    if(plotGenConc){
+      concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,
+                            annConc,
+                            subAnnualResults$GenConc), na.rm=TRUE)
+    } else {
+      concMax <- 1.05*max(c(CIAnnualResults$FNConcHigh,
+                            annConc), na.rm=TRUE)      
+    }
+
   }
   
   EGRET::plotConcHist(eList, yearStart = yearStart, yearEnd = yearEnd,
@@ -201,17 +220,40 @@ plotFluxHistBoot <- function (eList, CIAnnualResults,
   }
   unitFactorReturn <- fluxUnit@unitFactor
   
+  dataStart <- min(eList$Sample$DecYear, na.rm = TRUE)
+  dataStartPad <- dataStart - 0.5
+  
+  if(is.na(yearStart)){
+    yearStart <- dataStartPad
+  } else {
+    yearStart <- max(yearStart, dataStartPad)
+    
+  }
+  
+  dataEnd <- max(eList$Sample$DecYear, na.rm = TRUE)
+  dataEndPad <- dataEnd + 0.5
+  
+  if(is.na(yearEnd)){
+    yearEnd <- dataEndPad
+  } else {
+    yearEnd <- min(yearEnd, dataEndPad)
+  }
+  
   if(is.na(fluxMax)){
     numYears <- length(localAnnualResults$DecYear)
-    
-    yearStart <- if(is.na(yearStart)) trunc(min(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE)) else yearStart
-    yearEnd <- if(is.na(yearEnd)) trunc(max(localAnnualResults$DecYear[!is.na(localAnnualResults$FNFlux)],na.rm = TRUE))+1 else yearEnd
     
     subAnnualResults <- localAnnualResults[localAnnualResults$DecYear>=yearStart & localAnnualResults$DecYear <= yearEnd,]
     
     annFlux <- unitFactorReturn*subAnnualResults$Flux
     
-    fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,annFlux), na.rm=TRUE)
+    if(plotGenFlux){
+      fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,
+                            annFlux,
+                            unitFactorReturn*subAnnualResults$GenFlux), na.rm=TRUE)
+    } else {
+      fluxMax <- 1.05*max(c(CIAnnualResults$FNFluxHigh*unitFactorReturn,annFlux), na.rm=TRUE)
+    }
+    
   }
   
   EGRET::plotFluxHist(eList, yearStart = yearStart, yearEnd = yearEnd,

@@ -13,7 +13,7 @@ ciCalculations(eList, startSeed = 494817, verbose = TRUE,
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
-\item{verbose}{logical specifying whether or not to display progress messag, default = TRUE}
+\item{verbose}{logical specifying whether or not to display progress message, default = TRUE}
 
 \item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.}
 

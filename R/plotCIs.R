@@ -632,7 +632,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @param verbose logical specifying whether or not to display progress messag, default = TRUE
+#' @param verbose logical specifying whether or not to display progress message, default = TRUE
 #' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
 #' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.  
 #' @param nBoot number of times the bootstrap resampling and model estimating is done.

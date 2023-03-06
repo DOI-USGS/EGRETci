@@ -645,13 +645,15 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' 
 #' @export
 #' 
-#' @return CIAnnualResults a data frame with the following columns
-#'   Year, mean decYear value for the year being reported
-#'   FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
-#'   FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
-#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-#'    
+#' @return CIAnnualResults a data frame with the following columns:
+#' \tabular{ll}{
+#' \tab Year \tab mean decYear value for the year being reported \cr
+#' \tab FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
+#' \tab FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
+#' \tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' \tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' }
+#' 
 #' @details
 #' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
 #' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.

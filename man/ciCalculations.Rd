@@ -30,12 +30,14 @@ been found to be a good choice.}
 confidence intervals will be calculated with 90\%.}
 }
 \value{
-CIAnnualResults a data frame with the following columns
-  Year, mean decYear value for the year being reported
-  FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
-  FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg
+CIAnnualResults a data frame with the following columns:
+\tabular{ll}{
+\tab Year \tab mean decYear value for the year being reported \cr
+\tab FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
+\tab FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
+\tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+\tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+}
 }
 \description{
 Function to calculate confidence bands for flow normalized concentration or 

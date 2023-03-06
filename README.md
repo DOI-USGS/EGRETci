@@ -44,18 +44,18 @@ citation(package = "EGRETci")
 #> 
 #> To cite EGRETci in publications, please use:
 #> 
-#>   Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method
-#>   for estimating uncertainty of water quality trends", Environmental
-#>   Modelling & Software, Vol 73, Nov 2015, p 148-166. doi:
-#>   10.1016/j.envsoft.2015.07.017
+#>   Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2023,
+#>   Exploration and Graphics for RivEr Trends (EGRET) Uncertainty and
+#>   Confidence Intervals, version 2.0.5, doi:10.5066/P9CC9JEX
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Article{,
-#>     author = {Robert M. Hirsch and Stacey A. Archfield and Laura A. {De Cicco}},
-#>     title = {A bootstrap method for estimating uncertainty of water quality trends},
-#>     journal = {Journal of Environmental Modelling and Software},
-#>     year = {2015},
+#>   @Manual{,
+#>     author = {Robert M. Hirsch and Laura A. {De Cicco} and Stacey A. Archfield and Jennifer C. Murphy},
+#>     title = {EGRETci},
+#>     publisher = {U.S. Geological Survey},
+#>     year = {2023},
+#>     url = {https://pubs.usgs.gov/tm/04/a10/},
 #>   }
 ```
 
@@ -93,7 +93,7 @@ sessioninfo::session_info()
 #>  collate  English_United States.utf8
 #>  ctype    English_United States.utf8
 #>  tz       America/Chicago
-#>  date     2023-02-07
+#>  date     2023-03-06
 #>  pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ sessioninfo::session_info()
 #>  rmarkdown     2.20    2023-01-19 [1] CRAN (R 4.2.2)
 #>  rstudioapi    0.14    2022-08-22 [1] CRAN (R 4.2.1)
 #>  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.1)
-#>  xfun          0.36    2022-12-21 [1] CRAN (R 4.2.2)
+#>  xfun          0.37    2023-01-31 [1] CRAN (R 4.2.2)
 #>  yaml          2.3.7   2023-01-23 [1] CRAN (R 4.2.2)
 #> 
 #>  [1] C:/Users/ldecicco/Documents/R/win-library/4.2

@@ -26,3 +26,4 @@ test-out.xml
 ^_pkgdown\.yml$
 ^pkgdown$
 ^review$
+README.rmd

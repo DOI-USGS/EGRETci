@@ -647,11 +647,11 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' 
 #' @return CIAnnualResults a data frame with the following columns:
 #' \tabular{ll}{
-#' \tab Year \tab mean decYear value for the year being reported \cr
-#' \tab FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
-#' \tab FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
-#' \tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
-#' \tab FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' Year \tab mean decYear value for the year being reported \cr
+#' FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
+#' FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
+#' FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
 #' }
 #' 
 #' @details

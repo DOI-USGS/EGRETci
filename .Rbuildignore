@@ -19,10 +19,11 @@ pkgdown/favicon/*
 .git
 vignettes/prediction.Rmd
 vignettes/Pinehurst_eListK.rds
-<<<<<<< HEAD
 ^ci$
 deploy_simple.R
 cobertura.xml
 test-out.xml
 ^_pkgdown\.yml$
 ^pkgdown$
+^review$
+README.rmd

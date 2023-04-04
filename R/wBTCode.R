@@ -18,7 +18,7 @@ Extended Documentation: https://rconnect.usgs.gov/EGRETci")
 #' that originally came from the United States Geological Survey, an agency of
 #' the United States Department of Interior. For more information, see the
 #' official USGS copyright policy at
-#' http://www.usgs.gov/visual-id/credit_usgs.html#copyright\cr
+#' \url{https://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits}\cr
 #' LazyLoad: \tab yes\cr
 #' }
 #' Collection of functions to evaluate uncertainty of results from water quality analysis using 

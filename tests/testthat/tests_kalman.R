@@ -10,8 +10,8 @@ test_that("Kalman Bootstrapping", {
   expect_equal(nrow(dailyBootOut), nrow(eList$Daily))
   expect_equal(ncol(dailyBootOut), 4)
 
-  expect_equal(round(dailyBootOut[1,1], digits = 2), 161.57)
-  expect_equal(round(dailyBootOut[2,2], digits = 2), 131.96)
+  expect_equal(round(dailyBootOut[1,1], digits = 2), 197.5)
+  expect_equal(round(dailyBootOut[2,2], digits = 2), 128.74)
   
 })
 

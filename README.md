@@ -44,31 +44,31 @@ citation(package = "EGRETci")
 #> 
 #> To cite EGRETci in publications, please use:
 #> 
-#>   Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method
-#>   for estimating uncertainty of water quality trends", Environmental
-#>   Modelling & Software, Vol 73, Nov 2015, p 148-166. doi:
-#>   10.1016/j.envsoft.2015.07.017
+#>   Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2023,
+#>   Exploration and Graphics for RivEr Trends (EGRET) Uncertainty and
+#>   Confidence Intervals, version 2.0.5, doi:10.5066/P9CC9JEX
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
-#>   @Article{,
-#>     author = {Robert M. Hirsch and Stacey A. Archfield and Laura A. {De Cicco}},
-#>     title = {A bootstrap method for estimating uncertainty of water quality trends},
-#>     journal = {Journal of Environmental Modelling and Software},
-#>     year = {2015},
+#>   @Manual{,
+#>     author = {Robert M. Hirsch and Laura A. {De Cicco} and Stacey A. Archfield and Jennifer C. Murphy},
+#>     title = {EGRETci},
+#>     publisher = {U.S. Geological Survey},
+#>     year = {2023},
+#>     url = {https://pubs.usgs.gov/tm/04/a10/},
 #>   }
 ```
 
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page:
-[https://github.com/USGS-R/EGRETci/issues](https://github.com/USGS-R/EGRET/issues)
+[https://github.com/DOI-USGS/EGRETci/issues](https://github.com/DOI-USGS/EGRET/issues)
 
 ### Code of Conduct
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See the [code of
-conduct](https://github.com/USGS-R/EGRETci/blob/master/CONDUCT.md) for
+conduct](https://code.usgs.gov/water/EGRETci/-/blob/main/CONDUCT.md) for
 more information.
 
 ## Model Archive
@@ -93,29 +93,23 @@ sessioninfo::session_info()
 #>  collate  English_United States.utf8
 #>  ctype    English_United States.utf8
 #>  tz       America/Chicago
-#>  date     2022-12-09
-#>  pandoc   2.19.2 @ C:/Program Files/RStudio/bin/quarto/bin/tools/ (via rmarkdown)
+#>  date     2023-03-06
+#>  pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
 #> 
 #> ─ Packages ───────────────────────────────────────────────────────────────────
 #>  package     * version date (UTC) lib source
-#>  cli           3.4.1   2022-09-23 [1] CRAN (R 4.2.1)
-#>  digest        0.6.30  2022-10-18 [1] CRAN (R 4.2.2)
-#>  evaluate      0.18    2022-11-07 [1] CRAN (R 4.2.2)
+#>  cli           3.6.0   2023-01-09 [1] CRAN (R 4.2.2)
+#>  digest        0.6.31  2022-12-11 [1] CRAN (R 4.2.2)
+#>  evaluate      0.20    2023-01-17 [1] CRAN (R 4.2.2)
 #>  fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.2.1)
-#>  glue          1.6.2   2022-02-24 [1] CRAN (R 4.1.3)
 #>  htmltools     0.5.4   2022-12-07 [1] CRAN (R 4.2.2)
-#>  knitr         1.41    2022-11-18 [1] CRAN (R 4.2.2)
-#>  lifecycle     1.0.3   2022-10-07 [1] CRAN (R 4.2.1)
-#>  magrittr      2.0.3   2022-03-30 [1] CRAN (R 4.1.3)
+#>  knitr         1.42    2023-01-25 [1] CRAN (R 4.2.2)
 #>  rlang         1.0.6   2022-09-24 [1] CRAN (R 4.2.1)
-#>  rmarkdown     2.18    2022-11-09 [1] CRAN (R 4.2.2)
+#>  rmarkdown     2.20    2023-01-19 [1] CRAN (R 4.2.2)
 #>  rstudioapi    0.14    2022-08-22 [1] CRAN (R 4.2.1)
 #>  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.1)
-#>  stringi       1.7.8   2022-07-11 [1] CRAN (R 4.2.1)
-#>  stringr       1.5.0   2022-12-02 [1] CRAN (R 4.2.2)
-#>  vctrs         0.5.1   2022-11-16 [1] CRAN (R 4.2.2)
-#>  xfun          0.35    2022-11-16 [1] CRAN (R 4.2.2)
-#>  yaml          2.3.6   2022-10-18 [1] CRAN (R 4.2.1)
+#>  xfun          0.37    2023-01-31 [1] CRAN (R 4.2.2)
+#>  yaml          2.3.7   2023-01-23 [1] CRAN (R 4.2.2)
 #> 
 #>  [1] C:/Users/ldecicco/Documents/R/win-library/4.2
 #>  [2] C:/Program Files/R/R-4.2.2/library

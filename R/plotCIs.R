@@ -632,7 +632,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #'
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
 #' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @param verbose logical specifying whether or not to display progress messag, default = TRUE
+#' @param verbose logical specifying whether or not to display progress message, default = TRUE
 #' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
 #' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.  
 #' @param nBoot number of times the bootstrap resampling and model estimating is done.
@@ -645,13 +645,15 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp,
 #' 
 #' @export
 #' 
-#' @return CIAnnualResults a data frame with the following columns
-#'   Year, mean decYear value for the year being reported
-#'   FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
-#'   FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
-#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-#'   FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-#'    
+#' @return CIAnnualResults a data frame with the following columns:
+#' \tabular{ll}{
+#' Year \tab mean decYear value for the year being reported \cr
+#' FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
+#' FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
+#' FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+#' }
+#' 
 #' @details
 #' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
 #' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.

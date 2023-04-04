@@ -1,13 +1,14 @@
 citHeader("To cite EGRETci in publications, please use:")
 
-bibentry(bibtype = "article",
+bibentry(bibtype = "Manual",
  author = personList(
               as.person("Robert M. Hirsch"),
+              as.person("Laura A. De Cicco"),
               as.person("Stacey A. Archfield"),
-              as.person("Laura A. De Cicco")),
-  title = "A bootstrap method for estimating uncertainty of water quality trends",
-  journal = "Journal of Environmental Modelling and Software",
-  year = 2015,
-  textVersion = 'Hirsch, R.M., Archfield, S.A., De Cicco, L.A., "A bootstrap method for estimating uncertainty of water quality trends", Environmental Modelling & Software, Vol 73, Nov 2015, p 148-166. doi: 10.1016/j.envsoft.2015.07.017'
+              as.person("Jennifer C. Murphy")),
+  title = "EGRETci",
+  publisher = "U.S. Geological Survey",
+  year = 2023,
+  url = "https://pubs.usgs.gov/tm/04/a10/",
+  textVersion = "Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2023, Exploration and Graphics for RivEr Trends (EGRET) Uncertainty and Confidence Intervals, version 2.0.5, doi:10.5066/P9CC9JEX"
 )
-

@@ -13,7 +13,7 @@ ciCalculations(eList, startSeed = 494817, verbose = TRUE,
 
 \item{startSeed}{setSeed value. Defaults to 494817. This is used to make repeatable output.}
 
-\item{verbose}{logical specifying whether or not to display progress messag, default = TRUE}
+\item{verbose}{logical specifying whether or not to display progress message, default = TRUE}
 
 \item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.}
 
@@ -30,12 +30,14 @@ been found to be a good choice.}
 confidence intervals will be calculated with 90\%.}
 }
 \value{
-CIAnnualResults a data frame with the following columns
-  Year, mean decYear value for the year being reported
-  FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
-  FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg
+CIAnnualResults a data frame with the following columns:
+\tabular{ll}{
+Year \tab mean decYear value for the year being reported \cr
+FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
+FNConcHigh \tab  the upper confidence limit for flow normalized concentration, in mg/L \cr
+FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+FNFluxLow \tab  the lower confidence limit for flow normalized flux, in kg/day \cr
+}
 }
 \description{
 Function to calculate confidence bands for flow normalized concentration or 

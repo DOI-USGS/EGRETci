@@ -39,12 +39,12 @@ citation(package = "EGRETci")
 ### Reporting bugs
 
 Please consider reporting bugs and asking questions on the Issues page:
-[https://github.com/USGS-R/EGRETci/issues](https://github.com/USGS-R/EGRET/issues)
+[https://github.com/DOI-USGS/EGRETci/issues](https://github.com/DOI-USGS/EGRET/issues)
 
 
 ### Code of Conduct
 
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/USGS-R/EGRETci/blob/master/CONDUCT.md) for more information.
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://code.usgs.gov/water/EGRETci/-/blob/main/CONDUCT.md) for more information.
 
 
 ## Model Archive

@@ -22,7 +22,7 @@ plotFluxHistBoot which produce the graphical output."><meta property="og:image" 
     <a href="https://www.usgs.gov/" class="external-link"><img src="logo.png" id="logo" alt="Home" style="padding: 0px 50px 0px 0px;"></a>
     <a class="navbar-brand me-2" href="../index.html">EGRETci</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.4.0002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.5</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@ plotFluxHistBoot which produce the graphical output."><meta property="og:image" 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>ciCalculations</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USGS-R/EGRETci/blob/HEAD/R/plotCIs.R" class="external-link"><code>R/plotCIs.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/DOI-USGS/EGRETci/blob/HEAD/R/plotCIs.R" class="external-link"><code>R/plotCIs.R</code></a></small>
       <div class="d-none name"><code>ciCalculations.Rd</code></div>
     </div>
 
@@ -88,7 +88,7 @@ as input to the functions <code>plotConcHistBoot</code>, and
 
 
 <dt>verbose</dt>
-<dd><p>logical specifying whether or not to display progress messag, default = TRUE</p></dd>
+<dd><p>logical specifying whether or not to display progress message, default = TRUE</p></dd>
 
 
 <dt>jitterOn</dt>
@@ -119,13 +119,7 @@ confidence intervals will be calculated with 90%.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>CIAnnualResults a data frame with the following columns
-  Year, mean decYear value for the year being reported
-  FNConcLow, the lower confidence limit for flow normalized concentration, in mg/L
-  FNConcHigh, the upper confidence limit for flow normalized concentration, in mg/L
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg
-  FNFluxLow, the lower confidence limit for flow normalized flux, in kg</p>
-    </div>
+<p>CIAnnualResults a data frame with the following columns:</p><table class="table table"><tr><td>Year</td><td>mean decYear value for the year being reported</td></tr><tr><td>FNConcLow</td><td>the lower confidence limit for flow normalized concentration, in mg/L</td></tr><tr><td>FNConcHigh</td><td>the upper confidence limit for flow normalized concentration, in mg/L</td></tr><tr><td>FNFluxLow</td><td>the lower confidence limit for flow normalized flux, in kg/day</td></tr><tr><td>FNFluxLow</td><td>the lower confidence limit for flow normalized flux, in kg/day</td></tr></table></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.

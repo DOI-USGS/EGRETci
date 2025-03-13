@@ -1,9 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^\.travis\.yml$
-.travis.yml
-temp.txt
 CONDUCT.md
+LICENSE.md
 DISCLAIMER.md
 code.json
 vignettes/^\*\.html$

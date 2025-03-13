@@ -35,8 +35,8 @@ Extended Documentation: https://rconnect.usgs.gov/EGRETci")
 #' A bootstrap method for estimating uncertainty of water quality trends.  
 #' Environmental Modelling & Software, 73, 148-166. 
 #' \url{https://www.sciencedirect.com/science/article/pii/S1364815215300220}
-#' @keywords water-quality graphics streamflow statistics 
-NULL
+#' @keywords internal  
+"_PACKAGE"
 
 #' Interactive setup for running wBT, the WRTDS Bootstrap Test
 #'

@@ -25,7 +25,7 @@ library(EGRETci)
 
 This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.  The various functions included here are all discussed in the [_A bootstrap method for estimating uncertainty of water quality trends_ Hirsch, Archfield, and De Cicco, 2015](http://authors.elsevier.com/sd/article/S1364815215300220)
 
-The  **EGRETci** package is designed for interactive or batch use.  Instructions for both are included here in the vignette.  The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS.  Users should consult the **EGRET** vignette for more background on those issues.  For more extensive documentation refer to [EGRETci](http://usgs-r.github.io/EGRETci/) 
+The  **EGRETci** package is designed for interactive or batch use.  Instructions for both are included here in the vignette.  The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS.  Users should consult the **EGRET** vignette for more background on those issues.  For more extensive documentation refer to [EGRETci](http://doi-usgs.github.io/EGRETci/) 
 
   The **EGRETci** package is designed to carry out four types of tasks.
     
@@ -39,7 +39,7 @@ The  **EGRETci** package is designed for interactive or batch use.  Instructions
 3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
 
-4)  Create prediction intervals around estimated concentration or flux values for specific days, months, or years.  The estimates of interest here are the [WRTDS_K](http://usgs-r.github.io/EGRETci/).  A detailed description of how these estimates can be made is provided in the vignette on [WRTDS Kalman Prediction Intervals](https://usgs-r.github.io/EGRETci/articles/prediction.html).
+4)  Create prediction intervals around estimated concentration or flux values for specific days, months, or years.  The estimates of interest here are the [WRTDS_K](http://doi-usgs.github.io/EGRETci/).  A detailed description of how these estimates can be made is provided in the vignette on [WRTDS Kalman Prediction Intervals](https://usgs-r.github.io/EGRETci/articles/prediction.html).
 
 ## Required Data Frames
 

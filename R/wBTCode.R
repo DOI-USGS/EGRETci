@@ -2,7 +2,7 @@
   if (!interactive()) return()
   EGRET_version = utils::packageVersion("EGRETci")
   packageStartupMessage("EGRETci ", EGRET_version,"
-Extended Documentation: https://rconnect.usgs.gov/EGRETci")
+Extended Documentation: https://doi-usgs.github.io/EGRETci/")
 }
 
 #' EGRETci package for bootstrap hypothesis tests and confidence interval analysis for WRTDS (Weighted 
@@ -34,9 +34,8 @@ Extended Documentation: https://rconnect.usgs.gov/EGRETci")
 #' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
 #' A bootstrap method for estimating uncertainty of water quality trends.  
 #' Environmental Modelling & Software, 73, 148-166. 
-#' \url{https://www.sciencedirect.com/science/article/pii/S1364815215300220}
-#' @keywords water-quality graphics streamflow statistics 
-NULL
+#' @keywords internal  
+"_PACKAGE"
 
 #' Interactive setup for running wBT, the WRTDS Bootstrap Test
 #'
@@ -245,6 +244,8 @@ wBT<-function(eList, caseSetUp,
               fileName = "temp.txt", startSeed = 494817,
               jitterOn = FALSE, V = 0.2){
   
+  message("runPairs/runPairsBoot is preferred over the wBT function.")
+  
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
   #
@@ -365,7 +366,7 @@ wBT<-function(eList, caseSetUp,
                                 blockLength = blockLength,
                                 startSeed = startSeed + iBoot)
       
-      if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
+      if(jitterOn) bootSample <- EGRET::jitterSam(bootSample, V = V)
       
       eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 

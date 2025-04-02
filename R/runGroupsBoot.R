@@ -130,7 +130,7 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
     bootSample <- blockSample(localSample = localSample, 
                               blockLength = blockLength, startSeed = startSeed + iBoot)
     
-    if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
+    if(jitterOn) bootSample <- EGRET::jitterSam(bootSample, V = V)
     
     eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample,NA))
     

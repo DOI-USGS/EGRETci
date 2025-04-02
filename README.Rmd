@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.
 
-See: [http://authors.elsevier.com/sd/article/S1364815215300220](http://authors.elsevier.com/sd/article/S1364815215300220) for more details.
+See: <https://doi.org/10.1016/j.envsoft.2015.07.017> for more details.
 
 The **EGRETci** package is designed to carry out three specific types of tasks.
 
@@ -44,17 +44,7 @@ Please consider reporting bugs and asking questions on the Issues page:
 
 ### Code of Conduct
 
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://code.usgs.gov/water/EGRETci/-/blob/main/CONDUCT.md) for more information.
-
-
-## Model Archive
-
-When using the `WRTDS` model (and corresponding confidence intervals), it is important to be able to reproduce the results in the future. The following version of R and package dependencies were used most recently to pass the embedded tests within this package. There is no guarantee of reproducible results using future versions of R or updated versions of package dependencies; however, we will make diligent efforts to test and update future modeling environments.
-
-```{r eval=TRUE}
-sessioninfo::session_info()
-```
-
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/DOI-USGS/EGRETci/blob/main/CONDUCT.md) for more information.
 
 
 ```{r disclaimer, child="DISCLAIMER.md", eval=TRUE}

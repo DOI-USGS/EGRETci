@@ -1,14 +1,21 @@
 citHeader("To cite EGRETci in publications, please use:")
 
 bibentry(bibtype = "Manual",
- author = personList(
-              as.person("Robert M. Hirsch"),
-              as.person("Laura A. De Cicco"),
-              as.person("Stacey A. Archfield"),
-              as.person("Jennifer C. Murphy")),
+ author = c(person("Laura", "DeCicco", role = c("aut","cre"),
+    email = "ldecicco@usgs.gov",
+    comment=c(ORCID="0000-0002-3915-9487")),
+    person("Robert", "Hirsch", role = c("aut"),
+    email = "rhirsch@usgs.gov",
+    comment=c(ORCID="0000-0002-4534-075X")),
+    person("Stacey","Archfield", role = c("ctb"),
+    email = "sarch@usgs.gov",
+    comment=c(ORCID="0000-0002-9011-3871")),   
+    person("Jennifer","Murphy", role = c("ctb"),
+    email = "jmurphy@usgs.gov",
+    comment=c(ORCID="0000-0002-0881-0919"))),
   title = "EGRETci",
   publisher = "U.S. Geological Survey",
-  year = 2023,
+  year = 2025,
   url = "https://pubs.usgs.gov/tm/04/a10/",
-  textVersion = "Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2023, Exploration and Graphics for RivEr Trends (EGRET) Uncertainty and Confidence Intervals, version 2.0.5, doi:10.5066/P9CC9JEX"
+  textVersion = "Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2025, Exploration and Graphics for RivEr Trends (EGRET) Uncertainty and Confidence Intervals, version 2.0.5, doi:10.5066/P9CC9JEX"
 )

@@ -1,5 +1,6 @@
 EGRETci 2.0.5
 =============
 * plotConcHistBoot and plotFluxHistBoot set to default to the Sample date range instead of the Daily date range.
+* Added run.parallel to runPairsBoot
 * News started!
 

@@ -1,4 +1,3 @@
-url: http://usgs-r.github.io/EGRETci/
 template:
   params:
     ganalytics: UA-53797708-7
@@ -14,19 +13,27 @@ template:
     nav-link-color: "white"
     nav-link-hover-color: "#a9a9a9"
     navbar-light-brand-hover-color: "white"
+    navbar-light-brand-color: "white"
     navbar-light-hover-color: "white"
+    nav-text-color: "white"
+    nav-text-light-color: "white"
     text-muted: "white"
     pkgdown-nav-height: 125px
+    
 navbar:
   left:
   - text: Introduction
     href: articles/EGRETci.html
   - text: Function Help Pages
     href: reference/index.html
-  - text: Enhancements
-    href: articles/Enhancements.html
-  - text: WRTDS Kalman Prediction Intervals
-    href: articles/prediction.html
+  - text: Articles
+    menu:
+    - text: Enhancements
+      href: articles/Enhancements.html
+    - text: Kalman Prediction Intervals
+      href: articles/prediction.html
+    - text: Running in Parallel
+      href: articles/parallel.html
   right:
   - icon: fa-gitlab fa-lg
     href: https://code.usgs.gov/water/EGRETci

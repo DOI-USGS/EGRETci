@@ -30,7 +30,8 @@ Imports:
     binom,
     stats,
     graphics,
-    utils
+    utils,
+    foreach
 Suggests:
     knitr,
     testthat,
@@ -43,12 +44,12 @@ LazyLoad: yes
 LazyData: yes
 VignetteBuilder: knitr
 BuildVignettes: true
-URL: https://code.usgs.gov/water/EGRETci
 BugReports: https://github.com/DOI-USGS/EGRETci/issues
 Copyright: This software is in the public domain because it contains materials
     that originally came from the United States Geological Survey, an agency of
     the United States Department of Interior. For more information, see the
     official USGS copyright policy at
     hhttps://www.usgs.gov/information-policies-and-instructions/copyrights-and-credits
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
+Encoding: UTF-8
 Roxygen: list(old_usage = TRUE)

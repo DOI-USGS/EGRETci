@@ -1,4 +1,4 @@
-image: artifactory.wma.chs.usgs.gov/docker-official-mirror/rocker/tidyverse:latest
+image: code.usgs.gov:5001/water/egret:latest
 
 default:
   tags:
@@ -6,7 +6,7 @@ default:
     - dind
 
 stages:
-  - getready
+  - build
   - check
   - test
   - end
@@ -28,42 +28,20 @@ variables:
   CONNECT_SERVER: $CONNECT_SERVER
   PAGES_OUTDIR: "$CI_PROJECT_DIR/public"
 
-cache:
-  paths:
-    - $R_LIBS_USER
-
-
-getready:
-  stage: getready
-  script:
-    - mkdir -p $R_LIBS_USER
-    - mkdir -p $APT_CACHE
-    - echo "options(Ncpus=$(nproc --all), repos=c(CRAN='$CRAN'))" >> $R_PROFILE
-    - Rscript -e "install.packages(c('devtools', 'pkgdown', 'covr', 'connectapi', 'zoo', 'rsconnect'))"
-    - Rscript -e 'remotes::install_deps(dependencies=TRUE)'
-  cache:
-    paths:
-     - $R_LIBS_USER
-  artifacts:
-    paths:
-     - $R_LIBS_USER
 
 buildcheck:
   stage: check
+  cache: []
   script:
     - mkdir -p $BUILD_LOGS_DIR
-    - apt-get update
-    - apt-get -o dir::cache::archives=${APT_CACHE} install -y --no-install-recommends qpdf pandoc pandoc-citeproc
     - R CMD build . --no-manual
-    - R -e 'devtools::check(document = FALSE, args = "--no-tests", check_dir = Sys.getenv("BUILD_LOGS_DIR"))'
-  artifacts:
-    paths:
-      - $BUILD_LOGS_DIR
+    - R -e 'install.packages("EGRET")'
+    - R -e 'devtools::check(document = FALSE, args = "--no-tests", check_dir = Sys.getenv("BUILD_LOGS_DIR"), vignettes = FALSE)'
 
 unittests:
   stage: test
+  cache: []
   dependencies:
-    - getready
     - buildcheck
   script:
     - R -e 'library(testthat); options(testthat.output_file = file.path(Sys.getenv("CI_PROJECT_DIR"), "test-out.xml")); devtools::test(reporter = "junit")'
@@ -76,8 +54,8 @@ unittests:
 
 covertests:
   stage: test
+  cache: []
   dependencies:
-    - getready
     - buildcheck
   script:
     - R -e 'x <- covr::package_coverage(); covr::to_cobertura(x); x; '
@@ -90,11 +68,11 @@ covertests:
 
 pages:
   stage: end
+  cache: []
   only: 
     - main
   script:
     - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
-    - Rscript -e 'source("deploy_simple.R")'
   artifacts:
     paths:
       - $PAGES_OUTDIR

@@ -4,8 +4,7 @@ This package **EGRETci** implements a set of approaches to the analysis
 of uncertainty associated with WRTDS trend analysis as implemented in
 the **EGRET** package.
 
-See: <http://authors.elsevier.com/sd/article/S1364815215300220> for more
-details.
+See: <https://doi.org/10.1016/j.envsoft.2015.07.017> for more details.
 
 The **EGRETci** package is designed to carry out three specific types of
 tasks.
@@ -41,7 +40,6 @@ tasks.
 
 ``` r
 citation(package = "EGRETci")
-#> 
 #> To cite EGRETci in publications, please use:
 #> 
 #>   Hirsch, R.M., De Cicco, L.A., Archfield, S.A., Murphy, J.C., 2023,
@@ -68,54 +66,8 @@ Please consider reporting bugs and asking questions on the Issues page:
 
 We want to encourage a warm, welcoming, and safe environment for
 contributing to this project. See the [code of
-conduct](https://code.usgs.gov/water/EGRETci/-/blob/main/CONDUCT.md) for
+conduct](https://github.com/DOI-USGS/EGRETci/blob/main/CONDUCT.md) for
 more information.
-
-## Model Archive
-
-When using the `WRTDS` model (and corresponding confidence intervals),
-it is important to be able to reproduce the results in the future. The
-following version of R and package dependencies were used most recently
-to pass the embedded tests within this package. There is no guarantee of
-reproducible results using future versions of R or updated versions of
-package dependencies; however, we will make diligent efforts to test and
-update future modeling environments.
-
-``` r
-sessioninfo::session_info()
-#> ─ Session info ───────────────────────────────────────────────────────────────
-#>  setting  value
-#>  version  R version 4.2.2 (2022-10-31 ucrt)
-#>  os       Windows 10 x64 (build 19044)
-#>  system   x86_64, mingw32
-#>  ui       RTerm
-#>  language (EN)
-#>  collate  English_United States.utf8
-#>  ctype    English_United States.utf8
-#>  tz       America/Chicago
-#>  date     2023-03-06
-#>  pandoc   2.19.2 @ C:/Program Files/RStudio/resources/app/bin/quarto/bin/tools/ (via rmarkdown)
-#> 
-#> ─ Packages ───────────────────────────────────────────────────────────────────
-#>  package     * version date (UTC) lib source
-#>  cli           3.6.0   2023-01-09 [1] CRAN (R 4.2.2)
-#>  digest        0.6.31  2022-12-11 [1] CRAN (R 4.2.2)
-#>  evaluate      0.20    2023-01-17 [1] CRAN (R 4.2.2)
-#>  fastmap       1.1.0   2021-01-25 [1] CRAN (R 4.2.1)
-#>  htmltools     0.5.4   2022-12-07 [1] CRAN (R 4.2.2)
-#>  knitr         1.42    2023-01-25 [1] CRAN (R 4.2.2)
-#>  rlang         1.0.6   2022-09-24 [1] CRAN (R 4.2.1)
-#>  rmarkdown     2.20    2023-01-19 [1] CRAN (R 4.2.2)
-#>  rstudioapi    0.14    2022-08-22 [1] CRAN (R 4.2.1)
-#>  sessioninfo   1.2.2   2021-12-06 [1] CRAN (R 4.2.1)
-#>  xfun          0.37    2023-01-31 [1] CRAN (R 4.2.2)
-#>  yaml          2.3.7   2023-01-23 [1] CRAN (R 4.2.2)
-#> 
-#>  [1] C:/Users/ldecicco/Documents/R/win-library/4.2
-#>  [2] C:/Program Files/R/R-4.2.2/library
-#> 
-#> ──────────────────────────────────────────────────────────────────────────────
-```
 
 # Disclaimer
 

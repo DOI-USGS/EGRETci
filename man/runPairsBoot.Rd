@@ -5,7 +5,7 @@
 \title{The bootstrap uncertainty analysis for runPairs results}
 \usage{
 runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
-  blockLength = 200, jitterOn = FALSE, V = 0.2)
+  blockLength = 200, jitterOn = FALSE, V = 0.2, run.parallel = FALSE)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
@@ -21,6 +21,8 @@ runPairsBoot(eList, pairResults, nBoot = 100, startSeed = 494817,
 \item{jitterOn}{logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.}
 
 \item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.}
+
+\item{run.parallel}{logical to run bootstrapping in parallel or not}
 }
 \value{
 eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
@@ -50,13 +52,12 @@ The standard deviation of the added jitter is V * standard deviation of Log Q.
 The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
 }
 \examples{
-library(EGRET)
-eList <- Choptank_eList
+eList <- EGRET::Choptank_eList
 year1 <- 1985
 year2 <- 2009
 
 \dontrun{
-pairOut_2 <- runPairs(eList, year1, year2, windowSide = 7)
+pairOut_2 <- EGRET::runPairs(eList, year1, year2, windowSide = 7)
 
 boot_pair_out <- runPairsBoot(eList, pairOut_2)
 

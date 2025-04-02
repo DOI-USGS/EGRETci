@@ -15,7 +15,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = FALSE # Change this later!
+  eval = TRUE # Change this later!
 ) 
 
 ```
@@ -55,8 +55,9 @@ stopCluster(cl)
 ### In series:
 
 ```{r}
+nBoot <- 120 # Let's make sure things run with a small nBoot
 # but bump up later!
-nBoot <- 10 # Let's make sure things run with a small nBoot
+
 blockLength <- 200
 
 repAnnualResults <- vector(mode = "list", length = nBoot)

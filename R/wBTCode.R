@@ -367,7 +367,7 @@ wBT<-function(eList, caseSetUp,
                                 blockLength = blockLength,
                                 startSeed = startSeed + iBoot)
       
-      if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
+      if(jitterOn) bootSample <- EGRET::jitterSam(bootSample, V = V)
       
       eListBoot <- suppressMessages(EGRET::as.egret(localINFO, localDaily, bootSample, NA))
       possibleError3 <- tryCatch(surfaces1 <- estSliceSurfacesSimpleAlt(eListBoot, 

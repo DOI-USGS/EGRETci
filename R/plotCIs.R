@@ -327,7 +327,7 @@ bootAnnual <- function(eList, blockLength = 200, startSeed = 494817,
   
   bootSample <- blockSample(localSample = Sample, blockLength = blockLength, startSeed = startSeed)
   
-  if(jitterOn) bootSample <- jitterSam(bootSample, V = V)
+  if(jitterOn) bootSample <- EGRET::jitterSam(bootSample, V = V)
   
   eListBoot <- EGRET::as.egret(INFO,Daily,bootSample,NA)
   

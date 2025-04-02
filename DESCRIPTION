@@ -30,7 +30,8 @@ Imports:
     binom,
     stats,
     graphics,
-    utils
+    utils,
+    foreach
 Suggests:
     knitr,
     testthat,

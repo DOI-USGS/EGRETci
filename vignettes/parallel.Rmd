@@ -23,10 +23,11 @@ knitr::opts_chunk$set(
 See <https://doi-usgs.github.io/EGRET/articles/parallel.html> for an introduction to running in parallel in EGRET. These directions supplement that article for `EGRETci` functions.
 
 
-```{r eval=FALSE}
+```{r}
 library(EGRET)
 library(EGRETci)
 library(parallel)
+library(doParallel)
 
 eList <- Choptank_eList
 nCores <- detectCores(logical = FALSE) - 2 # leave a core or two out
@@ -37,9 +38,6 @@ nCores <- detectCores(logical = FALSE) - 2 # leave a core or two out
 A generalized workflow uses the `doParallel` package:
 
 ```{r eval=FALSE}
-library(doParallel)
-library(parallel)
-
 cl <- makeCluster(nCores)
 registerDoParallel(cl)
 eList <- modelEstimation(eList, 
@@ -55,7 +53,7 @@ stopCluster(cl)
 ### In series:
 
 ```{r}
-nBoot <- 120 # Let's make sure things run with a small nBoot
+nBoot <- 20 # Let's make sure things run with a small nBoot
 # but bump up later!
 
 blockLength <- 200

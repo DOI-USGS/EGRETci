@@ -6,6 +6,7 @@ DISCLAIMER.md
 code.json
 vignettes/^\*\.html$
 vignettes/^\*\.R$
+vignettes/parallel.Rmd
 ^docs$
 test_stuff
 ^\.github$

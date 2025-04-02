@@ -34,7 +34,6 @@ Extended Documentation: https://doi-usgs.github.io/EGRETci/")
 #' @references Hirsch, R.M., Archfield, S.A., and De Cicco, L.A., 2015, 
 #' A bootstrap method for estimating uncertainty of water quality trends.  
 #' Environmental Modelling & Software, 73, 148-166. 
-#' \url{https://www.sciencedirect.com/science/article/pii/S1364815215300220}
 #' @keywords internal  
 "_PACKAGE"
 

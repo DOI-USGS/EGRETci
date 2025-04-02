@@ -19,7 +19,7 @@ plotFluxHistBoot(eList, CIAnnualResults, yearStart = NA, yearEnd = NA,
 
 \item{yearEnd}{numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).}
 
-\item{fluxUnit}{integer representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}}
+\item{fluxUnit}{integer representing entry in pre-defined fluxUnit class array. \code{\link[EGRET]{printFluxUnitCheatSheet}}}
 
 \item{fluxMax}{numeric specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data), uses units specificed by fluxUnit.}
 

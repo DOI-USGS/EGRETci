@@ -148,7 +148,7 @@ plotConcHistBoot <- function (eList, CIAnnualResults, yearStart = NA, yearEnd = 
 #' @param yearEnd numeric is the calendar year just after the last estimated annual value to be plotted, default is NA (which allows it to be set automatically by the data).
 #' @param plotFlowNorm logical variable if TRUE flow normalized flux line is plotted, if FALSE not plotted, default is TRUE. 
 #' @param col.pred character color of line for flow-normalized flux and for the confidence limits, default is "green".
-#' @param fluxUnit integer representing entry in pre-defined fluxUnit class array. \code{\link{printFluxUnitCheatSheet}}
+#' @param fluxUnit integer representing entry in pre-defined fluxUnit class array. \code{\link[EGRET]{printFluxUnitCheatSheet}}
 #' @param fluxMax numeric specifying the maximum value to be used on the vertical axis, default is NA (which allows it to be set automatically by the data), uses units specificed by fluxUnit. 
 #' @param plotAnnual logical variable if \code{TRUE}, annual mean flux points from WRTDS output are plotted, if \code{FALSE} not plotted. 
 #' @param plotGenFlux logical variable. If \code{TRUE}, annual mean flux points from WRTDS_K output are plotted, if \code{FALSE} not plotted. 

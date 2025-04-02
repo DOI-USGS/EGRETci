@@ -37,7 +37,6 @@ Environmental Modelling & Software, 73, 148-166.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://code.usgs.gov/water/EGRETci}
   \item Report bugs at \url{https://github.com/DOI-USGS/EGRETci/issues}
 }
 

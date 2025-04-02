@@ -23,7 +23,7 @@ library(EGRETci)
 
 # Introduction
 
-This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.  The various functions included here are all discussed in the [_A bootstrap method for estimating uncertainty of water quality trends_ Hirsch, Archfield, and De Cicco, 2015](http://authors.elsevier.com/sd/article/S1364815215300220)
+This package **EGRETci** implements a set of approaches to the analysis of uncertainty associated with WRTDS trend analysis as implemented in the **EGRET** package.  The various functions included here are all discussed in the [_A bootstrap method for estimating uncertainty of water quality trends_ Hirsch, Archfield, and De Cicco, 2015](https://doi.org/10.1016/j.envsoft.2015.07.017)
 
 The  **EGRETci** package is designed for interactive or batch use.  Instructions for both are included here in the vignette.  The package allows users to set the Period of Analysis, and various smoothing parameters for WRTDS.  Users should consult the **EGRET** vignette for more background on those issues.  For more extensive documentation refer to [EGRETci](http://doi-usgs.github.io/EGRETci/) 
 

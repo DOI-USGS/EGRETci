@@ -44,17 +44,7 @@ Please consider reporting bugs and asking questions on the Issues page:
 
 ### Code of Conduct
 
-We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://code.usgs.gov/water/EGRETci/-/blob/main/CONDUCT.md) for more information.
-
-
-## Model Archive
-
-When using the `WRTDS` model (and corresponding confidence intervals), it is important to be able to reproduce the results in the future. The following version of R and package dependencies were used most recently to pass the embedded tests within this package. There is no guarantee of reproducible results using future versions of R or updated versions of package dependencies; however, we will make diligent efforts to test and update future modeling environments.
-
-```{r eval=TRUE}
-sessioninfo::session_info()
-```
-
+We want to encourage a warm, welcoming, and safe environment for contributing to this project. See the [code of conduct](https://github.com/DOI-USGS/EGRETci/blob/main/CONDUCT.md) for more information.
 
 
 ```{r disclaimer, child="DISCLAIMER.md", eval=TRUE}

@@ -2,7 +2,7 @@
   if (!interactive()) return()
   EGRET_version = utils::packageVersion("EGRETci")
   packageStartupMessage("EGRETci ", EGRET_version,"
-Extended Documentation: https://rconnect.usgs.gov/EGRETci")
+Extended Documentation: https://doi-usgs.github.io/EGRETci/")
 }
 
 #' EGRETci package for bootstrap hypothesis tests and confidence interval analysis for WRTDS (Weighted 
@@ -244,6 +244,8 @@ wBT<-function(eList, caseSetUp,
               saveOutput = TRUE, 
               fileName = "temp.txt", startSeed = 494817,
               jitterOn = FALSE, V = 0.2){
+  
+  message("runPairs/runPairsBoot is preferred over the wBT function.")
   
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch

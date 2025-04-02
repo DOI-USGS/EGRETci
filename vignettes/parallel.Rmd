@@ -1,0 +1,121 @@
+---
+title: "Running in parallel"
+author: "Laura DeCicco"
+output: 
+  rmarkdown::html_vignette:
+  fig_height: 5
+fig_width: 7
+vignette: >
+  %\VignetteIndexEntry{Running in parallel}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = FALSE # Change this later!
+) 
+
+```
+
+See <https://doi-usgs.github.io/EGRET/articles/parallel.html> for an introduction to running in parallel in EGRET. These directions supplement that article for `EGRETci` functions.
+
+
+```{r eval=FALSE}
+library(EGRET)
+library(EGRETci)
+library(parallel)
+
+eList <- Choptank_eList
+nCores <- detectCores(logical = FALSE) - 2 # leave a core or two out
+```
+
+### doParellel
+
+A generalized workflow uses the `doParallel` package:
+
+```{r eval=FALSE}
+library(doParallel)
+library(parallel)
+
+cl <- makeCluster(nCores)
+registerDoParallel(cl)
+eList <- modelEstimation(eList, 
+                         verbose = FALSE,
+                         run.parallel = TRUE)
+stopCluster(cl)
+
+```
+
+## Calculating Confidence Intervals
+
+
+### In series:
+
+```{r}
+# but bump up later!
+nBoot <- 10 # Let's make sure things run with a small nBoot
+blockLength <- 200
+
+repAnnualResults <- vector(mode = "list", length = nBoot)
+
+for(n in 1:nBoot){
+   annualResults <- bootAnnual(eList, blockLength, startSeed = n)
+   repAnnualResults[[n]] <- annualResults
+}
+
+CIAnnualResults <- ciBands(eList, repAnnualResults)
+plotConcHistBoot(eList, CIAnnualResults)
+
+```
+
+### In parallel:
+
+```{r}
+cl <- makeCluster(nCores)
+registerDoParallel(cl)
+repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
+   annualResults <- bootAnnual(eList, 
+                               blockLength,
+                               startSeed = n)  
+}
+stopCluster(cl)   
+
+CIAnnualResults_p <- ciBands(eList, repAnnual)
+plotConcHistBoot(eList, CIAnnualResults_p)
+
+```
+
+
+## runPairs
+
+### In series
+
+```{r}
+year1 <- 1985
+year2 <- 2010
+
+pairOut_2 <- runPairs(eList, year1, year2, windowSide = 11)
+
+boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = nBoot)
+
+```
+
+
+### In parallel:
+
+```{r}
+cl <- makeCluster(nCores)
+registerDoParallel(cl)
+
+boot_pair_out <- runPairsBoot(eList, pairOut_2,
+                              nBoot = nBoot, 
+                              run.parallel = TRUE)
+stopCluster(cl) 
+
+```
+
+
+

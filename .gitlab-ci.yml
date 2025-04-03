@@ -35,7 +35,7 @@ buildcheck:
   script:
     - mkdir -p $BUILD_LOGS_DIR
     - R CMD build . --no-manual
-    - R -e 'install.packages("EGRET")'
+    - R -e 'install.packages(c("EGRET"))'
     - R -e 'devtools::check(document = FALSE, args = "--no-tests", check_dir = Sys.getenv("BUILD_LOGS_DIR"), vignettes = FALSE)'
 
 unittests:
@@ -72,6 +72,7 @@ pages:
   only: 
     - main
   script:
+    - Rscript -e 'install.packages(c("EGRET", "parallel"))'
     - Rscript -e 'pkgdown::build_site(override = list(destination = "public"))'
   artifacts:
     paths:

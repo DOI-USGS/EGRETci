@@ -121,7 +121,7 @@ plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
 
 ### In parallel:
 
-```{r}
+```{r eval=FALSE}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 
@@ -131,11 +131,46 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
 parallel::stopCluster(cl)
 ```
 
-```{r}
+```{r eval=FALSE}
 plotHistogramTrend(eList = eList, 
                    eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
                    caseSetUp = NA)
+```
+
+
+## runPairs
+
+### In series
+
+```{r eval=FALSE}
+groupResults <- runGroups(eList,
+                          group1firstYear = 1995,
+                          group1lastYear = 2004,
+                          group2firstYear = 2005,
+                          group2lastYear = 2014,
+                          windowSide = 7, wall = TRUE,
+                          sample1EndDate = "2004-10-30",
+                          paStart = 4, paLong = 2,
+                          verbose = FALSE)
+
+boot_group_out <- runGroupsBoot(eList, 
+                               groupResults,
+                               nBoot = nBoot)
+```
+
+
+### In parallel:
+
+```{r eval=FALSE}
+cl <- parallel::makeCluster(nCores)
+doParallel::registerDoParallel(cl)
+
+boot_group_out <- runGroupsBoot(eList, 
+                                groupResults,
+                                nBoot = nBoot,
+                                run.parallel = TRUE)
+parallel::stopCluster(cl)
 ```
 
 

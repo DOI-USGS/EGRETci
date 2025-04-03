@@ -57,9 +57,12 @@ year1 <- 1985
 year2 <- 2009
 
 \dontrun{
-pairOut_2 <- EGRET::runPairs(eList, year1, year2, windowSide = 7)
+pairOut_2 <- EGRET::runPairs(eList, 
+                             year1, year2, 
+                             windowSide = 7)
 
-boot_pair_out <- runPairsBoot(eList, pairOut_2)
+# For good analysis, bump up nBoot to about 100:
+boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 5)
 
 plotHistogramTrend(eList, boot_pair_out, caseSetUp = NA)
 }

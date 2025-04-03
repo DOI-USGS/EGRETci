@@ -112,9 +112,8 @@ pairOut_2 <- runPairs(eList, year1, year2, windowSide = 11,
 
 boot_pair_out <- runPairsBoot(eList, pairOut_2, 
                               nBoot = nBoot)
-plotHistogramTrend(eList, 
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
-                   boot_pair_out,
                    caseSetUp = NA)
 
 ```
@@ -131,9 +130,9 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
                               run.parallel = TRUE)
 parallel::stopCluster(cl)
 
-plotHistogramTrend(eList, 
+plotHistogramTrend(eList = eList, 
+                   eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
-                   boot_pair_out,
                    caseSetUp = NA)
 ```
 

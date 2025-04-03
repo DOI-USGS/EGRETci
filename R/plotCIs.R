@@ -447,7 +447,7 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
   manyAnnualResults <- array(NA, dim=c(numYears,2,nBoot))
   
   for (i in 1:nBoot){
-    cat(i, "\n")
+    message(i)
     df_1 <- repAnnualResults[[i]]
     df_1 <- merge(df_1, 
                   AnnualResults, by = "year", all = TRUE)

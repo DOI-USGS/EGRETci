@@ -15,7 +15,9 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = TRUE # Change this later!
+  eval = TRUE, # Change this later!
+  message = FALSE,
+  warning = FALSE
 ) 
 
 ```
@@ -23,7 +25,7 @@ knitr::opts_chunk$set(
 See <https://doi-usgs.github.io/EGRET/articles/parallel.html> for an introduction to running in parallel in EGRET. These directions supplement that article for `EGRETci` functions.
 
 
-```{r}
+```{r }
 library(EGRET)
 library(EGRETci)
 library(parallel)
@@ -53,7 +55,7 @@ stopCluster(cl)
 ### In series:
 
 ```{r}
-nBoot <- 20 # Let's make sure things run with a small nBoot
+nBoot <- 5 # Let's make sure things run with a small nBoot
 # but bump up later!
 
 blockLength <- 200
@@ -61,11 +63,16 @@ blockLength <- 200
 repAnnualResults <- vector(mode = "list", length = nBoot)
 
 for(n in 1:nBoot){
-   annualResults <- bootAnnual(eList, blockLength, startSeed = n)
+   annualResults <- bootAnnual(eList, 
+                               blockLength, 
+                               startSeed = n, 
+                               verbose = FALSE)
    repAnnualResults[[n]] <- annualResults
 }
 
-CIAnnualResults <- ciBands(eList, repAnnualResults)
+CIAnnualResults <- ciBands(eList, 
+                           repAnnualResults)
+
 plotConcHistBoot(eList, CIAnnualResults)
 
 ```
@@ -78,7 +85,8 @@ registerDoParallel(cl)
 repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
    annualResults <- bootAnnual(eList, 
                                blockLength,
-                               startSeed = n)  
+                               startSeed = n, 
+                               verbose = FALSE)  
 }
 stopCluster(cl)   
 
@@ -96,9 +104,15 @@ plotConcHistBoot(eList, CIAnnualResults_p)
 year1 <- 1985
 year2 <- 2010
 
-pairOut_2 <- runPairs(eList, year1, year2, windowSide = 11)
+pairOut_2 <- runPairs(eList, year1, year2, windowSide = 11, 
+                      verbose = FALSE)
 
-boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = nBoot)
+boot_pair_out <- runPairsBoot(eList, pairOut_2, 
+                              nBoot = nBoot)
+plotHistogramTrend(eList, 
+                   xMin = -5, xMax = 60, xStep = 5,
+                   boot_pair_out,
+                   caseSetUp = NA)
 
 ```
 
@@ -114,6 +128,10 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
                               run.parallel = TRUE)
 stopCluster(cl) 
 
+plotHistogramTrend(eList, 
+                   xMin = -5, xMax = 60, xStep = 5,
+                   boot_pair_out,
+                   caseSetUp = NA)
 ```
 
 

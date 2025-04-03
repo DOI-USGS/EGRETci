@@ -2,9 +2,7 @@
 title: "Running in parallel"
 author: "Laura DeCicco"
 output: 
-  rmarkdown::html_vignette:
-  fig_height: 5
-fig_width: 7
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Running in parallel}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,7 +15,9 @@ knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE, # Change this later!
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  fig.width = 7, 
+  fig.height = 4
 ) 
 
 ```
@@ -129,7 +129,9 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
                               nBoot = nBoot, 
                               run.parallel = TRUE)
 parallel::stopCluster(cl)
+```
 
+```{r}
 plotHistogramTrend(eList = eList, 
                    eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,

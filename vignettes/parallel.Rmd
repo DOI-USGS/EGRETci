@@ -33,6 +33,8 @@ library(doParallel)
 
 eList <- Choptank_eList
 nCores <- detectCores(logical = FALSE) - 2 # leave a core or two out
+nCores <- max(c(nCores, 1))
+nCores
 ```
 
 ### doParellel
@@ -40,12 +42,12 @@ nCores <- detectCores(logical = FALSE) - 2 # leave a core or two out
 A generalized workflow uses the `doParallel` package:
 
 ```{r eval=FALSE}
-cl <- makeCluster(nCores)
-registerDoParallel(cl)
+cl <- parallel::makeCluster(nCores)
+doParallel::registerDoParallel(cl)
 eList <- modelEstimation(eList, 
                          verbose = FALSE,
                          run.parallel = TRUE)
-stopCluster(cl)
+parallel::stopCluster(cl) 
 
 ```
 
@@ -80,15 +82,16 @@ plotConcHistBoot(eList, CIAnnualResults)
 ### In parallel:
 
 ```{r}
-cl <- makeCluster(nCores)
-registerDoParallel(cl)
-repAnnual <- foreach(n = 1:nBoot,.packages=c('EGRETci')) %dopar% {
+cl <- parallel::makeCluster(nCores)
+doParallel::registerDoParallel(cl)
+repAnnual <- foreach(n = 1:nBoot,
+                     .packages=c('EGRETci', 'EGRET')) %dopar% {
    annualResults <- bootAnnual(eList, 
                                blockLength,
                                startSeed = n, 
                                verbose = FALSE)  
 }
-stopCluster(cl)   
+parallel::stopCluster(cl)   
 
 CIAnnualResults_p <- ciBands(eList, repAnnual)
 plotConcHistBoot(eList, CIAnnualResults_p)
@@ -120,13 +123,13 @@ plotHistogramTrend(eList,
 ### In parallel:
 
 ```{r}
-cl <- makeCluster(nCores)
-registerDoParallel(cl)
+cl <- parallel::makeCluster(nCores)
+doParallel::registerDoParallel(cl)
 
 boot_pair_out <- runPairsBoot(eList, pairOut_2,
                               nBoot = nBoot, 
                               run.parallel = TRUE)
-stopCluster(cl) 
+parallel::stopCluster(cl)
 
 plotHistogramTrend(eList, 
                    xMin = -5, xMax = 60, xStep = 5,

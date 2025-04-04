@@ -2,9 +2,7 @@
 title: "Running in parallel"
 author: "Laura DeCicco"
 output: 
-  rmarkdown::html_vignette:
-  fig_height: 5
-fig_width: 7
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Running in parallel}
   %\VignetteEngine{knitr::rmarkdown}
@@ -17,7 +15,9 @@ knitr::opts_chunk$set(
   echo = TRUE,
   eval = TRUE, # Change this later!
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  fig.width = 7, 
+  fig.height = 4
 ) 
 
 ```
@@ -57,7 +57,7 @@ parallel::stopCluster(cl)
 ### In series:
 
 ```{r}
-nBoot <- 5 # Let's make sure things run with a small nBoot
+nBoot <- 10 # Let's make sure things run with a small nBoot
 # but bump up later!
 
 blockLength <- 200
@@ -112,9 +112,8 @@ pairOut_2 <- runPairs(eList, year1, year2, windowSide = 11,
 
 boot_pair_out <- runPairsBoot(eList, pairOut_2, 
                               nBoot = nBoot)
-plotHistogramTrend(eList, 
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
-                   boot_pair_out,
                    caseSetUp = NA)
 
 ```
@@ -122,7 +121,7 @@ plotHistogramTrend(eList,
 
 ### In parallel:
 
-```{r}
+```{r eval=TRUE}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 
@@ -130,11 +129,48 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
                               nBoot = nBoot, 
                               run.parallel = TRUE)
 parallel::stopCluster(cl)
+```
 
-plotHistogramTrend(eList, 
+```{r}
+plotHistogramTrend(eList = eList, 
+                   eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
-                   boot_pair_out,
                    caseSetUp = NA)
+```
+
+
+## runPairs
+
+### In series
+
+```{r}
+groupResults <- runGroups(eList,
+                          group1firstYear = 1995,
+                          group1lastYear = 2004,
+                          group2firstYear = 2005,
+                          group2lastYear = 2014,
+                          windowSide = 7, wall = TRUE,
+                          sample1EndDate = "2004-10-30",
+                          paStart = 4, paLong = 2,
+                          verbose = FALSE)
+
+boot_group_out <- runGroupsBoot(eList, 
+                               groupResults,
+                               nBoot = nBoot)
+```
+
+
+### In parallel:
+
+```{r eval=TRUE}
+cl <- parallel::makeCluster(nCores)
+doParallel::registerDoParallel(cl)
+
+boot_group_out <- runGroupsBoot(eList = eList,
+                                groupResults = groupResults,
+                                nBoot = nBoot,
+                                run.parallel = TRUE)
+parallel::stopCluster(cl)
 ```
 
 

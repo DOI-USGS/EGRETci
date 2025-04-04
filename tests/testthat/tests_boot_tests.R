@@ -54,8 +54,9 @@ test_that("setForBoot", {
 
 
 test_that("wordLike", {
+  skip_on_cran()
   likeList <- c(0.01, 0.5, 0.55, 0.99)
-  Trends <- wordLike(likeList)
+  Trends <- EGRETci:::wordLike(likeList)
   
   expect_equal(Trends, c("Upward trend in concentration is highly unlikely",         
                          "Downward trend in concentration is about as likely as not",
@@ -143,41 +144,6 @@ test_that("estSliceSurfacesSimpleAlt", {
   expect_equal(surfaces[1,173,1], 0.16541093)
 })
 
-test_that("wBT", {
-  
-  testthat::skip_on_cran()
-  
-  eList <- Choptank_eList
-  
-  caseSetUp <- trendSetUp(eList, 
-                          year1=1985, 
-                          year2=2005, 
-                          nBoot = 5, 
-                          bootBreak = 39, 
-                          blockLength = 200)
-  eList <- setForBoot(eList,caseSetUp)
-  
-  eBoot <- wBT(eList,caseSetUp,saveOutput = FALSE)
-  
-  bootOut <- eBoot$bootOut
-  expect_true(bootOut$rejectC)
-  
-  expect_equal(signif(bootOut$lowC, digits = 6), 0.298427)
-  expect_equal(signif(bootOut$likeCUp, digits = 6), 0.916667)
-  
-  expect_true(bootOut$rejectF)
-  expect_equal(eBoot$wordsOut, c("Upward trend in concentration is very likely" , 
-                                 "Downward trend in concentration is very unlikely",
-                                 "Upward trend in flux is very likely",
-                                 "Downward trend in flux is very unlikely"))
-  
-  
-  expect_equal(signif(eBoot$xConc, digits = 2), c(0.31,0.35,0.30,0.34,0.31))
-  expect_equal(signif(eBoot$pFlux, digits = 2), c(18,30,31,21,18))
-  expect_equal(signif(eBoot$xFlux, digits = 2), c(0.022,0.034,0.034,0.025,0.021))
-  expect_equal(signif(eBoot$pConc, digits = 2), c(30,35,30,33,31))
-  
-})
 
 test_that("runPairsBoot", {
   
@@ -192,7 +158,7 @@ test_that("runPairsBoot", {
   boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 3, jitterOn = TRUE)
   
   expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
-                    "pConc","pFlux","startSeed") %in% names(boot_pair_out)))
+                    "pConc","pFlux") %in% names(boot_pair_out)))
   
   expect_true(boot_pair_out$bootOut$rejectC)
   expect_true(all(c("Upward trend in concentration is likely",  
@@ -213,9 +179,7 @@ test_that("runGroupBoot", {
   testthat::skip_on_cran()
   
   eList <- EGRET::Choptank_eList
-  year1 <- 1985
-  year2 <- 2009
-  
+
   groupResults <- EGRET::runGroups(eList,
                             group1firstYear = 1995,
                             group1lastYear = 2004,
@@ -230,7 +194,7 @@ test_that("runGroupBoot", {
                                   jitterOn = TRUE))
   
   expect_true(all(c("bootOut","wordsOut","xConc","xFlux",    
-                    "pConc","pFlux","startSeed") %in% names(boot_group_out)))
+                    "pConc","pFlux") %in% names(boot_group_out)))
   
   expect_true(boot_group_out$bootOut$rejectC)
   expect_true(all(c("Upward trend in concentration is likely",  

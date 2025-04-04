@@ -244,7 +244,7 @@ wBT<-function(eList, caseSetUp,
               fileName = "temp.txt", startSeed = 494817,
               jitterOn = FALSE, V = 0.2){
   
-  message("runPairs/runPairsBoot is preferred over the wBT function.")
+  message("runPairs/runPairsBoot is recommended over the wBT function.")
   
   #   This is the version of wBT that includes the revised calculation of the 
   #    two-sided p-value, added 16Jul2015, RMHirsch
@@ -254,18 +254,7 @@ wBT<-function(eList, caseSetUp,
   localDaily <- eList$Daily
   localSample <- eList$Sample
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
-  words <- function(z) {
-    out <- if (z) 
-      "Reject Ho"
-    else "Do Not Reject Ho"
-    return(out)
-  }
-  bootOut <- as.data.frame(matrix(ncol = 25, nrow = 1))
-  colnames(bootOut) <- c("rejectC", "pValC", "estC", "lowC90", 
-                         "upC90", "lowC50", "upC50", "lowC95", "upC95", "likeCUp", 
-                         "likeCDown", "rejectF", "pValF", "estF", "lowF90", "upF90", 
-                         "lowF50", "upF50", "lowF95", "upF95", "likeFUp", "likeFDown", 
-                         "baseConc", "baseFlux", "iBoot")
+
   year1 <- caseSetUp$year1
   yearData1 <- caseSetUp$yearData1
   year2 <- caseSetUp$year2
@@ -653,6 +642,17 @@ estSliceSurfacesSimpleAlt <- function(eList,year){
   
   return(surfaces)
 }
+
+#' Create a paVector
+#' 
+#' Internal doc for paVector
+#' 
+#' @export
+#' @keywords internal 
+#' @param year description
+#' @param paStart description
+#' @param paLong description
+#' @param vectorYear description
 
 paVector <- function(year,paStart,paLong, vectorYear){
   

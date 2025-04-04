@@ -5,7 +5,7 @@
 \title{The bootstrap uncertainty analysis for runGroups results}
 \usage{
 runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
-  blockLength = 200, jitterOn = FALSE, V = 0.2)
+  blockLength = 200, jitterOn = FALSE, V = 0.2, run.parallel = FALSE)
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
@@ -22,6 +22,8 @@ runGroupsBoot(eList, groupResults, nBoot = 100, startSeed = 494817,
 Default = FALSE.  See Details below.}
 
 \item{V}{numeric a multiplier for addition of jitter to the data, default = 0.2.}
+
+\item{run.parallel}{logical to run bootstrapping in parallel or not}
 }
 \value{
 eBoot, a named list with bootOut, wordsOut, xConc, xFlux, pConc, pFlux values.
@@ -62,9 +64,9 @@ groupResults <- runGroups(eList,
                           paStart = 4, paLong = 2, 
                           verbose = FALSE)
 
-boot_group_out <- runGroupsBoot(eList, groupResults)
+# For good analysis, bump up nBoot to about 100:
+boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
 
-plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 }
 }
 \seealso{

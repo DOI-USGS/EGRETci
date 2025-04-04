@@ -4,7 +4,7 @@
 \alias{plotHistogramTrend}
 \title{plotHistogramTrend}
 \usage{
-plotHistogramTrend(eList, eBoot, caseSetUp, flux = TRUE, xMin = NA,
+plotHistogramTrend(eList, eBoot, caseSetUp = NA, flux = TRUE, xMin = NA,
   xMax = NA, xStep = NA, printTitle = TRUE, cex.main = 1.1,
   cex.axis = 1.1, cex.lab = 1.1, col.fill = "grey", ...)
 }

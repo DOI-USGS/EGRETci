@@ -532,7 +532,7 @@ ciBands <- function(eList, repAnnualResults, probs = c(0.05, 0.95)){
 #' plotHistogramTrend(eList, boot_pair_out, caseSetUp = NA, 
 #'                    flux = TRUE, xMin = -20, xMax = 60, xStep = 5)          
 #' }
-plotHistogramTrend <- function (eList, eBoot, caseSetUp, 
+plotHistogramTrend <- function (eList, eBoot, caseSetUp = NA, 
                                 flux = TRUE, xMin = NA, xMax = NA, xStep = NA, 
                                 printTitle=TRUE, cex.main=1.1, cex.axis = 1.1, cex.lab = 1.1, col.fill="grey",...){
   

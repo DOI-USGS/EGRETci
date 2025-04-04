@@ -13,7 +13,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = FALSE, # Change this later!
+  eval = TRUE, # Change this later!
   message = FALSE,
   warning = FALSE,
   fig.width = 7, 
@@ -57,7 +57,7 @@ parallel::stopCluster(cl)
 ### In series:
 
 ```{r}
-nBoot <- 3 # Let's make sure things run with a small nBoot
+nBoot <- 20 # Let's make sure things run with a small nBoot
 # but bump up later!
 
 blockLength <- 200

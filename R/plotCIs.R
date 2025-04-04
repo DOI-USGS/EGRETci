@@ -625,16 +625,21 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp = NA,
 
 #' ciCalculations
 #'
-#' Function to calculate confidence bands for flow normalized concentration or 
-#' flow normalized flux.It returns the data frame CIAnnualResults, which is used
-#' as input to the functions \code{plotConcHistBoot}, and
-#' \code{plotFluxHistBoot} which produce the graphical output. 
+#' Function to calculate confidence bands for flow-normalized concentration or 
+#' flow-normalized flux. It returns a data frame which is used as input to the 
+#' functions \code{plotConcHistBoot} and \code{plotFluxHistBoot} which produce
+#' the graphical output.
 #'
-#' @param eList named list with at least the Daily, Sample, and INFO dataframes. Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
-#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
-#' @param verbose logical specifying whether or not to display progress message, default = TRUE
-#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.  Default = FALSE.  See Details below.
-#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  See Details below.  
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes. 
+#' Created from the EGRET package, after running \code{\link[EGRET]{modelEstimation}}.
+#' @param startSeed sets the random seed value. Defaults to 494817. 
+#' This is used to make repeatable output.
+#' @param verbose logical specifying whether or not to display progress message,
+#'  default = TRUE
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to
+#' avoid some numerical problems.  Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.  
+#' See Details below.  
 #' @param nBoot number of times the bootstrap resampling and model estimating is done.
 #' Default is 100, but that will take a long time. Testing should initially be done using
 #' a smaller number like 10.
@@ -645,7 +650,7 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp = NA,
 #' 
 #' @export
 #' 
-#' @return CIAnnualResults a data frame with the following columns:
+#' @return A data frame with the following columns:
 #' \tabular{ll}{
 #' Year \tab mean decYear value for the year being reported \cr
 #' FNConcLow \tab the lower confidence limit for flow normalized concentration, in mg/L \cr
@@ -655,16 +660,19 @@ plotHistogramTrend <- function (eList, eBoot, caseSetUp = NA,
 #' }
 #' 
 #' @details
-#' In some situations numerical problems are encountered in the bootstrap process, resulting in highly unreasonable spikes in the confidence intervals.
-#' The use of "jitter" can often prevent these problems, but should only be used when it is clearly needed.
-#' It adds a small amount of random "jitter" to the explanatory variables of the WRTDS model.  The V parameter sets the scale of variation in the log discharge values.
-#' The standard deviation of the added jitter is V * standard deviation of Log Q.
-#' The default for V is 0.2.  Larger values should generally be avoided, and smaller values may be sufficient.
+#' In some situations numerical problems are encountered in the bootstrap process,
+#' resulting in highly unreasonable spikes in the confidence intervals. The use of
+#' "jitter" can often prevent these problems, but should only be used when it is
+#' clearly needed. It adds a small amount of random "jitter" to the explanatory
+#' variables of the WRTDS model. The V parameter sets the scale of variation in
+#' the log discharge values. The standard deviation of the added jitter is V * standard
+#' deviation of Log Q. The default for V is 0.2. Larger values should generally be avoided,
+#' and smaller values may be sufficient.
 #'
-#' Argument values suggested.  
-#' To test the code nBoot = 10 is sufficient, but for meaningful results nBoot = 100 or even nBoot = 500 are more appropriate.
-#' blockLength = 200
-#' widthCI = 90 (90\% confidence interval)
+#' Argument values suggested. 
+#' To test the code, nBoot = 10 is sufficient, but for meaningful results 
+#' nBoot = 100 or even nBoot = 500 are more appropriate. blockLength = 200.
+#' widthCI = 90 (90% confidence interval).
 #' 
 #' @examples
 #' library(EGRET)

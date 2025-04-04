@@ -1,6 +1,16 @@
 EGRETci 2.0.5
 =============
-* plotConcHistBoot and plotFluxHistBoot set to default to the Sample date range instead of the Daily date range.
-* Added run.parallel to runPairsBoot
 * News started!
+* Added run.parallel to runPairsBoot and runGroupsBoot.
+* Added message to "wBT" that "runPairsBoot" is preferred.
+* Added a function "boot_message" to allow users to view 
+output message from the output of the bootstrapping (pairs/groups) functions.
+* Restructured "runPairsBoot"" and "runGroupsBoot"" so that common tasks are called by
+the same functions.
+* Slight edits to vignettes.
+* Changed the default value to NA for caseSetUp argument in "plotHistogramTrend"" 
+* plotConcHistBoot and plotFluxHistBoot set to default to the Sample date range instead of the Daily date range.
 
+EGRETci 2.0.4
+=============
+* Published to CRAN 2021-04-13.

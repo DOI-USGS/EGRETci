@@ -297,9 +297,7 @@ boot_message <- function(eList,
       format(bootOut$bootOut$likeCDown, digits = 3))
   posX <- ifelse(bootOut$xFlux > 0, 1, 0)
   posXFlux <- sum(posX)
-  if (posXFlux == 0 | posXFlux == bootOut$bootOut$nBootGood) 
-    cat("\n* Note p-value should be considered to be < stated value")
-  
+
   # end of Concentration summary
   cat("\n\nShould we reject Ho that Flow Normalized Flux Trend = 0 ?", 
       words(bootOut$bootOut$rejectF))

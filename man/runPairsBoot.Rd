@@ -64,7 +64,7 @@ pairOut_2 <- EGRET::runPairs(eList,
 # For good analysis, bump up nBoot to about 100:
 boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 5)
 
-plotHistogramTrend(eList, boot_pair_out, caseSetUp = NA)
+plotHistogramTrend(eList, boot_pair_out)
 
 boot_message(eList, pairOut_2, boot_pair_out)
 }

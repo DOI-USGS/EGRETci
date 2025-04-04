@@ -13,7 +13,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = TRUE, # Change this later!
+  eval = FALSE, # Change this later!
   message = FALSE,
   warning = FALSE,
   fig.width = 7, 
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 See <https://doi-usgs.github.io/EGRET/articles/parallel.html> for an introduction to running in parallel in EGRET. These directions supplement that article for `EGRETci` functions.
 
 
-```{r }
+```{r eval=TRUE}
 library(EGRET)
 library(EGRETci)
 library(parallel)
@@ -57,7 +57,7 @@ parallel::stopCluster(cl)
 ### In series:
 
 ```{r}
-nBoot <- 10 # Let's make sure things run with a small nBoot
+nBoot <- 3 # Let's make sure things run with a small nBoot
 # but bump up later!
 
 blockLength <- 200
@@ -121,7 +121,7 @@ plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
 
 ### In parallel:
 
-```{r eval=TRUE}
+```{r}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 
@@ -162,7 +162,7 @@ boot_group_out <- runGroupsBoot(eList,
 
 ### In parallel:
 
-```{r eval=TRUE}
+```{r}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 

@@ -13,7 +13,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = TRUE, # Change this later!
+  eval = FALSE, # Change this later!
   message = FALSE,
   warning = FALSE,
   fig.width = 7, 
@@ -121,7 +121,7 @@ plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
 
 ### In parallel:
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 
@@ -131,7 +131,7 @@ boot_pair_out <- runPairsBoot(eList, pairOut_2,
 parallel::stopCluster(cl)
 ```
 
-```{r eval=FALSE}
+```{r}
 plotHistogramTrend(eList = eList, 
                    eBoot = boot_pair_out,
                    xMin = -5, xMax = 60, xStep = 5,
@@ -143,7 +143,7 @@ plotHistogramTrend(eList = eList,
 
 ### In series
 
-```{r eval=FALSE}
+```{r}
 groupResults <- runGroups(eList,
                           group1firstYear = 1995,
                           group1lastYear = 2004,
@@ -162,12 +162,12 @@ boot_group_out <- runGroupsBoot(eList,
 
 ### In parallel:
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 cl <- parallel::makeCluster(nCores)
 doParallel::registerDoParallel(cl)
 
-boot_group_out <- runGroupsBoot(eList, 
-                                groupResults,
+boot_group_out <- runGroupsBoot(eList = eList,
+                                groupResults = groupResults,
                                 nBoot = nBoot,
                                 run.parallel = TRUE)
 parallel::stopCluster(cl)

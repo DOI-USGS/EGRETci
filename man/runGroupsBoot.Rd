@@ -67,6 +67,8 @@ groupResults <- runGroups(eList,
 # For good analysis, bump up nBoot to about 100:
 boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
 
+boot_message(eList, groupResults, boot_group_out)
+
 }
 }
 \seealso{

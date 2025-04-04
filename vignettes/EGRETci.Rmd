@@ -279,7 +279,7 @@ eList <- modelEstimation(eList)
 
 ## Simple Workflow
 
-This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:
+This example workflow assumes that we use the default values (nBoot = 100) for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:
 
 ```{r, eval=FALSE}
 library(EGRET)

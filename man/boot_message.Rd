@@ -4,22 +4,36 @@
 \alias{boot_message}
 \title{Print message of bootstrapping results}
 \usage{
-boot_message(eList, type_results, bootOut, nBootGood, nBoot, type = "pair")
+boot_message(eList, type_results, bootOut, type = "pair")
 }
 \arguments{
 \item{eList}{named list with at least the Daily, Sample, and INFO dataframes}
 
-\item{type_results}{List returned from either runPairs or runGroup.}
+\item{type_results}{data frame returned from either \code{\link[EGRET]{runGroups}}
+or \code{\link[EGRET]{runPairs}} depending on context.}
 
-\item{bootOut}{List returned from either runPairs or runGroupBoot.}
+\item{bootOut}{List returned from either \code{runPairsBoot} or \code{runGroupBoot}.}
 
-\item{nBootGood}{Number of good results.}
-
-\item{nBoot}{Number of requested bootstraps.}
-
-\item{type}{Character can be "pair" or "group"}
+\item{type}{Character can be "pair" or "group".}
 }
 \description{
 Uses the results of either group or pair results and prints
 of the standard message.
+}
+\examples{
+eList <- EGRET::Choptank_eList
+year1 <- 1985
+year2 <- 2009
+
+\dontrun{
+pairOut_2 <- EGRET::runPairs(eList, 
+                             year1, year2, 
+                             windowSide = 7)
+
+# For good analysis, bump up nBoot to about 100:
+boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 5)
+boot_message(eList,
+             pairOut_2,
+             boot_pair_out)
+}
 }

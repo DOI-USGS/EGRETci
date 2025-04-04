@@ -1,4 +1,3 @@
-
 #' The bootstrap uncertainty analysis for runGroups results
 #' 
 #' This function that does the uncertainty analysis for determining the change 
@@ -50,6 +49,8 @@
 #' # For good analysis, bump up nBoot to about 100:
 #' boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
 #' 
+#' boot_message(eList, groupResults, boot_group_out)
+#' 
 #' }
 runGroupsBoot <- function (eList, groupResults, nBoot = 100, 
                            startSeed = 494817, blockLength = 200,
@@ -69,22 +70,32 @@ runGroupsBoot <- function (eList, groupResults, nBoot = 100,
                                 type_results = groupResults, 
                                 nBoot = nBoot, 
                                 startSeed = startSeed,
-                                blockLength = blockLength, 
-                                nBootGood = length(boot_return$xConc))
-  
-  attr(groupResults, "paStart") <- attr(groupResults, "groupInfo")[["paStart"]]
-  attr(groupResults, "paLong") <- attr(groupResults, "groupInfo")[["paLong"]]
+                                blockLength = blockLength)
   
   boot_message(eList = eList,
                type_results = groupResults,
                bootOut = groupBootOut,
-               nBootGood = length(boot_return$xConc),
-               nBoot = nBoot,
                type = "group")
   
   return(groupBootOut)
 }
 
+#' Single Bootstrap Run
+#' 
+#' Single run of a bootstrap.
+#' 
+#' @param iBoot description
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param startSeed setSeed value. Defaults to 494817. This is used to make repeatable output.
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
+#'   Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.
+#' @param type_results data frame returned from either \code{\link[EGRET]{runGroups}}
+#' or \code{\link[EGRET]{runPairs}} depending on context.
+#' @param type Character either "pair" or "group".
+#' @return list of xConc, xFlux, pConc, pFlux
+#' 
 single_boot_run <- function(iBoot, startSeed,
                            eList, type_results, 
                            jitterOn, V,
@@ -245,7 +256,7 @@ single_boot_run <- function(iBoot, startSeed,
     pConc<- (100 * exp(LConc)) - 100
     LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
     pFlux <- (100 * exp(LFlux)) - 100
-    message("\n iBoot, xConc and xFlux ",iBoot, ": ", 
+    message("iBoot, xConc and xFlux ",iBoot, ": ", 
             round(xConc, digits = 4), " ", 
             round(xFlux, digits = 4))
   }

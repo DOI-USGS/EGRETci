@@ -1,3 +1,21 @@
+#' 
+#' 
+#' 
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param type_results data frame returned from either \code{\link[EGRET]{runGroups}}
+#' or \code{\link[EGRET]{runPairs}} depending on context.
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
+#'   Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.
+#' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param startSeed sets the random seed value. This is used to make repeatable output.
+#' @param type Character can be "pair" or "group".
+#' @params run.parallel
+#' 
+#' @export
+#' @keywords internal
+#' 
 run_bootstraps <- function(eList, 
                            type_results, 
                            jitterOn, V,

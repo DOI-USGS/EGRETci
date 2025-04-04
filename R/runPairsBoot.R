@@ -46,7 +46,9 @@
 #' # For good analysis, bump up nBoot to about 100:
 #' boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 5)
 #' 
-#' plotHistogramTrend(eList, boot_pair_out, caseSetUp = NA)
+#' plotHistogramTrend(eList, boot_pair_out)
+#' 
+#' boot_message(eList, pairOut_2, boot_pair_out)
 #' }
 runPairsBoot <- function(eList, pairResults, 
                          nBoot = 100, startSeed = 494817, 
@@ -69,8 +71,7 @@ runPairsBoot <- function(eList, pairResults,
                                 type_results = pairResults, 
                                 nBoot = nBoot, 
                                 startSeed = startSeed,
-                                blockLength = blockLength,
-                                nBootGood =  length(boot_return$xConc))
+                                blockLength = blockLength)
   
   attr(pairsBootOut, "year1") <- attr(pairResults, "yearPair")[["year1"]]
   attr(pairsBootOut, "year2") <- attr(pairResults, "yearPair")[["year2"]]
@@ -81,8 +82,6 @@ runPairsBoot <- function(eList, pairResults,
   boot_message(eList, 
                pairResults,
                pairsBootOut,
-               length(boot_return$xConc), 
-               nBoot,
                type = "pair")
   
   return(pairsBootOut)
@@ -116,9 +115,23 @@ check_pair_dates <- function(eList, pairResults){
   }
 }
 
+
+#' Calculations from boot return
+#' 
+#' @param boot_list_return The object that is returned from \code{run_bootstraps}.
+#' @param type_results data frame returned from either \code{\link[EGRET]{runGroups}}
+#' or \code{\link[EGRET]{runPairs}} depending on context.
+#' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param startSeed sets the random seed value. This is used to make repeatable output.
+#' @keywords internal  
+#' @export 
+#' 
 calc_boot_out <- function(boot_list_return,
-                          type_results, nBoot, startSeed,
-                          blockLength, nBootGood){
+                          type_results,
+                          nBoot, 
+                          startSeed,
+                          blockLength){
   
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
   
@@ -128,25 +141,17 @@ calc_boot_out <- function(boot_list_return,
   pFlux <- boot_list_return$pFlux
   
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
+  quantFlux <- quantile(xFlux, prob, type = 6, na.rm = TRUE)
+
   lowConc <- quantConc[["5%"]]
   highConc <- quantConc[["95%"]]
-  quantFlux <- quantile(xFlux, prob, type = 6, na.rm = TRUE)
+  
   lowFlux <- quantFlux[["5%"]]
   highFlux <- quantFlux[["95%"]]
+  
   rejectC <- lowConc * highConc > 0
   rejectF <- lowFlux * highFlux > 0
-  
-  fquantConc <- format(quantConc, digits = 3, width = 8)
-  
-  lowC <- quantConc[["5%"]]
-  upC <- quantConc[["95%"]]
-  lowC50 <- quantConc[["25%"]]
-  upC50 <- quantConc[["75%"]]
-  lowC95 <- quantConc[["2.5%"]]
-  upC95 <- quantConc[["97.5%"]]
-  pValC <- pVal(boot_list_return$xConc)
-  
-  
+
   nBootGood <- length(boot_list_return$xConc)
   
   posX <- ifelse(xConc > 0, 1, 0)
@@ -154,41 +159,48 @@ calc_boot_out <- function(boot_list_return,
   
   likeCUp <- (posXConc + 0.5)/(nBootGood + 1)
   likeCDown <- 1 - likeCUp
-  
-  lowF <- quantFlux[["5%"]]
-  upF <- quantFlux[["95%"]]
-  lowF50 <- quantFlux[["25%"]]
-  upF50 <- quantFlux[["75%"]]
-  lowF95 <- quantFlux[["2.5%"]]
-  upF95 <- quantFlux[["97.5%"]]
-  
-  pValF <- pVal(xFlux)
-  nBootGood <- length(xFlux)
-  
+
   posX <- ifelse(xFlux > 0, 1, 0)
   posXFlux <- sum(posX)
   
   likeFUp <- (posXFlux + 0.5)/(nBootGood + 1)
   likeFDown <- 1 - likeFUp
   
-  estC <- type_results$x22[1] - type_results$x11[1]
-  estF <- type_results$x22[2] - type_results$x11[2]
-  
-  baseConc <- type_results$x11[1]
-  baseFlux <- type_results$x11[2]
-  
-  bootOut <- data.frame(rejectC, pValC, estC, lowC, upC, 
-                        lowC50, upC50, lowC95, upC95, likeCUp, likeCDown, 
-                        rejectF, pValF, estF, lowF, upF, lowF50, upF50, lowF95, 
-                        upF95, likeFUp, likeFDown, baseConc, baseFlux, nBoot, 
-                        startSeed, blockLength, nBootGood)
+  bootOut <- data.frame(rejectC = rejectC, 
+                        pValC = pVal(boot_list_return$xConc), 
+                        estC = type_results$x22[1] - type_results$x11[1], 
+                        lowC = quantConc[["5%"]],
+                        upC = quantConc[["95%"]], 
+                        lowC50 = quantConc[["25%"]],
+                        upC50 = quantConc[["75%"]],
+                        lowC95 = quantConc[["2.5%"]],
+                        upC95 = quantConc[["97.5%"]],
+                        likeCUp = likeCUp,
+                        likeCDown = likeCDown, 
+                        rejectF = rejectF,
+                        pValF =  pVal(xFlux),
+                        estF = type_results$x22[2] - type_results$x11[2],
+                        lowF = quantFlux[["5%"]],
+                        upF = quantFlux[["95%"]],
+                        lowF50 = quantFlux[["25%"]],
+                        upF50 = quantFlux[["75%"]],
+                        lowF95 = quantFlux[["2.5%"]], 
+                        upF95 = quantFlux[["97.5%"]], 
+                        likeFUp = likeFUp,
+                        likeFDown = likeFDown,
+                        baseConc = type_results$x11[1],
+                        baseFlux = type_results$x11[2],
+                        nBoot = nBoot, 
+                        startSeed = startSeed, 
+                        blockLength = blockLength,
+                        nBootGood = nBootGood)
   
   likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
   wordsOut <- wordLike(likeList)
   
   boot_out <- list(bootOut = bootOut,
                    wordsOut = wordsOut, 
-                   xConc = boot_list_return$xConc, 
+                   xConc = xConc, 
                    xFlux = xFlux, 
                    pConc = pConc, 
                    pFlux = pFlux)
@@ -202,17 +214,30 @@ calc_boot_out <- function(boot_list_return,
 #' 
 #' @export
 #' @param eList named list with at least the Daily, Sample, and INFO dataframes
-#' @param type_results List returned from either runPairs or runGroup.
-#' @param bootOut List returned from either runPairs or runGroupBoot.
-#' @param nBootGood Number of good results.
-#' @param nBoot Number of requested bootstraps.
-#' @param type Character can be "pair" or "group"
+#' @param type_results data frame returned from either \code{\link[EGRET]{runGroups}}
+#' or \code{\link[EGRET]{runPairs}} depending on context.
+#' @param bootOut List returned from either \code{runPairsBoot} or \code{runGroupBoot}.
+#' @param type Character can be "pair" or "group".
+#' @examples
+#' eList <- EGRET::Choptank_eList
+#' year1 <- 1985
+#' year2 <- 2009
 #' 
+#' \dontrun{
+#' pairOut_2 <- EGRET::runPairs(eList, 
+#'                              year1, year2, 
+#'                              windowSide = 7)
+#' 
+#' # For good analysis, bump up nBoot to about 100:
+#' boot_pair_out <- runPairsBoot(eList, pairOut_2, nBoot = 5)
+#' boot_message(eList,
+#'              pairOut_2,
+#'              boot_pair_out)
+#' }
 boot_message <- function(eList, 
-                              type_results,
-                              bootOut,
-                              nBootGood, nBoot,
-                              type = "pair"){
+                         type_results,
+                         bootOut,
+                         type = "pair"){
   
   match.arg(type, choices = c("pair", "group"))
   
@@ -233,8 +258,8 @@ boot_message <- function(eList,
   fcc <- format(regDeltaConc, digits = 3, width = 7)
   ffc <- format(regDeltaFlux, digits = 3, width = 8)
   
-  paStart <- attr(type_results, "paStart")
-  paLong <- attr(type_results, "paLong")
+  paStart <- eList$INFO$paStart
+  paLong <- eList$INFO$paLong
   
   cat("\n  ", eList$INFO$shortName, "\n  ", eList$INFO$paramShortName)
   periodName <- EGRET::setSeasonLabelByUser(paStart, paLong)
@@ -264,7 +289,7 @@ boot_message <- function(eList,
                                                           digits = 2, width = 9))
   posX <- ifelse(bootOut$xConc > 0, 1, 0)
   posXConc <- sum(posX)
-  if (posXConc == 0 | posXConc == nBootGood) 
+  if (posXConc == 0 | posXConc == bootOut$bootOut$nBootGood) 
     cat("\n* Note p-value should be considered to be < stated value")
   
   cat("\n Likelihood that Flow Normalized Concentration is trending up =", 
@@ -272,11 +297,9 @@ boot_message <- function(eList,
       format(bootOut$bootOut$likeCDown, digits = 3))
   posX <- ifelse(bootOut$xFlux > 0, 1, 0)
   posXFlux <- sum(posX)
-  if (posXFlux == 0 | posXFlux == nBootGood) 
+  if (posXFlux == 0 | posXFlux == bootOut$bootOut$nBootGood) 
     cat("\n* Note p-value should be considered to be < stated value")
   
-  if(nBootGood < nBoot) cat("\n The number of good replicates in the bootstrap was ", nBootGood,
-                            " out of the ", nBoot, "total")
   # end of Concentration summary
   cat("\n\nShould we reject Ho that Flow Normalized Flux Trend = 0 ?", 
       words(bootOut$bootOut$rejectF))
@@ -289,15 +312,19 @@ boot_message <- function(eList,
   cat("\n approximate two-sided p-value for Flux", format(bootOut$bootOut$pValF, 
                                                           digits = 2, width = 9))
   
-  if (posXFlux == 0 | posXFlux == nBootGood) 
+  if (posXFlux == 0 | posXFlux == bootOut$bootOut$nBootGood) 
     cat("\n* Note p-value should be considered to be < stated value")
   
   cat("\n Likelihood that Flow Normalized Flux is trending up =", 
       format(bootOut$bootOut$likeFUp, digits = 3), " is trending down =", 
       format(bootOut$bootOut$likeFDown, digits = 3))
   
-  if(nBootGood < nBoot) cat("\n The number of good replicates in the bootstrap was ", nBootGood,
-                            " out of the ", nBoot, "total")
+  if(bootOut$bootOut$nBootGood < bootOut$bootOut$nBoot) {
+    cat("\n The number of good replicates in the bootstrap was ", 
+        bootOut$bootOut$nBootGood,
+        " out of the ", 
+        bootOut$bootOut$nBoot, "total")
+  }
   
   cat("\n\n", format(bootOut$wordsOut[1], width = 30), "\n", 
       format(bootOut$wordsOut[3], width = 30))

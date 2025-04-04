@@ -19,6 +19,15 @@ library(knitr)
 library(EGRET)
 library(EGRETci)
 
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE, # Change this later!
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7, 
+  fig.height = 4
+) 
+
 ```
 
 # Introduction
@@ -30,12 +39,10 @@ The  **EGRETci** package is designed for interactive or batch use.  Instructions
   The **EGRETci** package is designed to carry out four types of tasks.
     
     
-1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving the functions: `trendSetUp` and `wBT`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, 2) a text file that shows the results of the bootstrap analysis (a subset of what is included in the console output), and 3) a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
+1)  Evaluate a water quality trend over a specific span of years and produce a variety of tabular results.  This is done with a short workflow involving the functions: `runPairBoot` or `runGroupBoot`.  The results come in three forms: 1) console output, which shows the bootstrap replicate process as it is underway and the results when it has finished, and a set of outputs in a named list called eBoot.  The contents of eBoot are described below.  
 
 2)  Plot histograms of values for the trend magnitudes, expressed in percent change over the specified period, for flow-normalized concentration and flow-normalized flux.  This is done with the function `plotHistogramTrend`.  It depends on outputs contained in eBoot.  Note that there are a number of custom outputs similar to these histograms that can be developed from the contents of eBoot (for example, what is the likelihood that the flow normalized flux decreased by more than 2000 kg/year over the trend period).  Such analyses would require a small amount of script writing by the user.
  
-
-
 3)  Plot confidence bands around the computed trends in flow-normalized concentration and flow-normalized flux.  This is done using a function called `ciCalculations` and then, using the output from that function running two functions that produce the confidence band graphics for concentration and flux respectively (`plotConcHistBoot`, and `plotFluxHistBoot`).
 
 
@@ -79,22 +86,6 @@ The following table provides definitions of the four data frames that constitute
 |pFlux | | a vector of length iBoot, of the change in flow normalized flux computed from each bootstrap replicate expressed as % change |
 
 
-
-There is also a data frame called caseSetUp (created with the `trendSetUp` function), which contains a number of important parameters that define the way that the test was implemented.  They are presented here.
-
-|Column |Definition |
-|:-------|:--------------------------------------------------|
-|year1 | the water year that is the start of the trend period (an integer) | 
-|yearData1 | the water year that is the start of the data set (an integer) | 
-|year2 | the water year that is the end of the trend period (an integer) |
-|yearData2 | the water year that is the end of the data set (an integer) |
-|numSamples | number of samples in eList$Sample |
-|nBoot | maximum number of replicates (called Mmax in paper) |
-|bootBreak | minimum number of replicates (called Mmin in paper) |
-|blockLength | length of blocks for bootstrap (called B in the paper) |
-|confStop | 1 - alphap, the width of the confidence interval used in adaptive stopping rule (default alphap=0.3 so confStop=0.7) |
-
-
 # WRTDS Bootstrap Test
 
 The WBT (WRTDS Bootstrap Test) can be run interactively or in batch.  
@@ -105,59 +96,52 @@ If the period of analysis is to be anything other than a Water Year (paStart=10,
 
 If the desired value of windowY was 10 rather than the default value of 7, then the command needed would be  `eList$INFO$windowY <- 10`, similar commands can be used for windowQ, windowS, minNumObs, minNumUncen and edgeAdjust (see help page for `modelEstimation` in the **EGRET** package).
 
-Once all of the parameters have been set (which requires no action by the user if the defaults are to be used) the set of commands for interactive processing would be this (using the example data set Choptank_eList):
+Once all of the parameters have been set (which requires no action by the user if the defaults are to be used) the set of commands to do a pairs analysis are:
 
-```{r eval=FALSE, echo=TRUE  } 
+```{r eval=FALSE, echo=TRUE} 
 library(EGRET)
 library(EGRETci)
 eList <- Choptank_eList
 
-#Interactive function to set up trend analysis:
-caseSetUp <- trendSetUp(eList)
-eBoot <- wBT(eList,caseSetUp, 
-             fileName = "outputText.txt")
+year1 <- 1985
+year2 <- 2009
 
-#Interactive save output function:
-saveEGRETci(eList, eBoot, caseSetUp)
+pairOut <- EGRET::runPairs(eList,
+                             year1, year2,
+                             windowSide = 7)
 
+# For good analysis, set nBoot to about 100
+# For a quick check that things are working, set it much lower:
+boot_pair_out <- runPairsBoot(eList, pairOut, nBoot = 100)
 
 ```
 
-Two sets of outputs are created, a text file which documents the results of the WBT, and an RData file (created by the `saveEGRETci` function) that saves the relevant results as data frames for use in the `plotHistogramTrend` function (described below) or other user-specified post-processing functions. 
-
-The output in `outputText.txt` looks like this:
+The output looks like this:
 ```
+   Choptank River 
+   Inorganic nitrogen (nitrate and nitrite)
+   Water Year 
 
-
- Choptank River    Inorganic nitrogen (nitrate and nitrite)
-
- Water Year
-
-  Bootstrap process, for change from Water Year 1985 to Water Year 2010
-                   data set runs from Water Year 1980 to Water Year 2011
-  Bootstrap block length in days 200
-  bootBreak is 39  confStop is 0.7
-
- WRTDS estimated concentration change is   0.444  mg/L
- WRTDS estimated flux change is          0.03593  10^6 kg/yr
+ Change estimates are for  2009  minus  1985
 
 Should we reject Ho that Flow Normalized Concentration Trend = 0 ? Reject Ho
- best estimate is   0.444 mg/L
-  Lower and Upper 90% CIs    0.308    0.506
- also 95% CIs    0.201    0.512 
- and 50% CIs    0.397    0.472
- approximate two-sided p-value for Conc      0.05
+ best estimate of change in concentration is   0.377 mg/L
+  Lower and Upper 90% CIs 0.2748546 0.4383584
+ also 95% CIs 0.2517219 0.4588038 
+ and 50% CIs 0.3360355 0.4079827
+ approximate two-sided p-value for Conc      0.02
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Concentration is trending up =      0.988  is trending down =     0.0125
+ Likelihood that Flow Normalized Concentration is trending up = 0.995  is trending down = 0.00495
+* Note p-value should be considered to be < stated value
 
 Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
- best estimate is  0.03593 10^6 kg/year
-  Lower and Upper 90% CIs   0.0211   0.0452
- also 95% CIs   0.0197   0.0456 
- and 50% CIs   0.0309   0.0390
- approximate two-sided p-value for Flux      0.05
+ best estimate of change in flux is   0.0538 10^6 kg/year
+  Lower and Upper 90% CIs 0.0367071 0.06235301
+ also 95% CIs 0.03299696 0.0635553 
+ and 50% CIs 0.04764486 0.05776485
+ approximate two-sided p-value for Flux      0.02
 * Note p-value should be considered to be < stated value
- Likelihood that Flow Normalized Flux is trending up = 0.988  is trending down= 0.0125
+ Likelihood that Flow Normalized Flux is trending up = 0.995  is trending down = 0.00495
 
  Upward trend in concentration is highly likely 
  Upward trend in flux is highly likely
@@ -166,36 +150,35 @@ Should we reject Ho that Flow Normalized Flux Trend = 0 ? Reject Ho
 ```
 
 
-To run the `wBT` in batch mode the only difference from this script is that the call to `trendSetUp` should include all the needed bootstrap parameters.  So, let's assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50, and all other smoothing parameters at their default values.  And we want to run the trend analysis for 1990 to 2012, use a maximum of 50 replicates, a minimum of 39 replicates, and a block length of 200.  The script would be:
+Let's run another example, where we assume that we want use the example data set Choptank_eList and have a PA of December, January, February and March, that we wanted to set windowY = 10 and minNumObs = 50, and all other smoothing parameters at their default values.  And we want to run the trend analysis for 1990 to 2011, use a maximum of 50 replicates, and a block length of 200.  The script would be:
 
-```{r eval=FALSE}
+```{r}
 library(EGRET)
 library(EGRETci)
 eList <- Choptank_eList
 eList <- setPA(eList, paStart = 12, paLong = 4)
 eList$INFO$windowY <- 10
 eList$INFO$minNumObs <- 50
-caseSetUp <- trendSetUp(eList, 
-                        year1=1990, 
-                        year2=2012, 
-                        nBoot = 50, 
-                        bootBreak = 39, 
-                        blockLength = 200)
-eBoot <- wBT(eList, caseSetUp, fileName ="outputText.txt")
-saveEGRETci(eList, eBoot, caseSetUp, fileName = "output")
+
+year1 <- 1990 
+year2 <- 2011
+
+pairOut <- EGRET::runPairs(eList,
+                             year1, year2,
+                             windowSide = 7)
+
+boot_pair_out <- runPairsBoot(eList, pairOut, nBoot = 50)
+
 ```
-
-This will result in the creation of the text file called `outputText.txt`, and an RData file called `output.RData`.  The RData file will contain the objects `caseSetUp, bootOut, wordsOut, xConc, xFlux, and INFO`.  Both files will be located in the working directory.
-
 
 
 ## Histograms
 
-The function `plotHistogramTrend` plots a histogram of all of the trend magnitudes (expressed in percentage change over the selected period) from the full set of replicates created by `wBT`.  These magnitudes are stored in the eBoot list.  These histograms serve the purpose of providing a graphical impression of the central tendency and the uncertainty about the size of a trend.  They can be used to help answer questions like: "How sure are we that the trend is positive?" or "How sure are we that the decrease is at least a 20% decrease over the period of interest?" The `plotHistogramTrend` function can produce histograms either for Flow Normalized Concentration or for Flow Normalized Flux.    
+The function `plotHistogramTrend` plots a histogram of all of the trend magnitudes (expressed in percentage change over the selected period) from the full set of replicates created by `runPairsBoot` or `runGroupsBoot`.  These magnitudes are stored in the eBoot list.  These histograms serve the purpose of providing a graphical impression of the central tendency and the uncertainty about the size of a trend.  They can be used to help answer questions like: "How sure are we that the trend is positive?" or "How sure are we that the decrease is at least a 20% decrease over the period of interest?" The `plotHistogramTrend` function can produce histograms either for Flow Normalized Concentration or for Flow Normalized Flux.    
 
 When creating a histogram it is important to carefully determine what "bins" to use.  In this plot it is a good idea to make sure that the plot covers a range of both negative and positive values even though it might be the case that the entire range of the trend magnitudes is positive (or negative).  The function is set up so that it defaults to setting up 10 bins and the bins are set to cover the full range of the magnitudes and at least cover magnitudes as low as -10% and as high as +10%.  The bins are set up based on a minimum value (xMin), a maximum value (xMax), and a step size (xStep).  The defaults used in an initial run can simply leave out these three arguments and will produce a plot.  This first plot would not be suitable for publication or display, but is intended to guide the analyst to set these three arguments to produce a suitable plot.  
 
-Ultimately we want a plot with these characteristics:  The value of xStep should be an integer such as 5, 10, or 20 so the width of the bins is 5%, 10% or 20%.  xStep should be small enough so that the histogram looks relatively smooth.  If it is too small the histogram bars will tend to be irregular.  xStep should not be so large that there is poor resolution of the shape of the distribution.  If a very smooth histogram is desired then the analyst needs to have run the `wBT` function with a high number of replicates (say `nBoot = 200`). The value of xStep should be less than the minimum value observed in the set of bootstrap replicates.  xMin should be some negative integer multiple of step size.  If no values were negative, then setting it at -1 times xStep would be a good choice.  xMax should be larger than the maximum value in the set of bootstrap replicates and should be some positive integer multiple of xStep.  If there are no positive values then 1 times xStep would be a good choice.
+Ultimately we want a plot with these characteristics:  The value of xStep should be an integer such as 5, 10, or 20 so the width of the bins is 5%, 10% or 20%.  xStep should be small enough so that the histogram looks relatively smooth.  If it is too small the histogram bars will tend to be irregular.  xStep should not be so large that there is poor resolution of the shape of the distribution.  If a very smooth histogram is desired then the analyst needs to have run the `runPairsBoot` function with a high number of replicates (say `nBoot = 200`). The value of xStep should be less than the minimum value observed in the set of bootstrap replicates.  xMin should be some negative integer multiple of step size.  If no values were negative, then setting it at -1 times xStep would be a good choice.  xMax should be larger than the maximum value in the set of bootstrap replicates and should be some positive integer multiple of xStep.  If there are no positive values then 1 times xStep would be a good choice.
 
 Note that the plots always show a vertical solid line at 0% trend, simply as a point of reference for the "no trend" result.  They also show a dashed vertical line at the value of the ordinary WRTDS estimate of the trend magnitude in percent.  This vertical line fall near the median value for all the bootstrap replicates.
 
@@ -205,18 +188,14 @@ This initial run will give the analyst the basic information needed to set up a 
 library(EGRET)
 library(EGRETci)
 
-# Example data included in package:
-eList <- Choptank_eList # Example data from EGRET package
-eBoot <- Choptank_eBoot
-caseSetUp <- Choptank_caseSetUp
-
 #Concentration an initial run:
-plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5)
 
 #Flux an initial run:
-plotHistogramTrend(eList, eBoot, caseSetUp,
-                   flux=TRUE)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5,
+                   flux = TRUE)
 
 ```
 
@@ -228,12 +207,14 @@ Alternatively, the two plots can be shown side-by-side using a workflow. Use the
 ```{r , histExampleCombo, fig.width=7, fig.height=4}
 par(mfrow=c(1,2))
 #Concentration, presentation version:
-plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE, xMin = -5, xMax = 65, xStep = 5)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5,
+                   flux = FALSE)
 
 #Flux, presentation version:
-plotHistogramTrend(eList, eBoot, caseSetUp,
-                   flux=TRUE, xMin = -5, xMax = 55, xStep = 5)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5,
+                   flux = TRUE)
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 ```
@@ -242,13 +223,14 @@ Or:
 ```{r , histExampleCombo2, fig.width=7, fig.height=10}
 par(mfrow=c(2,1))
 #Concentration, presentation version:
-plotHistogramTrend(eList, eBoot, caseSetUp,  
-                   flux=FALSE, xMin = -5, xMax = 65, xStep = 5)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5,
+                   flux = FALSE)
 
 #Flux, presentation version:
-plotHistogramTrend(eList, eBoot, caseSetUp,
-                  flux=TRUE, xMin = -5, xMax = 65, xStep = 5,
-                  printTitle = FALSE)
+plotHistogramTrend(eList = eList, eBoot = boot_pair_out,
+                   xMin = -15, xMax = 35, xStep = 5,
+                   flux = TRUE)
 # To return to figures printing in 1 row, 1 columns:
 par(mfrow=c(1,1))                   
 ```
@@ -279,7 +261,7 @@ eList <- modelEstimation(eList)
 
 ## Simple Workflow
 
-This example workflow assumes that we use the default values for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:
+This example workflow assumes that we use the default values (nBoot = 100) for all of the model parameters and PA and uses the example eList provided in the package. Remember, this is a very long-running process:
 
 ```{r, eval=FALSE}
 library(EGRET)

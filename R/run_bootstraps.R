@@ -1,3 +1,26 @@
+#' Run bootstrapping routine
+#' 
+#' Depending on input arguments, this function will run
+#' a complete bootstrapping routine either in series or parallel.
+#' 
+#' When in parallel, if there are unsuccessful runs, they will be made
+#' up in series after the parallel runs are done.#' 
+#' 
+#' @param eList named list with at least the Daily, Sample, and INFO dataframes
+#' @param type_results data frame returned from either \code{\link[EGRET]{runGroups}}
+#' or \code{\link[EGRET]{runPairs}} depending on context.
+#' @param jitterOn logical, if TRUE, adds "jitter" to the data in an attempt to avoid some numerical problems.
+#'   Default = FALSE.  See Details below.
+#' @param V numeric a multiplier for addition of jitter to the data, default = 0.2.
+#' @param nBoot the maximum number of bootstrap replicates to be used, typically 100
+#' @param blockLength integer size of subset, expressed in days.  200 days has been found to be a good choice.
+#' @param startSeed sets the random seed value. This is used to make repeatable output.
+#' @param type Character can be "pair" or "group".
+#' @param run.parallel logical to run bootstrapping in parallel or not
+#' 
+#' @export
+#' @keywords internal
+#' 
 run_bootstraps <- function(eList, 
                            type_results, 
                            jitterOn, V,
@@ -18,7 +41,7 @@ run_bootstraps <- function(eList,
   
   if(run.parallel){
     `%dopar%` <- foreach::`%dopar%`
-    boot_list_out <- foreach::foreach(iBoot = 1:ceiling(1.25*nBoot), 
+    boot_list_out <- foreach::foreach(iBoot = 1:nBoot, 
                                       .packages=c('EGRETci', 'EGRET')) %dopar% {
                                         boot_list <- single_boot_run(iBoot = iBoot, 
                                                                     startSeed = startSeed,
@@ -36,7 +59,7 @@ run_bootstraps <- function(eList,
     pFlux <- unlist(sapply(boot_list_out, function(x) x[["pFlux"]]))
     
     if(length(xConc) < nBoot){
-      # do the last set NOT in parallel because there's a lot of overhead,
+      # do the last sets NOT in parallel because there's a lot of overhead,
       # potentially for just a few runs:
       iStart <- nBoot + 1
       iEnd <- 2*nBoot - length(xConc)

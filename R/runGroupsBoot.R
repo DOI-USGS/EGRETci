@@ -50,117 +50,47 @@
 #' # For good analysis, bump up nBoot to about 100:
 #' boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
 #' 
-#' plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 #' }
 runGroupsBoot <- function (eList, groupResults, nBoot = 100, 
                            startSeed = 494817, blockLength = 200,
                            jitterOn = FALSE, V = 0.2,
                            run.parallel = FALSE){
 
-  xConc <- rep(NA, nBoot)
-  xFlux <- rep(NA, nBoot)
-  pConc <- rep(NA, nBoot)
-  pFlux <- rep(NA, nBoot)
+  boot_return <- run_bootstraps(eList = eList, 
+                                type_results = groupResults, 
+                                jitterOn = jitterOn, V = V,
+                                blockLength = blockLength, 
+                                startSeed = startSeed,
+                                nBoot = nBoot,
+                                type = "group",
+                                run.parallel = run.parallel)
   
-  nBootGood <- 0
-  
-  if(run.parallel){
-    `%dopar%` <- foreach::`%dopar%`
-    boot_list_out <- foreach::foreach(iBoot = 1:ceiling(1.25*nBoot), 
-                                      .packages=c('EGRETci', 'EGRET')) %dopar% {
-                                        boot_list <- boot_group_run(iBoot, startSeed,
-                                                                    eList, pairResults, 
-                                                                    jitterOn, V,
-                                                                    blockLength)
-                                      }
-    
-    xConc <- unlist(sapply(boot_list_out, function(x) x[["xConc"]]))
-    xFlux <- unlist(sapply(boot_list_out, function(x) x[["xFlux"]]))
-    pConc <- unlist(sapply(boot_list_out, function(x) x[["pConc"]]))
-    pFlux <- unlist(sapply(boot_list_out, function(x) x[["pFlux"]]))
-    
-    if(length(xConc) < nBoot){
-      # do the last set NOT in parallel because there's a lot of overhead,
-      # potentially for just a few runs:
-      iStart <- nBoot + 1
-      iEnd <- 2*nBoot - length(xConc)
-      message("Running ", iStart-iEnd, " in series")
-      for(i in iStart:iEnd){
-        boot_list <- boot_group_run(iBoot, startSeed,
-                                    eList, pairResults, 
-                                    jitterOn, V,
-                                    blockLength)
-        
-        if(!is.null(boot_list$xConc) & !is.null(boot_list$xFlux)){
-          if(nBootGood >= nBoot) {
-            break()
-          }
-          nBootGood <- nBootGood + 1
-        }
-        xConc <- c(xConc, boot_list$xConc)
-        xFlux <- c(xFlux, boot_list$xFlux)
-        pConc <- c(pConc, boot_list$pConc)
-        pFlux <- c(pFlux, boot_list$pFlux)
-      }
-      iBoot <- length(pFlux)
-    } else {
-      xConc <- xConc[1:nBoot]
-      xFlux <- xFlux[1:nBoot]
-      pConc <- pConc[1:nBoot]
-      pFlux <- pFlux[1:nBoot]
-      iBoot <- nBoot
-    }
-    
-  } else {
-  
-    for (iBoot in 1:(2 * nBoot)) {
-      boot_list <- boot_group_run(iBoot, startSeed,
-                                  eList, groupResults, 
-                                  jitterOn, V,
-                                  blockLength)
-      
-      if(!is.null(boot_list$xConc) & !is.null(boot_list$xFlux)){
-        if(nBootGood >= nBoot) {
-          break()
-        }
-        nBootGood <- nBootGood + 1
-      }
-      xConc <- c(xConc, boot_list$xConc)
-      xFlux <- c(xFlux, boot_list$xFlux)
-      pConc <- c(pConc, boot_list$pConc)
-      pFlux <- c(pFlux, boot_list$pFlux)
-      
-    }
-  }
-  
-  if (iBoot == 2 * nBoot) {
-    message(iBoot, " iterations were run. They only achieved ", 
-            nBootGood, " sucessful runs.")
-  } else if (iBoot > nBoot) {
-    message("It took ", iBoot, " iterations to achieve ", 
-            nBoot, " sucessful runs.")
-  }
-  
-  groupBootOut <- calc_boot_out(xConc, xFlux, pConc, pFlux,
-                                groupResults, nBoot, startSeed,
-                                blockLength, nBootGood)
+  groupBootOut <- calc_boot_out(boot_list_return = boot_return,
+                                type_results = groupResults, 
+                                nBoot = nBoot, 
+                                startSeed = startSeed,
+                                blockLength = blockLength, 
+                                nBootGood = length(boot_return$xConc))
   
   attr(groupResults, "paStart") <- attr(groupResults, "groupInfo")[["paStart"]]
   attr(groupResults, "paLong") <- attr(groupResults, "groupInfo")[["paLong"]]
   
-  pair_boot_message(eList, 
-                    groupResults,
-                    groupBootOut,
-                    nBootGood, nBoot,
-                    type = "group")
+  boot_message(eList = eList,
+               type_results = groupResults,
+               bootOut = groupBootOut,
+               nBootGood = length(boot_return$xConc),
+               nBoot = nBoot,
+               type = "group")
   
   return(groupBootOut)
 }
 
-boot_group_run <- function(iBoot, startSeed,
-                           eList, groupResults, 
+single_boot_run <- function(iBoot, startSeed,
+                           eList, type_results, 
                            jitterOn, V,
-                           blockLength){
+                           blockLength, type){
+  
+  match.arg(type, choices = c("pair", "group"))
   
   bootSample <- blockSample(localSample = eList$Sample, 
                             blockLength = blockLength, 
@@ -171,91 +101,159 @@ boot_group_run <- function(iBoot, startSeed,
   eListBoot <- suppressMessages(EGRET::as.egret(eList$INFO,
                                                 eList$Daily,
                                                 bootSample,NA))
-  dateInfo <- attr(groupResults, "dateInfo")
+  dateInfo <- attr(type_results, "dateInfo")
   
-  if(attr(groupResults, "Other")[["wall"]]) {
-    possibleError <- tryCatch(surfaces <- suppressMessages(EGRET::stitch(eListBoot, 
-                                                                         surfaceStart = attr(groupResults, "SampleBlocks")[["surfaceStart"]], 
-                                                                         surfaceEnd =  attr(groupResults, "SampleBlocks")[["surfaceEnd"]],
-                                                                         sample1StartDate = attr(groupResults, "SampleBlocks")[["sample1StartDate"]],
-                                                                         sample1EndDate = attr(groupResults, "SampleBlocks")[["sample1EndDate"]],
-                                                                         sample2StartDate = attr(groupResults, "SampleBlocks")[["sample2StartDate"]], 
-                                                                         sample2EndDate = attr(groupResults, "SampleBlocks")[["sample2EndDate"]],
-                                                                         windowY = attr(groupResults, "Other")[["windowY"]], 
-                                                                         windowQ = attr(groupResults, "Other")[["windowQ"]], 
-                                                                         windowS = attr(groupResults, "Other")[["windowS"]],
-                                                                         minNumObs = attr(groupResults, "Other")[["minNumObs"]], 
-                                                                         minNumUncen =  attr(groupResults, "Other")[["minNumUncen"]], 
-                                                                         edgeAdjust =  attr(groupResults, "Other")[["edgeAdjust"]])), 
-                              error = function(e) e)
-  } else {
-    possibleError <- tryCatch(surfaces <- EGRET::estSurfaces(eListBoot, 
-                                                             surfaceStart = attr(groupResults, "SampleBlocks")[["surfaceStart"]], 
-                                                             surfaceEnd =  attr(groupResults, "SampleBlocks")[["surfaceEnd"]],
-                                                             windowY = attr(groupResults, "Other")[["windowY"]],
-                                                             windowQ = attr(groupResults, "Other")[["windowQ"]],
-                                                             windowS = attr(groupResults, "Other")[["windowS"]],
-                                                             minNumObs = attr(groupResults, "Other")[["minNumObs"]],
-                                                             minNumUncen =  attr(groupResults, "Other")[["minNumUncen"]],
-                                                             edgeAdjust =  attr(groupResults, "Other")[["edgeAdjust"]]),
-                              error = function(e) e)
-  }
-  
-  if (!inherits(possibleError, "error") ) {
-    eListS <- suppressMessages(EGRET::as.egret(eListBoot$INFO, 
-                                               eListBoot$Daily,
-                                               eListBoot$Sample, surfaces))
-    eListOut <- suppressMessages(EGRET::flexFN(eListS, dateInfo,
-                                               flowNormStartCol = "flowNormStart", 
-                                               flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
-                                               flowEndCol = "flowEnd"))
-    eListOut$INFO$wall <- attr(groupResults, "Other")[["wall"]]
-    eListOut$INFO$surfaceStart <- attr(groupResults, "SampleBlocks")[["surfaceStart"]]
-    eListOut$INFO$surfaceEnd <- attr(groupResults, "SampleBlocks")[["surfaceEnd"]]
-    DailyFlex <- eListOut$Daily
-    annFlex <- EGRET::setupYears(DailyFlex, 
-                                 paLong =  attr(groupResults, "groupInfo")[["paLong"]],
-                                 paStart =  attr(groupResults, "groupInfo")[["paStart"]])
-    annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
-    annFlex1 <- annFlex[annFlex$DecYear >= attr(groupResults, "groupInfo")[["group1firstYear"]] &
-                          annFlex$DecYear <= attr(groupResults, "groupInfo")[["group1lastYear"]],]
-    annFlex2 <- annFlex[annFlex$DecYear >= attr(groupResults, "groupInfo")[["group2firstYear"]] & 
-                          annFlex$DecYear <= attr(groupResults, "groupInfo")[["group2lastYear"]],]
+  if(type == "group"){
     
-    #  pairResults are in 10^6 kg/year, when we get to the bootstrap results
-    #  Converting them all to 10^6 kg/year units
-    c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
-    f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
-    c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
-    f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
-    
-    regDeltaConc <- groupResults$x22[1] - groupResults$x11[1]
-    regDeltaFlux <- groupResults$x22[2] - groupResults$x11[2]
-    LFluxDiff <- log(groupResults$x22[2]) - log(groupResults$x11[2])
-    LConcDiff <- log(groupResults$x22[1]) - log(groupResults$x11[1])
-    
-    xConc <- (2 * regDeltaConc) - (c22 - c11)
-    xFlux <- (2 * regDeltaFlux) - (f22 - f11)
-    if (!is.na(xConc) & !is.na(xFlux)) {
-
-      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
-      pConc<- (100 * exp(LConc)) - 100
-      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
-      pFlux <- (100 * exp(LFlux)) - 100
-      message("\n iBoot, xConc and xFlux ",iBoot, ": ", 
-              round(xConc, digits = 4), " ", 
-              round(xFlux, digits = 4))
+    if(attr(type_results, "Other")[["wall"]]) {
+      possibleError <- tryCatch(surfaces <- suppressMessages(EGRET::stitch(eListBoot, 
+                                                                           surfaceStart = attr(type_results, "SampleBlocks")[["surfaceStart"]], 
+                                                                           surfaceEnd =  attr(type_results, "SampleBlocks")[["surfaceEnd"]],
+                                                                           sample1StartDate = attr(type_results, "SampleBlocks")[["sample1StartDate"]],
+                                                                           sample1EndDate = attr(type_results, "SampleBlocks")[["sample1EndDate"]],
+                                                                           sample2StartDate = attr(type_results, "SampleBlocks")[["sample2StartDate"]], 
+                                                                           sample2EndDate = attr(type_results, "SampleBlocks")[["sample2EndDate"]],
+                                                                           windowY = attr(type_results, "Other")[["windowY"]], 
+                                                                           windowQ = attr(type_results, "Other")[["windowQ"]], 
+                                                                           windowS = attr(type_results, "Other")[["windowS"]],
+                                                                           minNumObs = attr(type_results, "Other")[["minNumObs"]], 
+                                                                           minNumUncen =  attr(type_results, "Other")[["minNumUncen"]], 
+                                                                           edgeAdjust =  attr(type_results, "Other")[["edgeAdjust"]])), 
+                                error = function(e) e)
+    } else {
+      possibleError <- tryCatch(surfaces <- EGRET::estSurfaces(eListBoot, 
+                                                               surfaceStart = attr(type_results, "SampleBlocks")[["surfaceStart"]], 
+                                                               surfaceEnd =  attr(type_results, "SampleBlocks")[["surfaceEnd"]],
+                                                               windowY = attr(type_results, "Other")[["windowY"]],
+                                                               windowQ = attr(type_results, "Other")[["windowQ"]],
+                                                               windowS = attr(type_results, "Other")[["windowS"]],
+                                                               minNumObs = attr(type_results, "Other")[["minNumObs"]],
+                                                               minNumUncen =  attr(type_results, "Other")[["minNumUncen"]],
+                                                               edgeAdjust =  attr(type_results, "Other")[["edgeAdjust"]]),
+                                error = function(e) e)
     }
-    return_list <- list(xConc = xConc,
-                        xFlux = xFlux,
-                        pConc = pConc,
-                        pFlux = pFlux)
-  } else {
-    return_list <- list(xConc = NULL,
-                        xFlux = NULL,
-                        pConc = NULL,
-                        pFlux = NULL)
+    
+    if (!inherits(possibleError, "error") ) {
+      eListS <- suppressMessages(EGRET::as.egret(eListBoot$INFO, 
+                                                 eListBoot$Daily,
+                                                 eListBoot$Sample, surfaces))
+      eListOut <- suppressMessages(EGRET::flexFN(eListS, dateInfo,
+                                                 flowNormStartCol = "flowNormStart", 
+                                                 flowNormEndCol = "flowNormEnd", flowStartCol = "flowStart", 
+                                                 flowEndCol = "flowEnd"))
+      
+      eListOut$INFO$wall <- attr(type_results, "Other")[["wall"]]
+      eListOut$INFO$surfaceStart <- attr(type_results, "SampleBlocks")[["surfaceStart"]]
+      eListOut$INFO$surfaceEnd <- attr(type_results, "SampleBlocks")[["surfaceEnd"]]
+      DailyFlex1 <- eListOut$Daily
+      annFlex <- EGRET::setupYears(DailyFlex1, 
+                                   paLong =  attr(type_results, "groupInfo")[["paLong"]],
+                                   paStart =  attr(type_results, "groupInfo")[["paStart"]])
+      annFlex$year <- floor(annFlex$DecYear + (annFlex$PeriodLong / 12) * 0.5)
+      annFlex1 <- annFlex[annFlex$DecYear >= attr(type_results, "groupInfo")[["group1firstYear"]] &
+                            annFlex$DecYear <= attr(type_results, "groupInfo")[["group1lastYear"]],]
+      annFlex2 <- annFlex[annFlex$DecYear >= attr(type_results, "groupInfo")[["group2firstYear"]] & 
+                            annFlex$DecYear <= attr(type_results, "groupInfo")[["group2lastYear"]],]
+      
+    } else {
+      return(list(xConc = NULL,
+                  xFlux = NULL,
+                  pConc = NULL,
+                  pFlux = NULL))
+    }    
+  } else if (type == "pair") {
+    localDaily <- eList$Daily
+    Daily1 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[1]) & 
+                           localDaily$Date <= as.Date(dateInfo$flowNormEnd[1]), ]
+    Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & 
+                           localDaily$Date <= as.Date(dateInfo$flowNormEnd[2]), ]
+    
+    startEnd1 <- EGRET::startEnd(attr(type_results, "yearPair")[["paStart"]],
+                                 attr(type_results, "yearPair")[["paLong"]], 
+                                 attr(type_results, "yearPair")[["year1"]])
+    startEnd2 <- EGRET::startEnd(attr(type_results, "yearPair")[["paStart"]], 
+                                 attr(type_results, "yearPair")[["paLong"]],
+                                 attr(type_results, "yearPair")[["year2"]])
+    
+    Sample1 <- bootSample[bootSample$Date >= attr(type_results, "SampleBlocks")[["sample1StartDate"]] &
+                            bootSample$Date <= attr(type_results, "SampleBlocks")[["sample1EndDate"]],]
+    Sample2 <- bootSample[bootSample$Date >= attr(type_results, "SampleBlocks")[["sample2StartDate"]] &
+                            bootSample$Date <= attr(type_results, "SampleBlocks")[["sample2EndDate"]], ]
+    
+    possibleError3 <- tryCatch(
+      surfaces1 <- suppressMessages(EGRET::estSurfaces(eListBoot, 
+                                                       surfaceStart = as.Date(startEnd1[["startDate"]]), 
+                                                       surfaceEnd = as.Date(startEnd1[["endDate"]]),
+                                                       edgeAdjust = attr(type_results, "Other")[["edgeAdjust"]],
+                                                       localSample = Sample1, 
+                                                       minNumObs = attr(type_results, "Other")[["minNumObs"]], 
+                                                       minNumUncen = attr(type_results, "Other")[["minNumUncen"]],
+                                                       verbose = FALSE)),
+      error = function(e) e)
+    
+    possibleError4 <- tryCatch(
+      surfaces2 <- suppressMessages(EGRET::estSurfaces(eListBoot, 
+                                                       surfaceStart = as.Date(startEnd2[["startDate"]]), 
+                                                       surfaceEnd = as.Date(startEnd2[["endDate"]]),
+                                                       edgeAdjust = attr(type_results, "Other")[["edgeAdjust"]],
+                                                       localSample = Sample2, 
+                                                       minNumObs = attr(type_results, "Other")[["minNumObs"]],
+                                                       minNumUncen = attr(type_results, "Other")[["minNumUncen"]],
+                                                       verbose = FALSE)),
+      error = function(e) e)
+    if (!inherits(possibleError3, "error") & 
+        !inherits(possibleError4, "error")) {
+      # note that all the flux calculations inside the bootstrap loop are in kg/day units    
+      DailyRS1FD1 <- EGRET::estDailyFromSurfaces(eListBoot, 
+                                                 localsurfaces = surfaces1, 
+                                                 localDaily = Daily1)
+      annFlex1 <- EGRET::setupYears(DailyRS1FD1, 
+                                      paLong = attr(type_results, "yearPair")[["paLong"]], 
+                                      paStart = attr(type_results, "yearPair")[["paStart"]])
+      DailyRS2FD2 <- EGRET::estDailyFromSurfaces(eListBoot, 
+                                                 localsurfaces = surfaces2, 
+                                                 localDaily = Daily2)
+      annFlex2 <- EGRET::setupYears(DailyRS2FD2, 
+                                      paLong = attr(type_results, "yearPair")[["paLong"]], 
+                                      paStart = attr(type_results, "yearPair")[["paStart"]])
+    } else {
+      return(list(xConc = NULL,
+                  xFlux = NULL,
+                  pConc = NULL,
+                  pFlux = NULL))
+    }
+
   }
+
+  #  results are in 10^6 kg/year, when we get to the bootstrap results
+  #  Converting them all to 10^6 kg/year units
+  c11 <- mean(annFlex1$FNConc, na.rm = TRUE)
+  f11 <- mean(annFlex1$FNFlux, na.rm = TRUE) * 0.00036525
+  c22 <- mean(annFlex2$FNConc, na.rm = TRUE)
+  f22 <- mean(annFlex2$FNFlux, na.rm = TRUE) * 0.00036525
+  
+  regDeltaConc <- type_results$x22[1] - type_results$x11[1]
+  regDeltaFlux <- type_results$x22[2] - type_results$x11[2]
+  LFluxDiff <- log(type_results$x22[2]) - log(type_results$x11[2])
+  LConcDiff <- log(type_results$x22[1]) - log(type_results$x11[1])
+  
+  xConc <- (2 * regDeltaConc) - (c22 - c11)
+  xFlux <- (2 * regDeltaFlux) - (f22 - f11)
+  if (!is.na(xConc) & !is.na(xFlux)) {
+
+    LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
+    pConc<- (100 * exp(LConc)) - 100
+    LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
+    pFlux <- (100 * exp(LFlux)) - 100
+    message("\n iBoot, xConc and xFlux ",iBoot, ": ", 
+            round(xConc, digits = 4), " ", 
+            round(xFlux, digits = 4))
+  }
+  return_list <- list(xConc = xConc,
+                      xFlux = xFlux,
+                      pConc = pConc,
+                      pFlux = pFlux)
+
   
   return(return_list)
   

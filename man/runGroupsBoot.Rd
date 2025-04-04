@@ -67,7 +67,6 @@ groupResults <- runGroups(eList,
 # For good analysis, bump up nBoot to about 100:
 boot_group_out <- runGroupsBoot(eList, groupResults, nBoot = 3)
 
-plotHistogramTrend(eList, boot_group_out, caseSetUp=NA)
 }
 }
 \seealso{

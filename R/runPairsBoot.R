@@ -56,89 +56,21 @@ runPairsBoot <- function(eList, pairResults,
 
   check_pair_dates(eList, pairResults)
 
-  # bootstrap loop starts here
-  nBootGood <- 0
-  xConc <- c()
-  xFlux <- c()
-  pConc <- c()
-  pFlux <- c()
-  
-  if(run.parallel){
-    `%dopar%` <- foreach::`%dopar%`
-    boot_list_out <- foreach::foreach(iBoot = 1:ceiling(1.25*nBoot), 
-                                          .packages=c('EGRETci', 'EGRET')) %dopar% {
-                                            boot_list <- boot_pairs_run(iBoot, startSeed,
-                                                                        eList, pairResults, 
-                                                                        jitterOn, V,
-                                                                        blockLength)
-                                          }
-    
-    xConc <- unlist(sapply(boot_list_out, function(x) x[["xConc"]]))
-    xFlux <- unlist(sapply(boot_list_out, function(x) x[["xFlux"]]))
-    pConc <- unlist(sapply(boot_list_out, function(x) x[["pConc"]]))
-    pFlux <- unlist(sapply(boot_list_out, function(x) x[["pFlux"]]))
-    
-    if(length(xConc) < nBoot){
-      # do the last set NOT in parallel because there's a lot of overhead,
-      # potentially for just a few runs:
-      iStart <- nBoot + 1
-      iEnd <- 2*nBoot - length(xConc)
-      message("Running ", iStart-iEnd, " in series")
-      for(i in iStart:iEnd){
-        boot_list <- boot_pairs_run(iBoot, startSeed,
-                                    eList, pairResults, 
-                                    jitterOn, V,
-                                    blockLength)
-        
-        if(!is.null(boot_list$xConc) & !is.null(boot_list$xFlux)){
-          if(nBootGood >= nBoot) {
-            break()
-          }
-          nBootGood <- nBootGood + 1
-        }
-        xConc <- c(xConc, boot_list$xConc)
-        xFlux <- c(xFlux, boot_list$xFlux)
-        pConc <- c(pConc, boot_list$pConc)
-        pFlux <- c(pFlux, boot_list$pFlux)
-      }
-      iBoot <- length(pFlux)
-    } else {
-      xConc <- xConc[1:nBoot]
-      xFlux <- xFlux[1:nBoot]
-      pConc <- pConc[1:nBoot]
-      pFlux <- pFlux[1:nBoot]
-      iBoot <- nBoot
-    }
-    
-  } else {
-    for (iBoot in 1:(2*nBoot)){
-      boot_list <- boot_pairs_run(iBoot, startSeed,
-                                  eList, pairResults, 
-                                  jitterOn, V,
-                                  blockLength)
-      
-      if(!is.null(boot_list$xConc) & !is.null(boot_list$xFlux)){
-        if(nBootGood >= nBoot) {
-          break()
-        }
-        nBootGood <- nBootGood + 1
-      }
-      xConc <- c(xConc, boot_list$xConc)
-      xFlux <- c(xFlux, boot_list$xFlux)
-      pConc <- c(pConc, boot_list$pConc)
-      pFlux <- c(pFlux, boot_list$pFlux)
-    }  
-  }
-  
-  if(iBoot == 2*nBoot){
-    message(iBoot, " iterations were run. They only achieved ", nBootGood, " sucessful runs.")
-  } else if (iBoot > nBoot){
-    message("It took ", iBoot, " iterations to achieve ", nBoot, " sucessful runs.")
-  }
-  
-  pairsBootOut <- calc_boot_out(xConc, xFlux, pConc, pFlux,
-                                pairResults, nBoot, startSeed,
-                                blockLength, nBootGood)
+  boot_return <- run_bootstraps(eList = eList, 
+                                type_results = pairResults, 
+                                jitterOn = jitterOn, V = V,
+                                blockLength = blockLength, 
+                                startSeed = startSeed,
+                                nBoot = nBoot,
+                                type = "pair",
+                                run.parallel = run.parallel)
+
+  pairsBootOut <- calc_boot_out(boot_list_return = boot_return,
+                                type_results = pairResults, 
+                                nBoot = nBoot, 
+                                startSeed = startSeed,
+                                blockLength = blockLength,
+                                nBootGood =  length(boot_return$xConc))
   
   attr(pairsBootOut, "year1") <- attr(pairResults, "yearPair")[["year1"]]
   attr(pairsBootOut, "year2") <- attr(pairResults, "yearPair")[["year2"]]
@@ -146,133 +78,16 @@ runPairsBoot <- function(eList, pairResults,
   attr(pairResults, "paStart") <- attr(pairResults, "yearPair")[["paStart"]]
   attr(pairResults, "paLong") <- attr(pairResults, "yearPair")[["paLong"]]
 
-  pair_boot_message(eList, 
-                    pairResults,
-                    pairsBootOut,
-                    nBootGood, nBoot,
-                    type = "pair")
+  boot_message(eList, 
+               pairResults,
+               pairsBootOut,
+               length(boot_return$xConc), 
+               nBoot,
+               type = "pair")
   
   return(pairsBootOut)
 }
 
-boot_pairs_run <- function(iBoot, startSeed,
-                           eList, pairResults, 
-                           jitterOn, V,
-                           blockLength){
-  
-  localINFO <- eList$INFO
-  localDaily <- eList$Daily
-  localSample <- eList$Sample
-  
-  dateInfo <- attr(pairResults, "dateInfo")
-
-  Daily1 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[1]) & localDaily$Date <= 
-                         as.Date(dateInfo$flowNormEnd[1]), ]
-  Daily2 <- localDaily[localDaily$Date >= as.Date(dateInfo$flowNormStart[2]) & localDaily$Date <= 
-                         as.Date(dateInfo$flowNormEnd[2]), ]
-  
-  bootSample <- blockSample(localSample = localSample, 
-                            blockLength = blockLength, 
-                            startSeed = startSeed + iBoot)
-  
-  if(jitterOn) bootSample <- EGRET::jitterSam(bootSample, V = V)
-  
-  eListBoot <- suppressMessages(EGRET::as.egret(localINFO, 
-                                                localDaily,
-                                                bootSample, NA))
-  
-  startEnd1 <- EGRET::startEnd(attr(pairResults, "yearPair")[["paStart"]],
-                               attr(pairResults, "yearPair")[["paLong"]], 
-                               attr(pairResults, "yearPair")[["year1"]])
-  startEnd2 <- EGRET::startEnd(attr(pairResults, "yearPair")[["paStart"]], 
-                               attr(pairResults, "yearPair")[["paLong"]],
-                               attr(pairResults, "yearPair")[["year2"]])
-  
-  Sample1 <- bootSample[bootSample$Date >= attr(pairResults, "SampleBlocks")[["sample1StartDate"]] &
-                          bootSample$Date <= attr(pairResults, "SampleBlocks")[["sample1EndDate"]],]
-  
-  possibleError3 <- tryCatch( 
-    surfaces1 <- suppressMessages(EGRET::estSurfaces(eListBoot, 
-                                                     surfaceStart = as.Date(startEnd1[["startDate"]]), 
-                                                     surfaceEnd = as.Date(startEnd1[["endDate"]]),
-                                                     edgeAdjust = attr(pairResults, "Other")[["edgeAdjust"]],
-                                                     localSample = Sample1, 
-                                                     minNumObs = attr(pairResults, "Other")[["minNumObs"]], 
-                                                     minNumUncen = attr(pairResults, "Other")[["minNumUncen"]],
-                                                     verbose = FALSE)),
-    error = function(e) e)
-  
-  Sample2 <- bootSample[bootSample$Date >= attr(pairResults, "SampleBlocks")[["sample2StartDate"]] &
-                          bootSample$Date <= attr(pairResults, "SampleBlocks")[["sample2EndDate"]], ]
-  
-  possibleError4 <- tryCatch(
-    surfaces2 <- suppressMessages(EGRET::estSurfaces(eListBoot, 
-                                                     surfaceStart = as.Date(startEnd2[["startDate"]]), 
-                                                     surfaceEnd = as.Date(startEnd2[["endDate"]]),
-                                                     edgeAdjust = attr(pairResults, "Other")[["edgeAdjust"]],
-                                                     localSample = Sample2, 
-                                                     minNumObs = attr(pairResults, "Other")[["minNumObs"]],
-                                                     minNumUncen = attr(pairResults, "Other")[["minNumUncen"]],
-                                                     verbose = FALSE)),
-    error = function(e) e)
-  
-  if (!inherits(possibleError3, "error") & 
-      !inherits(possibleError4, "error")) {
-    # note that all the flux calculations inside the bootstrap loop are in kg/day units    
-    DailyRS1FD1 <- EGRET::estDailyFromSurfaces(eListBoot, 
-                                               localsurfaces = surfaces1, 
-                                               localDaily = Daily1)
-    annualFlex <- EGRET::setupYears(DailyRS1FD1, 
-                                    paLong = attr(pairResults, "yearPair")[["paLong"]], 
-                                    paStart = attr(pairResults, "yearPair")[["paStart"]])
-    
-    #  runPairs are in 10^6 kg/year, when we get to the bootstrap results
-    #  Converting them all to 10^6 kg/year units
-    c11 <- mean(annualFlex$FNConc, na.rm = TRUE)
-    f11 <- mean(annualFlex$FNFlux, na.rm = TRUE) * 0.00036525
-    
-    DailyRS2FD2 <- EGRET::estDailyFromSurfaces(eListBoot, 
-                                               localsurfaces = surfaces2, 
-                                               localDaily = Daily2)
-    annualFlex <- EGRET::setupYears(DailyRS2FD2, 
-                                    paLong = attr(pairResults, "yearPair")[["paLong"]], 
-                                    paStart = attr(pairResults, "yearPair")[["paStart"]])
-    
-    c22 <- mean(annualFlex$FNConc, na.rm = TRUE)
-    f22 <- mean(annualFlex$FNFlux, na.rm = TRUE) * 0.00036525
-    
-    regDeltaConc <- pairResults$x22[1] - pairResults$x11[1]
-    regDeltaFlux <- pairResults$x22[2] - pairResults$x11[2]
-    LFluxDiff <- log(pairResults$x22[2]) - log(pairResults$x11[2])
-    LConcDiff <- log(pairResults$x22[1]) - log(pairResults$x11[1])
-    
-    xConc <- (2 * regDeltaConc) - (c22 - c11)
-    xFlux <- (2 * regDeltaFlux) - (f22 - f11)
-    
-    if(!is.na(xConc) & !is.na(xFlux)){
-
-      LConc <- (2 * LConcDiff) - (log(c22) - log(c11))
-      pConc <- (100 * exp(LConc)) - 100
-      LFlux <- (2 * LFluxDiff) - (log(f22) - log(f11))
-      pFlux <- (100 * exp(LFlux)) - 100
-      message("\n iBoot, xConc and xFlux ",iBoot, ": ", 
-              round(xConc, digits = 4), " ", 
-              round(xFlux, digits = 4))
-    }
-    
-    return_list <- list(xConc = xConc,
-                        xFlux = xFlux,
-                        pConc = pConc,
-                        pFlux = pFlux)
-  } else {
-    return_list <- list(xConc = NULL,
-                        xFlux = NULL,
-                        pConc = NULL,
-                        pFlux = NULL)    
-  }
-  
-  return(return_list)
-}
 
 check_pair_dates <- function(eList, pairResults){
   localDaily <- eList$Daily
@@ -301,14 +116,17 @@ check_pair_dates <- function(eList, pairResults){
   }
 }
 
-calc_boot_out <- function(xConc,
-                          xFlux,
-                          pConc,
-                          pFlux,
+calc_boot_out <- function(boot_list_return,
                           type_results, nBoot, startSeed,
                           blockLength, nBootGood){
   
   prob = c(0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.975)
+  
+  xConc <- boot_list_return$xConc
+  xFlux <- boot_list_return$xFlux
+  pConc <- boot_list_return$pConc
+  pFlux <- boot_list_return$pFlux
+  
   quantConc <- quantile(xConc, prob, type = 6, na.rm = TRUE)
   lowConc <- quantConc[["5%"]]
   highConc <- quantConc[["95%"]]
@@ -326,10 +144,10 @@ calc_boot_out <- function(xConc,
   upC50 <- quantConc[["75%"]]
   lowC95 <- quantConc[["2.5%"]]
   upC95 <- quantConc[["97.5%"]]
-  pValC <- pVal(xConc)
+  pValC <- pVal(boot_list_return$xConc)
   
-  xConc <- as.numeric(na.omit(xConc))
-  nBootGood <- length(xConc)
+  
+  nBootGood <- length(boot_list_return$xConc)
   
   posX <- ifelse(xConc > 0, 1, 0)
   posXConc <- sum(posX)
@@ -345,8 +163,6 @@ calc_boot_out <- function(xConc,
   upF95 <- quantFlux[["97.5%"]]
   
   pValF <- pVal(xFlux)
-  
-  xFlux <- as.numeric(na.omit(xFlux))
   nBootGood <- length(xFlux)
   
   posX <- ifelse(xFlux > 0, 1, 0)
@@ -370,12 +186,9 @@ calc_boot_out <- function(xConc,
   likeList <- c(likeCUp, likeCDown, likeFUp, likeFDown)
   wordsOut <- wordLike(likeList)
   
-  pConc <- as.numeric(na.omit(pConc))
-  pFlux <- as.numeric(na.omit(pFlux))
-  
   boot_out <- list(bootOut = bootOut,
                    wordsOut = wordsOut, 
-                   xConc = xConc, 
+                   xConc = boot_list_return$xConc, 
                    xFlux = xFlux, 
                    pConc = pConc, 
                    pFlux = pFlux)
@@ -395,7 +208,7 @@ calc_boot_out <- function(xConc,
 #' @param nBoot Number of requested bootstraps.
 #' @param type Character can be "pair" or "group"
 #' 
-pair_boot_message <- function(eList, 
+boot_message <- function(eList, 
                               type_results,
                               bootOut,
                               nBootGood, nBoot,

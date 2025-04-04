@@ -654,6 +654,17 @@ estSliceSurfacesSimpleAlt <- function(eList,year){
   return(surfaces)
 }
 
+#' Create a paVector
+#' 
+#' Internal doc for paVector
+#' 
+#' @export
+#' @keywords internal 
+#' @param year description
+#' @param paStart description
+#' @param paLong description
+#' @param vectorYear description
+
 paVector <- function(year,paStart,paLong, vectorYear){
   
   if (paStart + paLong > 13){
